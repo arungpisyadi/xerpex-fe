@@ -23,23 +23,23 @@
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
           class="dark:hidden"
-          src="/images/logo/logo.svg"
-          alt="Logo"
+          src="/images/logo/xerpex-logo.svg"
+          alt="Xerpex"
           width="150"
           height="40"
         />
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
           class="hidden dark:block"
-          src="/images/logo/logo-dark.svg"
-          alt="Logo"
+          src="/images/logo/xerpex-logo-dark.svg"
+          alt="Xerpex"
           width="150"
           height="40"
         />
         <img
           v-else
-          src="/images/logo/logo-icon.svg"
-          alt="Logo"
+          src="/images/logo/xerpex-icon.svg"
+          alt="Xerpex"
           width="32"
           height="32"
         />

@@ -198,7 +198,7 @@
                 <img width="{231}" height="{48}" src="/images/logo/xerpex-auth-logo.svg" alt="Xerpex" />
               </router-link>
               <p class="text-center text-gray-400 dark:text-white/60">
-                XerpexSys - Modern Admin Dashboard
+                XerpexSys - Kebunsu Project
               </p>
             </div>
           </div>

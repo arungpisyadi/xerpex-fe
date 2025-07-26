@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL and default headers
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8001/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -31,10 +31,15 @@ apiClient.interceptors.response.use(
   error => {
     // Handle 401 Unauthorized errors (token expired or invalid)
     if (error.response && error.response.status === 401) {
-      // Clear local storage and redirect to login
+      // Clear local storage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/signin';
+
+      // Only redirect to signin if we're not already on the signin page
+      // This prevents page reloads during signin debugging
+      if (!window.location.pathname.includes('/signin')) {
+        window.location.href = '/signin';
+      }
     }
     return Promise.reject(error);
   }

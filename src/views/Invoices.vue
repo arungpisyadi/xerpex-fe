@@ -456,4 +456,108 @@ export default {
         // Set default amount from booking total
         this.newInvoice.amount = booking.total_amount || 0;
 
-        // Set default due date (7 days from
+        // Set default due date (7 days from now)
+        const now = new Date();
+        const dueDate = new Date(now);
+        dueDate.setDate(now.getDate() + 7);
+        this.newInvoice.due_date = dueDate.toISOString().split('T')[0];
+      } catch (error) {
+        console.error('Error fetching booking details:', error);
+        // Show error notification
+      }
+    },
+    async handlePageChange(page) {
+      this.currentPage = page;
+      await this.fetchInvoices();
+    },
+    viewInvoiceDetails(invoice) {
+      this.selectedInvoice = invoice;
+      this.showModal = true;
+    },
+    createNewInvoice() {
+      this.newInvoice = {
+        booking_id: '',
+        amount: '',
+        due_date: '',
+        notes: ''
+      };
+      this.fetchBookings();
+      this.showCreateModal = true;
+    },
+    async submitInvoice() {
+      try {
+        await invoiceService.createInvoice(this.newInvoice);
+        this.showCreateModal = false;
+        await this.fetchInvoices();
+        // Show success notification
+      } catch (error) {
+        console.error('Error creating invoice:', error);
+        // Show error notification
+      }
+    },
+    async markAsPaid(invoice) {
+      try {
+        await invoiceService.updateInvoiceStatus(invoice.id, 'paid');
+
+        // Update local data
+        if (this.selectedInvoice && this.selectedInvoice.id === invoice.id) {
+          this.selectedInvoice.status = 'paid';
+          this.selectedInvoice.payment_date = new Date().toISOString();
+        }
+
+        // Refresh the invoice list
+        await this.fetchInvoices();
+
+        // Show success notification
+      } catch (error) {
+        console.error('Error marking invoice as paid:', error);
+        // Show error notification
+      }
+    },
+    async sendInvoice(invoice) {
+      try {
+        await invoiceService.sendInvoice(invoice.id);
+        // Show success notification
+      } catch (error) {
+        console.error('Error sending invoice:', error);
+        // Show error notification
+      }
+    },
+    async downloadInvoice(invoice) {
+      try {
+        await invoiceService.downloadInvoice(invoice.id);
+        // Show success notification
+      } catch (error) {
+        console.error('Error downloading invoice:', error);
+        // Show error notification
+      }
+    },
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    },
+    formatPrice(price) {
+      return parseFloat(price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    },
+    capitalizeFirstLetter(string) {
+      if (!string) return '';
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    getStatusClass(status) {
+      switch (status) {
+        case 'paid':
+          return 'bg-success bg-opacity-10 text-success';
+        case 'pending':
+          return 'bg-warning bg-opacity-10 text-warning';
+        case 'overdue':
+          return 'bg-danger bg-opacity-10 text-danger';
+        case 'cancelled':
+          return 'bg-gray-500 bg-opacity-10 text-gray-500';
+        default:
+          return 'bg-gray-500 bg-opacity-10 text-gray-500';
+      }
+    }
+  }
+};
+</script>

@@ -20,7 +20,14 @@
               </div>
               <div>
                 <!-- Social login buttons and divider removed -->
-                <form @submit.prevent="handleSubmit">
+                <!-- Hidden form to catch any implicit submissions -->
+                <form style="display:none" onsubmit="return false;"></form>
+                <!-- No visible form element, just a div -->
+                <div id="login-container">
+                  <!-- Authentication error message -->
+                  <div v-if="authError" class="mb-4 p-3 rounded-lg bg-error-50 text-error-700 dark:bg-error-900/30 dark:text-error-400">
+                    <p>{{ authError }}</p>
+                  </div>
                   <div class="space-y-5">
                     <!-- Email -->
                     <div>
@@ -151,14 +158,20 @@
                     <!-- Button -->
                     <div>
                       <button
-                        type="submit"
-                        class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
+                        type="button"
+                        @click.prevent="loginUser"
+                        :disabled="isLoading"
+                        class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
-                        Sign In
+                        <svg v-if="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {{ isLoading ? 'Signing In...' : 'Sign In' }}
                       </button>
                     </div>
                   </div>
-                </form>
+                </div>
                 <!-- <div class="mt-5">
                   <p
                     class="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start"
@@ -196,9 +209,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import CommonGridShape from '@/components/common/CommonGridShape.vue'
 import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
+// @ts-ignore - Import auth service without type checking
+import authService from '@/services/auth.service'
+
+// Simple flag to prevent navigation during login process
+const isLoggingIn = ref(false);
+
+// Prevent form submission - simpler approach
+const preventSubmit = (event: Event) => {
+  if (isLoggingIn.value) {
+    console.log('Preventing form submission during login');
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
+};
+
+// Add minimal event listeners when component is mounted
+onMounted(() => {
+  // Add event listeners - only what's necessary
+  window.addEventListener('submit', preventSubmit, true);
+
+  // Check for stored error message
+  const storedError = localStorage.getItem('login_error');
+  if (storedError) {
+    authError.value = storedError;
+    localStorage.removeItem('login_error');
+  }
+});
+
+// Remove event listeners when component is unmounted
+onUnmounted(() => {
+  window.removeEventListener('submit', preventSubmit, true);
+});
+
+const router = useRouter()
+const route = useRoute()
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -207,7 +257,9 @@ const keepLoggedIn = ref(false)
 // Validation state
 const emailError = ref('')
 const passwordError = ref('')
+const authError = ref('')
 const isFormValid = ref(true)
+const isLoading = ref(false)
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
@@ -219,6 +271,7 @@ const validateForm = () => {
   // Reset error messages
   emailError.value = ''
   passwordError.value = ''
+  authError.value = ''
 
   // Validate email
   if (!email.value.trim()) {
@@ -235,17 +288,59 @@ const validateForm = () => {
   return isFormValid.value
 }
 
-const handleSubmit = () => {
-  // Validate form before submission
-  if (!validateForm()) {
-    return // Prevent form submission if validation fails
+// This section was removed as it's a duplicate of the onMounted hook above
+
+// Login method that prevents page reloads during debugging
+const loginUser = async (event: MouseEvent) => {
+  // Prevent default behavior and stop propagation
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
   }
 
-  // Handle form submission
-  console.log('Form submitted', {
-    email: email.value,
-    password: password.value,
-    keepLoggedIn: keepLoggedIn.value,
-  })
-}
+  console.log('loginUser called');
+
+  // Validate inputs before submission
+  if (!validateForm()) {
+    console.log('Form validation failed');
+    return;
+  }
+
+  console.log('Form validation passed, proceeding with login');
+  isLoading.value = true;
+  isLoggingIn.value = true; // Set flag to prevent navigation/reloads
+  authError.value = '';
+
+  try {
+    // Call the auth service login method
+    console.log('Calling auth service login with:', { username: email.value });
+
+    const result = await authService.login({
+      username: email.value,
+      password: password.value
+    });
+
+    // Handle login result
+    if (!result.success) {
+      // Display the error from the backend
+      authError.value = result.error || 'Authentication failed. Please try again.';
+      console.error('Login failed:', authError.value);
+      return;
+    }
+
+    // Successful login - redirect to dashboard
+    console.log('Login successful, redirecting...');
+    const redirectPath = route.query.redirect ? String(route.query.redirect) : '/';
+    router.push(redirectPath);
+
+  } catch (error) {
+    // Handle unexpected errors
+    console.error('Unexpected login error:', error);
+    authError.value = error instanceof Error ? error.message : 'An unexpected error occurred';
+  } finally {
+    isLoading.value = false;
+    isLoggingIn.value = false; // Reset flag
+  }
+};
 </script>

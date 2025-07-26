@@ -1,16 +1,11 @@
 <template>
   <div class="relative" ref="dropdownRef">
     <button
-      class="flex items-center text-gray-700 dark:text-gray-400"
+      class="flex items-center justify-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
       @click.prevent="toggleDropdown"
+      aria-label="Toggle menu"
     >
-      <span class="mr-3 overflow-hidden rounded-full h-11 w-11">
-        <img src="/images/user/owner.jpg" alt="User" />
-      </span>
-
-      <span class="block mr-1 font-medium text-theme-sm">Musharof </span>
-
-      <ChevronDownIcon :class="{ 'rotate-180': dropdownOpen }" />
+      <MenuIcon class="w-6 h-6" />
     </button>
 
     <!-- Dropdown Start -->
@@ -20,10 +15,10 @@
     >
       <div>
         <span class="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-          Musharof Chowdhury
+          {{ userData?.full_name || 'User' }}
         </span>
         <span class="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-          randomuser@pimjo.com
+          {{ userData?.email || 'Loading...' }}
         </span>
       </div>
 
@@ -58,12 +53,29 @@
 </template>
 
 <script setup>
-import { UserCircleIcon, ChevronDownIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/icons'
-import { RouterLink } from 'vue-router'
+import { UserCircleIcon, MenuIcon, LogoutIcon, SettingsIcon, InfoCircleIcon } from '@/icons'
+import { RouterLink, useRouter } from 'vue-router'
 import { ref, onMounted, onUnmounted } from 'vue'
+import authService from '@/services/auth.service'
 
 const dropdownOpen = ref(false)
 const dropdownRef = ref(null)
+const userData = ref(null)
+
+// Function to fetch user data from backend
+const fetchUserData = async () => {
+  try {
+    // First try to get cached user data
+    userData.value = authService.getUser()
+
+    // If no cached data, fetch from backend
+    if (!userData.value) {
+      userData.value = await authService.getCurrentUser()
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error)
+  }
+}
 
 const menuItems = [
   { href: '/profile', icon: UserCircleIcon, text: 'Edit profile' },
@@ -79,10 +91,26 @@ const closeDropdown = () => {
   dropdownOpen.value = false
 }
 
-const signOut = () => {
-  // Implement sign out logic here
-  console.log('Signing out...')
-  closeDropdown()
+const router = useRouter()
+
+const signOut = async () => {
+  try {
+    // Call the logout method from auth service
+    await authService.logout()
+
+    // Dispatch auth:logout event to update authentication state
+    window.dispatchEvent(new Event('auth:logout'))
+
+    // Close dropdown and redirect to signin page
+    closeDropdown()
+
+    // No need to navigate here as we already have router-link to="/signin"
+    console.log('Successfully signed out')
+  } catch (error) {
+    console.error('Error signing out:', error)
+    // Still redirect to signin page even if there's an error
+    router.push('/signin')
+  }
 }
 
 const handleClickOutside = (event) => {
@@ -93,9 +121,14 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  fetchUserData() // Fetch user data when component is mounted
+
+  // Listen for login events to refresh user data
+  window.addEventListener('auth:login', fetchUserData)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('auth:login', fetchUserData)
 })
 </script>

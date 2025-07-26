@@ -1,25 +1,29 @@
 <template>
-  <div class="dark:bg-boxdark-2 dark:text-bodydark">
-    <div class="flex h-screen overflow-hidden">
-      <!-- Only show sidebar when user is logged in -->
-      <XerpexSidebar v-if="isAuthenticated" />
-      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        <router-view />
+  <theme-provider>
+    <div class="dark:bg-boxdark-2 dark:text-bodydark">
+      <div class="flex h-screen overflow-hidden">
+        <!-- Only show sidebar when user is logged in -->
+        <XerpexSidebar v-if="isAuthenticated" />
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+          <router-view />
+        </div>
       </div>
     </div>
-  </div>
+  </theme-provider>
 </template>
 
 <script>
 import { computed, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import XerpexSidebar from './components/layout/XerpexSidebar.vue';
+import ThemeProvider from './components/layout/ThemeProvider.vue';
 import { useSidebarProvider } from './composables/useSidebar';
 import { authService } from './services';
 
 export default {
   components: {
-    XerpexSidebar
+    XerpexSidebar,
+    ThemeProvider
   },
   setup() {
     // Initialize the sidebar provider

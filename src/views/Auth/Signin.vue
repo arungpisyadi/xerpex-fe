@@ -199,11 +199,11 @@
             <common-grid-shape />
             <div class="flex flex-col items-center max-w-xs">
               <router-link to="/" class="block mb-4">
-                <img width="{231}" height="{48}" src="/images/logo/xerpex-auth-logo.svg" alt="Xerpex" />
+                <!-- <img width="{231}" height="{48}" src="/images/logo/xerpex-auth-logo.svg" alt="Xerpex" /> -->
+                <p class="text-center text-3xl text-gray-300 dark:text-white/60">
+                  XerpexSys<br />Kebunsu Project
+                </p>
               </router-link>
-              <p class="text-center text-gray-400 dark:text-white/60">
-                XerpexSys - Kebunsu Project
-              </p>
             </div>
           </div>
         </div>

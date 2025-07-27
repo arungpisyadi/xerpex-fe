@@ -43,11 +43,16 @@ class AuthService {
       console.error('Login error in auth service:', error);
 
       let errorMessage = 'Authentication failed';
+      let detailMessage = '';
 
       if (error.response) {
         // Extract the error message from the response
         if (error.response.data) {
-          if (typeof error.response.data === 'string') {
+          // Check for msg field first (as per API docs)
+          if (error.response.data.msg) {
+            detailMessage = error.response.data.msg;
+            errorMessage = 'Authentication failed';
+          } else if (typeof error.response.data === 'string') {
             errorMessage = error.response.data;
           } else if (error.response.data.message) {
             errorMessage = error.response.data.message;
@@ -63,11 +68,12 @@ class AuthService {
         errorMessage = error.message;
       }
 
-      // Return error result with the backend error message
+      // Return error result with the backend error message and details
       return {
         success: false,
         data: null,
         error: errorMessage,
+        details: detailMessage,
         status: error.response?.status
       };
     }

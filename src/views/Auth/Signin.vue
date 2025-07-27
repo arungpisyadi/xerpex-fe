@@ -27,6 +27,10 @@
                   <!-- Authentication error message -->
                   <div v-if="authError" class="mb-4 p-3 rounded-lg bg-error-50 text-error-700 dark:bg-error-900/30 dark:text-error-400">
                     <p>{{ authError }}</p>
+                    <!-- Display details message if available -->
+                    <p v-if="authDetails" class="mt-2 text-sm">
+                      <strong>Details:</strong> {{ authDetails }}
+                    </p>
                   </div>
                   <div class="space-y-5">
                     <!-- Email -->
@@ -258,6 +262,7 @@ const keepLoggedIn = ref(false)
 const emailError = ref('')
 const passwordError = ref('')
 const authError = ref('')
+const authDetails = ref('') // Added for detailed error messages
 const isFormValid = ref(true)
 const isLoading = ref(false)
 
@@ -272,6 +277,7 @@ const validateForm = () => {
   emailError.value = ''
   passwordError.value = ''
   authError.value = ''
+  authDetails.value = ''
 
   // Validate email
   if (!email.value.trim()) {
@@ -311,6 +317,7 @@ const loginUser = async (event: MouseEvent) => {
   isLoading.value = true;
   isLoggingIn.value = true; // Set flag to prevent navigation/reloads
   authError.value = '';
+  authDetails.value = '';
 
   try {
     // Call the auth service login method
@@ -325,7 +332,9 @@ const loginUser = async (event: MouseEvent) => {
     if (!result.success) {
       // Display the error from the backend
       authError.value = result.error || 'Authentication failed. Please try again.';
-      console.error('Login failed:', authError.value);
+      // Set details message if available
+      authDetails.value = result.details || '';
+      console.error('Login failed:', authError.value, 'Details:', authDetails.value);
       return;
     }
 

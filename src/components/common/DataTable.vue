@@ -61,120 +61,133 @@
 
     <!-- Table -->
     <div class="flex flex-col">
-      <div class="grid grid-cols-12 rounded-sm bg-gray-2 dark:bg-meta-4">
-        <div
-          v-for="(column, index) in columns"
-          :key="index"
-          :class="[
-            'p-2.5 xl:p-5',
-            column.class || `col-span-${column.span || 1}`,
-            column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
-          ]"
-        >
-          <h5 class="text-sm font-medium uppercase xsm:text-base">
-            {{ column.label }}
-          </h5>
-        </div>
-        <div v-if="showActions" class="p-2.5 xl:p-5 col-span-1 text-center">
-          <h5 class="text-sm font-medium uppercase xsm:text-base">
-            Actions
-          </h5>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center items-center py-10">
-        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="!filteredData.length" class="flex justify-center items-center py-10">
-        <div class="text-center">
-          <p class="text-lg font-medium text-gray-600 dark:text-gray-400">No data found</p>
-          <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Try adjusting your search or filter to find what you're looking for.</p>
-        </div>
-      </div>
-
-      <!-- Data Rows -->
-      <div v-else v-for="(item, rowIndex) in paginatedData" :key="rowIndex" class="grid grid-cols-12 border-b border-stroke dark:border-strokedark">
-        <template v-for="(column, colIndex) in columns" :key="colIndex">
-          <div
-            :class="[
-              'p-2.5 xl:p-5 flex items-center',
-              column.class || `col-span-${column.span || 1}`,
-              column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : 'justify-start'
-            ]"
-          >
-            <!-- Default cell renderer -->
-            <template v-if="column.type === 'status'">
-              <span
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <!-- Table Header -->
+          <thead class="bg-gray-2 dark:bg-meta-4">
+            <tr>
+              <th
+                v-for="(column, index) in columns"
+                :key="index"
                 :class="[
-                  'inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium',
-                  getStatusClass(item[column.key])
+                  'p-2.5 xl:p-5 font-medium uppercase',
+                  column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
+                ]"
+                style="font-size: 0.7rem;"
+              >
+                {{ column.label }}
+              </th>
+              <th v-if="showActions" class="p-2.5 xl:p-5 text-center font-medium uppercase" style="font-size: 0.7rem;">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <!-- Table Body -->
+          <tbody>
+            <!-- Loading State -->
+            <tr v-if="loading">
+              <td :colspan="columns.length + (showActions ? 1 : 0)" class="text-center py-10">
+                <div class="flex justify-center items-center">
+                  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr v-else-if="!filteredData.length">
+              <td :colspan="columns.length + (showActions ? 1 : 0)" class="text-center py-10">
+                <div class="text-center">
+                  <p class="text-lg font-medium text-gray-600 dark:text-gray-400">No data found</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Try adjusting your search or filter to find what you're looking for.</p>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Data Rows -->
+            <tr v-else v-for="(item, rowIndex) in paginatedData" :key="rowIndex" class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-gray-800">
+              <td
+                v-for="(column, colIndex) in columns"
+                :key="colIndex"
+                :class="[
+                  'p-2.5 xl:p-5',
+                  column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
                 ]"
               >
-                {{ item[column.key] }}
-              </span>
-            </template>
-            <template v-else-if="column.type === 'date'">
-              {{ formatDate(item[column.key]) }}
-            </template>
-            <template v-else-if="column.type === 'currency'">
-              {{ formatCurrency(item[column.key]) }}
-            </template>
-            <template v-else>
-              {{ item[column.key] }}
-            </template>
-          </div>
-        </template>
+                <!-- Default cell renderer -->
+                <template v-if="column.type === 'status'">
+                  <span
+                    :class="[
+                      'inline-flex rounded-full bg-opacity-10 py-1 px-3 font-medium',
+                      getStatusClass(item[column.key])
+                    ]"
+                    style="font-size: 0.7rem;"
+                  >
+                    {{ item[column.key] }}
+                  </span>
+                </template>
+                <template v-else-if="column.type === 'date'">
+                  <span style="font-size: 0.7rem;">{{ formatDate(item[column.key]) }}</span>
+                </template>
+                <template v-else-if="column.type === 'currency'">
+                  <span style="font-size: 0.7rem;">{{ formatCurrency(item[column.key]) }}</span>
+                </template>
+                <template v-else>
+                  <span style="font-size: 0.7rem;">{{ item[column.key] }}</span>
+                </template>
+              </td>
 
-        <!-- Actions Column -->
-        <div v-if="showActions" class="p-2.5 xl:p-5 col-span-1 flex items-center justify-center">
-          <div class="flex items-center space-x-2">
-            <!-- View Button -->
-            <button
-              v-if="showViewButton"
-              @click="$emit('view', item)"
-              class="hover:text-primary"
-              title="View"
-            >
-              <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18">
-                <path d="M9 3.75C4.5 3.75 1.5 9 1.5 9C1.5 9 4.5 14.25 9 14.25C13.5 14.25 16.5 9 16.5 9C16.5 9 13.5 3.75 9 3.75ZM9 12.75C7.76 12.75 6.75 11.74 6.75 10.5C6.75 9.26 7.76 8.25 9 8.25C10.24 8.25 11.25 9.26 11.25 10.5C11.25 11.74 10.24 12.75 9 12.75Z"></path>
-              </svg>
-            </button>
+              <!-- Actions Column -->
+              <td v-if="showActions" class="p-2.5 xl:p-5 text-center">
+                <div class="flex items-center justify-center space-x-2">
+                  <!-- View Button -->
+                  <button
+                    v-if="showViewButton"
+                    @click="$emit('view', item)"
+                    class="hover:text-primary transition-colors"
+                    title="View"
+                  >
+                    <svg class="fill-current" width="14" height="14" viewBox="0 0 18 18">
+                      <path d="M9 3.75C4.5 3.75 1.5 9 1.5 9C1.5 9 4.5 14.25 9 14.25C13.5 14.25 16.5 9 16.5 9C16.5 9 13.5 3.75 9 3.75ZM9 12.75C7.76 12.75 6.75 11.74 6.75 10.5C6.75 9.26 7.76 8.25 9 8.25C10.24 8.25 11.25 9.26 11.25 10.5C11.25 11.74 10.24 12.75 9 12.75Z"></path>
+                    </svg>
+                  </button>
 
-            <!-- Edit Button -->
-            <button
-              v-if="showEditButton"
-              @click="$emit('edit', item)"
-              class="hover:text-primary"
-              title="Edit"
-            >
-              <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18">
-                <path d="M16.4999 9C16.2789 9 16.0669 9.0878 15.9106 9.24408C15.7544 9.40036 15.6666 9.61232 15.6666 9.83333V14.8333C15.6666 15.0543 15.5788 15.2663 15.4225 15.4226C15.2662 15.5789 15.0542 15.6667 14.8332 15.6667H3.16656C2.94555 15.6667 2.73359 15.5789 2.57731 15.4226C2.42103 15.2663 2.33323 15.0543 2.33323 14.8333V3.16667C2.33323 2.94565 2.42103 2.73369 2.57731 2.57741C2.73359 2.42113 2.94555 2.33333 3.16656 2.33333H8.16657C8.38758 2.33333 8.59954 2.24554 8.75582 2.08926C8.9121 1.93298 8.9999 1.72101 8.9999 1.5C8.9999 1.27899 8.9121 1.06702 8.75582 0.910744C8.59954 0.754464 8.38758 0.666667 8.16657 0.666667H3.16656C2.50352 0.666667 1.86764 0.930059 1.3988 1.3989C0.929957 1.86774 0.666565 2.50363 0.666565 3.16667V14.8333C0.666565 15.4964 0.929957 16.1323 1.3988 16.6011C1.86764 17.0699 2.50352 17.3333 3.16656 17.3333H14.8332C15.4963 17.3333 16.1322 17.0699 16.601 16.6011C17.0698 16.1323 17.3332 15.4964 17.3332 14.8333V9.83333C17.3332 9.61232 17.2454 9.40036 17.0892 9.24408C16.9329 9.0878 16.7209 9 16.4999 9Z"></path>
-              </svg>
-            </button>
+                  <!-- Edit Button -->
+                  <button
+                    v-if="showEditButton"
+                    @click="$emit('edit', item)"
+                    class="hover:text-primary transition-colors"
+                    title="Edit"
+                  >
+                    <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M16.5 3.5C16.8978 3.10218 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04016C19.0692 3.14676 19.303 3.30301 19.5 3.5C19.697 3.69699 19.8532 3.9308 19.9598 4.18819C20.0665 4.44558 20.1213 4.72142 20.1213 5C20.1213 5.27858 20.0665 5.55442 19.9598 5.81181C19.8532 6.0692 19.697 6.30301 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
 
-            <!-- Delete Button -->
-            <button
-              v-if="showDeleteButton"
-              @click="$emit('delete', item)"
-              class="hover:text-danger"
-              title="Delete"
-            >
-              <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18">
-                <path d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502Z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
+                  <!-- Delete Button -->
+                  <button
+                    v-if="showDeleteButton"
+                    @click="$emit('delete', item)"
+                    class="hover:text-danger transition-colors"
+                    title="Delete"
+                  >
+                    <svg class="fill-current" width="14" height="14" viewBox="0 0 18 18">
+                      <path d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502Z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- Pagination -->
     <div v-if="showPagination && totalPages > 1" class="flex flex-wrap items-center justify-between gap-4 mt-6 mb-4">
       <div class="flex items-center gap-2">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-gray-600 dark:text-gray-400" style="font-size: 0.7rem;">
           Showing {{ startIndex + 1 }}-{{ Math.min(endIndex, filteredData.length) }} of {{ filteredData.length }} entries
         </p>
       </div>
@@ -357,16 +370,8 @@ export default {
     getStatusClass(status) {
       if (!status) return '';
 
-      const statusMap = {
-        'active': 'bg-success text-success',
-        'pending': 'bg-warning text-warning',
-        'cancelled': 'bg-danger text-danger',
-        'completed': 'bg-success text-success',
-        'confirmed': 'bg-success text-success',
-        'rejected': 'bg-danger text-danger'
-      };
-
-      return statusMap[status.toLowerCase()] || 'bg-gray-500 text-gray-500';
+      // Use green theme colors for all status and priority values
+      return 'bg-brand-50 text-brand-600 border border-brand-200 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/20';
     },
     applyFilters() {
       this.currentPage = 1;

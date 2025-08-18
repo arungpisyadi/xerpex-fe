@@ -132,6 +132,8 @@ import {
   HorizontalDots,
   HomeIcon,
   SettingsIcon,
+  SurveyIcon,
+  SalesmanIcon,
 } from "../../icons";
 import { useSidebar } from "@/composables/useSidebar";
 
@@ -158,6 +160,16 @@ const menuGroups = [
         icon: HomeIcon,
         name: "Villas",
         path: "/villas",
+      },
+      {
+        icon: SurveyIcon,
+        name: "Surveys",
+        path: "/surveys",
+      },
+      {
+        icon: SalesmanIcon,
+        name: "Salesmen",
+        path: "/salesmen",
       },
       {
         icon: CalenderIcon,

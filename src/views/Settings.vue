@@ -10,7 +10,7 @@
           System Settings
         </h2>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <button class="btn btn-primary" @click="saveSettings">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="saveSettings">
             Save Changes
           </button>
         </div>

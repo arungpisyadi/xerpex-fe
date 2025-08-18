@@ -154,7 +154,7 @@
             </div>
           </div>
           <div class="pt-4 border-t border-stroke dark:border-strokedark">
-            <button class="btn btn-primary w-full">Check Availability</button>
+            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 w-full">Check Availability</button>
           </div>
         </div>
       </div>

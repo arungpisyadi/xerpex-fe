@@ -7,6 +7,8 @@ import paymentService from './payment.service';
 import reportService from './report.service';
 import settingsService from './settings.service';
 import invoiceService from './invoice.service';
+import salesmanService from './salesman.service';
+import surveyService from './survey.service';
 
 export {
   apiClient,
@@ -17,5 +19,7 @@ export {
   paymentService,
   reportService,
   settingsService,
-  invoiceService
+  invoiceService,
+  salesmanService,
+  surveyService
 };

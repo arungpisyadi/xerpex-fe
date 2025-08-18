@@ -47,7 +47,7 @@
               <option value="year">This Year</option>
             </select>
           </div>
-          <button class="btn btn-primary" @click="createNewInvoice">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="createNewInvoice">
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -211,15 +211,15 @@
           <div class="flex justify-end gap-4 mt-6">
             <button
               v-if="selectedInvoice.status === 'pending' || selectedInvoice.status === 'overdue'"
-              class="btn btn-success"
+              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
               @click="markAsPaid(selectedInvoice)"
             >
               Mark as Paid
             </button>
-            <button class="btn btn-primary" @click="sendInvoice(selectedInvoice)">
+            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="sendInvoice(selectedInvoice)">
               Send Invoice
             </button>
-            <button class="btn btn-outline-primary" @click="downloadInvoice(selectedInvoice)">
+            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" @click="downloadInvoice(selectedInvoice)">
               Download PDF
             </button>
           </div>
@@ -301,14 +301,14 @@
           <div class="flex justify-end gap-4 mt-6">
             <button
               type="button"
-              class="btn btn-outline-primary"
+              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               @click="showCreateModal = false"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="btn btn-primary"
+              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
               :disabled="!newInvoice.booking_id || !newInvoice.amount || !newInvoice.due_date"
             >
               Create Invoice

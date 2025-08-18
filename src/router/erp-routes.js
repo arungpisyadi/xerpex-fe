@@ -46,6 +46,24 @@ const erpRoutes = [
     },
   },
   {
+    path: '/surveys',
+    name: 'Surveys',
+    component: () => import('../views/Surveys.vue'),
+    meta: {
+      title: 'Surveys Management',
+      requiresAuth: true
+    },
+  },
+  {
+    path: '/salesmen',
+    name: 'Salesmen',
+    component: () => import('../views/Salesmen.vue'),
+    meta: {
+      title: 'Salesmen Management',
+      requiresAuth: true
+    },
+  },
+  {
     path: '/bookings',
     name: 'Bookings',
     component: () => import('../views/Bookings.vue'),

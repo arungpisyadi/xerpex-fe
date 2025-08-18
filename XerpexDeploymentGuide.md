@@ -178,7 +178,7 @@ sudo nginx -t
 ### Create the Web Directory
 
 ```bash
-sudo mkdir -p /var/www/xerpex
+sudo mkdir -p /var/www/xerpex-staging
 ```
 
 ## Deploying the Application
@@ -189,21 +189,21 @@ You can use SCP, SFTP, or rsync to transfer the files from your local machine to
 
 ```bash
 # Using rsync (from your local machine)
-rsync -avz --delete /path/to/xerpex-fe/dist/ username@server-ip:/var/www/xerpex/
+rsync -avz --delete /path/to/xerpex-fe-staging/dist/ username@server-ip:/var/www/xerpex-staging/
 ```
 
 Or if you're building directly on the server:
 
 ```bash
 # Copy the dist directory to the web root
-sudo cp -r /path/to/xerpex-fe/dist/* /var/www/xerpex/
+sudo cp -r /home/xerpex/xerpex-fe-staging/dist/* /var/www/xerpex-staging/
 ```
 
 ### Set Proper Permissions
 
 ```bash
-sudo chown -R www-data:www-data /var/www/xerpex
-sudo chmod -R 755 /var/www/xerpex
+sudo chown -R www-data:www-data /var/www/xerpex-staging
+sudo chmod -R 755 /var/www/xerpex-staging
 ```
 
 ### Restart Nginx
@@ -236,7 +236,8 @@ For automated deployments, you could set up a simple deployment script:
 # deploy.sh
 
 # Pull latest changes
-git pull origin main
+cd xerpex-fe-staging
+git pull origin kebunsu-project
 
 # Install dependencies
 npm install
@@ -245,10 +246,10 @@ npm install
 npm run build
 
 # Deploy to Nginx
-sudo cp -r dist/* /var/www/xerpex/
+sudo cp -r /home/xerpex/xerpex-fe-staging/dist/* /var/www/xerpex-staging/
 
 # Set proper permissions
-sudo chown -R www-data:www-data /var/www/xerpex
+sudo chown -R www-data:www-data /var/www/xerpex-staging
 ```
 
 Make the script executable:

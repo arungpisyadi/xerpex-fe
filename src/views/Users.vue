@@ -107,7 +107,7 @@
             </button>
             <button
               type="submit"
-              class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-white hover:bg-opacity-90"
+              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </button>

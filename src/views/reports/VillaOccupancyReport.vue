@@ -48,10 +48,10 @@
               />
             </div>
           </div>
-          <button class="btn btn-primary" @click="generateReport">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="generateReport">
             Generate Report
           </button>
-          <button class="btn btn-outline-primary" @click="exportReport">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" @click="exportReport">
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M13.3334 5.33334L8.00002 10.6667L2.66669 5.33334" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

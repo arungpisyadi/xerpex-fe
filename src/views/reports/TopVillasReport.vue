@@ -48,10 +48,10 @@
               <option value="rating">Guest Rating</option>
             </select>
           </div>
-          <button class="btn btn-primary" @click="generateReport">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="generateReport">
             Generate Report
           </button>
-          <button class="btn btn-outline-primary" @click="exportReport">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" @click="exportReport">
             Export
           </button>
         </div>

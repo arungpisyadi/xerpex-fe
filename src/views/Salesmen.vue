@@ -55,7 +55,7 @@
     </div>
 
     <!-- Create/Edit Salesman Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50">
+    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
       <div class="w-full max-w-xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-semibold text-black dark:text-white">

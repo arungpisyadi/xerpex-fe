@@ -401,7 +401,6 @@ export default {
       loading: false,
       searchQuery: '',
       columns: [
-        { key: 'id', label: 'ID', span: 1 },
         { key: 'name', label: 'Name', span: 2 },
         { key: 'description', label: 'Description', span: 2 },
         { key: 'capacity', label: 'Capacity', span: 1 },

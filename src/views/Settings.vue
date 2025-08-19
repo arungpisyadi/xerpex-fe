@@ -89,18 +89,19 @@
 
                 <div class="w-full xl:w-1/2">
                   <label class="mb-2.5 block text-black dark:text-white">
-                    Currency <span class="text-meta-1">*</span>
+                    Time Zone <span class="text-meta-1">*</span>
                   </label>
                   <select
-                    v-model="settings.general.currency"
+                    v-model="settings.general.timezone"
                     class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
                     required
                   >
-                    <option value="">Select Currency</option>
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="IDR">IDR (Rp)</option>
+                    <option value="">Select Time Zone</option>
+                    <option value="UTC">UTC</option>
+                    <option value="Asia/Jakarta">Asia/Jakarta (UTC+7)</option>
+                    <option value="Asia/Singapore">Asia/Singapore (UTC+8)</option>
+                    <option value="America/New_York">America/New_York (UTC-5)</option>
+                    <option value="Europe/London">Europe/London (UTC+0)</option>
                   </select>
                 </div>
               </div>
@@ -117,23 +118,6 @@
                 ></textarea>
               </div>
 
-              <div class="mb-4.5">
-                <label class="mb-2.5 block text-black dark:text-white">
-                  Time Zone <span class="text-meta-1">*</span>
-                </label>
-                <select
-                  v-model="settings.general.timezone"
-                  class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                  required
-                >
-                  <option value="">Select Time Zone</option>
-                  <option value="UTC">UTC</option>
-                  <option value="Asia/Jakarta">Asia/Jakarta (UTC+7)</option>
-                  <option value="Asia/Singapore">Asia/Singapore (UTC+8)</option>
-                  <option value="America/New_York">America/New_York (UTC-5)</option>
-                  <option value="Europe/London">Europe/London (UTC+0)</option>
-                </select>
-              </div>
 
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Bank Account Information</h4>
@@ -638,7 +622,6 @@ export default {
           companyEmail: '',
           companyPhone: '',
           companyAddress: '',
-          currency: 'USD',
           timezone: 'UTC',
           bankName: '',
           bankAccountHolderName: '',
@@ -676,19 +659,12 @@ export default {
   async created() {
     await this.loadSettings();
   },
-  watch: {
-    'settings.general.currency'(newVal, oldVal) {
-      console.log('Currency changed from', oldVal, 'to', newVal);
-    }
-  },
   methods: {
     async loadSettings() {
       try {
         this.loading = true;
         const generalSettings = await settingsService.getGeneralSettings();
-        console.log('Received settings in component:', generalSettings); // Debug log
         this.settings.general = generalSettings;
-        console.log('Component settings after assignment:', this.settings.general); // Debug log
       } catch (error) {
         console.error('Error loading settings:', error);
       } finally {

@@ -123,7 +123,7 @@
                     ]"
                     style="font-size: 0.7rem;"
                   >
-                    {{ item[column.key] }}
+                    {{ formatStatus(item[column.key]) }}
                   </span>
                 </template>
                 <template v-else-if="column.type === 'date'">
@@ -368,10 +368,43 @@ export default {
       return `$${parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     },
     getStatusClass(status) {
-      if (!status) return '';
+      if (status === null || status === undefined) return '';
 
-      // Use green theme colors for all status and priority values
-      return 'bg-brand-50 text-brand-600 border border-brand-200 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/20';
+      // Handle boolean status (is_active)
+      if (typeof status === 'boolean') {
+        return status
+          ? 'bg-success/10 text-success border border-success/20'
+          : 'bg-danger/10 text-danger border border-danger/20';
+      }
+
+      // Handle string status
+      const statusStr = String(status).toLowerCase();
+      switch (statusStr) {
+        case 'active':
+        case 'completed':
+        case 'success':
+          return 'bg-success/10 text-success border border-success/20';
+        case 'inactive':
+        case 'cancelled':
+        case 'failed':
+          return 'bg-danger/10 text-danger border border-danger/20';
+        case 'pending':
+        case 'processing':
+          return 'bg-warning/10 text-warning border border-warning/20';
+        default:
+          return 'bg-gray/10 text-gray border border-gray/20';
+      }
+    },
+    formatStatus(status) {
+      if (status === null || status === undefined) return '';
+
+      // Handle boolean status
+      if (typeof status === 'boolean') {
+        return status ? 'Active' : 'Inactive';
+      }
+
+      // Handle string status - capitalize first letter
+      return String(status).charAt(0).toUpperCase() + String(status).slice(1);
     },
     applyFilters() {
       this.currentPage = 1;

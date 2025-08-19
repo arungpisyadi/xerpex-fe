@@ -458,6 +458,7 @@ export default {
       bookings: [],
       villas: [],
       loading: false,
+      searchQuery: '',
       columns: [
         { key: 'id', label: 'ID', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
@@ -468,9 +469,11 @@ export default {
         { key: 'status', label: 'Status', span: 1, type: 'status' }
       ],
       showModal: false,
+      showViewModal: false,
       showDeleteModal: false,
       isEditing: false,
       selectedBookingId: null,
+      selectedBooking: null,
       bookingForm: {
         customer_name: '',
         customer_email: '',
@@ -481,8 +484,34 @@ export default {
         num_guests: 1,
         special_requests: '',
         status: 'pending'
+      },
+      formErrors: {},
+      notification: {
+        show: false,
+        type: '',
+        message: ''
       }
     };
+  },
+  computed: {
+    filteredBookings() {
+      if (!this.searchQuery) {
+        return this.bookings;
+      }
+
+      const query = this.searchQuery.toLowerCase();
+      return this.bookings.filter(booking => {
+        return (
+          booking.customer_name?.toLowerCase().includes(query) ||
+          booking.customer_email?.toLowerCase().includes(query) ||
+          booking.customer_phone?.toLowerCase().includes(query) ||
+          booking.villa_name?.toLowerCase().includes(query) ||
+          booking.status?.toLowerCase().includes(query) ||
+          String(booking.id || '').includes(query) ||
+          String(booking.total_price || '').includes(query)
+        );
+      });
+    }
   },
   async created() {
     await Promise.all([
@@ -506,7 +535,8 @@ export default {
         });
       } catch (error) {
         console.error('Error fetching bookings:', error);
-        // Show error notification
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch bookings';
+        this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
@@ -514,10 +544,11 @@ export default {
     async fetchVillas() {
       try {
         const response = await villaService.getVillas();
-        this.villas = response.items || [];
+        this.villas = response.items || response || [];
       } catch (error) {
         console.error('Error fetching villas:', error);
-        // Show error notification
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch villas';
+        this.showNotification('error', errorMessage);
       }
     },
     openAddBookingModal() {
@@ -536,7 +567,22 @@ export default {
       this.showModal = true;
     },
     async viewBooking(booking) {
-      this.$router.push(`/bookings/${booking.id}`);
+      try {
+        this.loading = true;
+        const response = await bookingService.getBookingById(booking.id);
+        const villa = this.villas.find(v => v.id === response.villa_id);
+        this.selectedBooking = {
+          ...response,
+          villa_name: villa ? villa.name : 'Unknown Villa'
+        };
+        this.showViewModal = true;
+      } catch (error) {
+        console.error('Error fetching booking details:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch booking details';
+        this.showNotification('error', errorMessage);
+      } finally {
+        this.loading = false;
+      }
     },
     async editBooking(booking) {
       this.isEditing = true;
@@ -561,7 +607,8 @@ export default {
         this.showModal = true;
       } catch (error) {
         console.error('Error fetching booking details:', error);
-        // Show error notification
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch booking details';
+        this.showNotification('error', errorMessage);
       }
     },
     confirmDeleteBooking(booking) {
@@ -570,6 +617,7 @@ export default {
     },
     closeModal() {
       this.showModal = false;
+      this.formErrors = {};
       this.bookingForm = {
         customer_name: '',
         customer_email: '',
@@ -582,30 +630,163 @@ export default {
         status: 'pending'
       };
     },
+    closeViewModal() {
+      this.showViewModal = false;
+      this.selectedBooking = null;
+    },
+    formatDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    },
+    formatCurrency(value) {
+      if (value === null || value === undefined) return '';
+      return `$${parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    },
+    formatStatus(status) {
+      if (status === null || status === undefined) return '';
+      return String(status).charAt(0).toUpperCase() + String(status).slice(1);
+    },
+    getStatusClass(status) {
+      if (status === null || status === undefined) return '';
+      
+      const statusStr = String(status).toLowerCase();
+      switch (statusStr) {
+        case 'confirmed':
+        case 'completed':
+          return 'bg-success/10 text-success border border-success/20';
+        case 'cancelled':
+          return 'bg-danger/10 text-danger border border-danger/20';
+        case 'pending':
+          return 'bg-warning/10 text-warning border border-warning/20';
+        default:
+          return 'bg-gray/10 text-gray border border-gray/20';
+      }
+    },
+    calculateNights(checkIn, checkOut) {
+      if (!checkIn || !checkOut) return 0;
+      const start = new Date(checkIn);
+      const end = new Date(checkOut);
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    },
+    validateField(fieldName) {
+      this.formErrors = { ...this.formErrors };
+      delete this.formErrors[fieldName];
+
+      switch (fieldName) {
+        case 'customer_name':
+          if (!this.bookingForm.customer_name || this.bookingForm.customer_name.trim().length < 2) {
+            this.formErrors.customer_name = 'Customer name must be at least 2 characters long';
+          }
+          break;
+        case 'customer_email':
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!this.bookingForm.customer_email || !emailRegex.test(this.bookingForm.customer_email)) {
+            this.formErrors.customer_email = 'Please enter a valid email address';
+          }
+          break;
+        case 'customer_phone':
+          if (!this.bookingForm.customer_phone || this.bookingForm.customer_phone.trim().length < 8) {
+            this.formErrors.customer_phone = 'Phone number must be at least 8 characters long';
+          }
+          break;
+        case 'villa_id':
+          if (!this.bookingForm.villa_id) {
+            this.formErrors.villa_id = 'Please select a villa';
+          }
+          break;
+        case 'check_in_date':
+          if (!this.bookingForm.check_in_date) {
+            this.formErrors.check_in_date = 'Check-in date is required';
+          } else if (new Date(this.bookingForm.check_in_date) < new Date().setHours(0,0,0,0)) {
+            this.formErrors.check_in_date = 'Check-in date cannot be in the past';
+          }
+          break;
+        case 'check_out_date':
+          if (!this.bookingForm.check_out_date) {
+            this.formErrors.check_out_date = 'Check-out date is required';
+          } else if (this.bookingForm.check_in_date && new Date(this.bookingForm.check_out_date) <= new Date(this.bookingForm.check_in_date)) {
+            this.formErrors.check_out_date = 'Check-out date must be after check-in date';
+          }
+          break;
+        case 'num_guests':
+          if (!this.bookingForm.num_guests || this.bookingForm.num_guests < 1 || this.bookingForm.num_guests > 20) {
+            this.formErrors.num_guests = 'Number of guests must be between 1 and 20';
+          }
+          break;
+      }
+    },
+    validateForm() {
+      this.formErrors = {};
+
+      // Validate all fields
+      this.validateField('customer_name');
+      this.validateField('customer_email');
+      this.validateField('customer_phone');
+      this.validateField('villa_id');
+      this.validateField('check_in_date');
+      this.validateField('check_out_date');
+      this.validateField('num_guests');
+
+      return Object.keys(this.formErrors).length === 0;
+    },
+    showNotification(type, message) {
+      this.notification = {
+        show: true,
+        type,
+        message
+      };
+
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        this.notification.show = false;
+      }, 5000);
+    },
     async saveBooking() {
+      if (!this.validateForm()) {
+        this.showNotification('error', 'Please fix the validation errors before submitting');
+        return;
+      }
+
       try {
+        this.loading = true;
         if (this.isEditing) {
           await bookingService.updateBooking(this.selectedBookingId, this.bookingForm);
+          this.showNotification('success', 'Booking updated successfully');
         } else {
           await bookingService.createBooking(this.bookingForm);
+          this.showNotification('success', 'Booking created successfully');
         }
         this.closeModal();
         await this.fetchBookings();
-        // Show success notification
       } catch (error) {
         console.error('Error saving booking:', error);
-        // Show error notification
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to save booking';
+        this.showNotification('error', errorMessage);
+      } finally {
+        this.loading = false;
       }
     },
     async deleteBooking() {
       try {
+        this.loading = true;
         await bookingService.deleteBooking(this.selectedBookingId);
         this.showDeleteModal = false;
         await this.fetchBookings();
-        // Show success notification
+        this.showNotification('success', 'Booking deleted successfully');
       } catch (error) {
         console.error('Error deleting booking:', error);
-        // Show error notification
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to delete booking';
+        this.showNotification('error', errorMessage);
+      } finally {
+        this.loading = false;
       }
     }
   }

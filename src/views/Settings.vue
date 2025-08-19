@@ -676,12 +676,19 @@ export default {
   async created() {
     await this.loadSettings();
   },
+  watch: {
+    'settings.general.currency'(newVal, oldVal) {
+      console.log('Currency changed from', oldVal, 'to', newVal);
+    }
+  },
   methods: {
     async loadSettings() {
       try {
         this.loading = true;
         const generalSettings = await settingsService.getGeneralSettings();
+        console.log('Received settings in component:', generalSettings); // Debug log
         this.settings.general = generalSettings;
+        console.log('Component settings after assignment:', this.settings.general); // Debug log
       } catch (error) {
         console.error('Error loading settings:', error);
       } finally {

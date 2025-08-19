@@ -10,20 +10,31 @@ class SettingsService {
       const response = await apiClient.get('/settings/general');
       const data = response.data;
 
+      console.log('API Response:', data); // Debug log
+      console.log('Currency from API:', data.currency); // Specific currency debug
+
       // Transform snake_case to camelCase for frontend
-      return {
+      // Try different possible currency field names
+      let currency = data.currency || data.default_currency || data.company_currency || 'USD';
+
+      const transformedData = {
         companyName: data.company_name || '',
         companyEmail: data.company_email || '',
         companyPhone: data.company_phone || '',
         companyAddress: data.company_address || '',
-        currency: data.currency || 'USD',
-        timezone: data.timezone || 'UTC',
+        currency: currency,
+        timezone: data.timezone || data.default_timezone || 'UTC',
         bankName: data.bank_name || '',
         bankAccountHolderName: data.bank_account_holder_name || '',
         bankAccountNumber: data.bank_account_number || '',
         bankSwiftNumber: data.bank_swift_number || ''
       };
+
+      console.log('Transformed Data:', transformedData); // Debug log
+      console.log('Final currency value:', transformedData.currency); // Specific currency debug
+      return transformedData;
     } catch (error) {
+      console.error('Error in getGeneralSettings:', error);
       throw error;
     }
   }

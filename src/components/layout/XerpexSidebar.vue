@@ -178,8 +178,8 @@ const menuGroups = [
         icon: DocsIcon,
         name: "Payments",
         subItems: [
-          { name: "Payments", path: "/payments" },
-          { name: "Invoices", path: "/invoices" },
+          { name: "Payments", path: "/404" },
+          { name: "Invoices", path: "/404" },
         ],
       },
       {

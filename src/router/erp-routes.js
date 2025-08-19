@@ -192,6 +192,15 @@ const erpRoutes = [
   },
   // Error routes
   {
+    path: '/404',
+    name: 'NotFoundPage',
+    component: () => import('../views/Errors/FourZeroFour.vue'),
+    meta: {
+      title: '404 Not Found',
+      requiresAuth: false
+    },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/Errors/FourZeroFour.vue'),

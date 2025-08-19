@@ -79,8 +79,8 @@
     </div>
 
     <!-- Add/Edit Villa Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-40">
-      <div class="w-full max-w-xl rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
+    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
             {{ isEditing ? 'Edit Villa' : 'Add New Villa' }}
@@ -177,7 +177,7 @@
               Base Price <span class="text-meta-1">*</span>
             </label>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+              <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">IDR</span>
               <input
                 v-model.number="villaForm.base_price"
                 type="number"
@@ -246,8 +246,8 @@
     </div>
 
     <!-- View Villa Modal -->
-    <div v-if="showViewModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-40">
-      <div class="w-full max-w-2xl rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
+    <div v-if="showViewModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-30">
+      <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
             Villa Details
@@ -285,7 +285,7 @@
               <div class="space-y-3">
                 <div>
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Base Price:</span>
-                  <p class="text-black dark:text-white">${{ parseFloat(selectedVilla.base_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
+                  <p class="text-black dark:text-white">{{ parseFloat(selectedVilla.base_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
                 </div>
                 <div>
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
@@ -343,8 +343,8 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-40">
-      <div class="w-full max-w-md rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
+    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-30">
+      <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
             Confirm Delete

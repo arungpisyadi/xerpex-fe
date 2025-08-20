@@ -46,6 +46,15 @@ const erpRoutes = [
     },
   },
   {
+    path: '/packages',
+    name: 'Packages',
+    component: () => import('../views/Packages.vue'),
+    meta: {
+      title: 'Packages Management',
+      requiresAuth: true
+    },
+  },
+  {
     path: '/surveys',
     name: 'Surveys',
     component: () => import('../views/Surveys.vue'),

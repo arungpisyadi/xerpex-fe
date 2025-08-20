@@ -551,7 +551,7 @@ export default {
         case 'pending':
           return 'bg-warning bg-opacity-10 text-warning';
         case 'overdue':
-          return 'bg-danger bg-opacity-10 text-danger';
+          return 'bg-red-500 bg-opacity-10 text-danger';
         case 'cancelled':
           return 'bg-gray-500 bg-opacity-10 text-gray-500';
         default:

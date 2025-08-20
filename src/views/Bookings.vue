@@ -7,7 +7,7 @@
           'rounded-lg border p-4 shadow-lg',
           notification.type === 'success'
             ? 'border-success bg-success/10 text-success'
-            : 'border-danger bg-danger/10 text-danger'
+            : 'border-danger bg-red-500/10 text-danger'
         ]"
       >
         <div class="flex items-center">
@@ -271,7 +271,7 @@
     </div>
 
     <!-- View Booking Modal -->
-    <div v-if="showViewModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-30">
+    <div v-if="showViewModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
       <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
@@ -401,7 +401,7 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-30">
+    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
       <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
@@ -431,7 +431,7 @@
           <button
             type="button"
             @click="deleteBooking"
-            class="flex justify-center rounded bg-danger py-2 px-6 font-medium text-white hover:bg-opacity-90"
+            class="flex justify-center rounded bg-red-500 py-2 px-6 font-medium text-white hover:bg-opacity-90"
           >
             Delete
           </button>
@@ -654,14 +654,14 @@ export default {
     },
     getStatusClass(status) {
       if (status === null || status === undefined) return '';
-      
+
       const statusStr = String(status).toLowerCase();
       switch (statusStr) {
         case 'confirmed':
         case 'completed':
           return 'bg-success/10 text-success border border-success/20';
         case 'cancelled':
-          return 'bg-danger/10 text-danger border border-danger/20';
+          return 'bg-red-500/10 text-danger border border-danger/20';
         case 'pending':
           return 'bg-warning/10 text-warning border border-warning/20';
         default:

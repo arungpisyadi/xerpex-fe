@@ -426,10 +426,10 @@ export default {
       const statusMap = {
         'active': 'bg-success text-success',
         'pending': 'bg-warning text-warning',
-        'cancelled': 'bg-danger text-danger',
+        'cancelled': 'bg-red-500 text-danger',
         'completed': 'bg-success text-success',
         'confirmed': 'bg-success text-success',
-        'rejected': 'bg-danger text-danger'
+        'rejected': 'bg-red-500 text-danger'
       };
 
       return statusMap[status.toLowerCase()] || 'bg-gray-500 text-gray-500';
@@ -440,10 +440,10 @@ export default {
       const statusMap = {
         'active': 'bg-success',
         'pending': 'bg-warning',
-        'cancelled': 'bg-danger',
+        'cancelled': 'bg-red-500',
         'completed': 'bg-success',
         'confirmed': 'bg-success',
-        'rejected': 'bg-danger'
+        'rejected': 'bg-red-500'
       };
 
       return statusMap[status.toLowerCase()] || 'bg-gray-500';

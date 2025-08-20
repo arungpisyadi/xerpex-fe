@@ -34,19 +34,19 @@
     </div>
 
     <div class="mb-6">
-      <page-breadcrumb :items="[{ text: 'Home', link: '/' }, { text: 'Villas' }]" />
+      <page-breadcrumb :items="[{ text: 'Home', link: '/' }, { text: 'Packages' }]" />
     </div>
 
     <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 class="text-title-md2 font-bold text-black dark:text-white">
-          Villas Management
+          Packages Management
         </h2>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div class="relative">
             <input
               type="text"
-              placeholder="Search villas..."
+              placeholder="Search packages..."
               v-model="searchQuery"
               class="w-full rounded-md border border-stroke bg-transparent py-2 pl-10 pr-4 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
@@ -56,34 +56,34 @@
               </svg>
             </span>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="openAddVillaModal">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="openAddPackageModal">
             <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
             </svg>
-            Add New Villa
+            Add New Package
           </button>
         </div>
       </div>
 
       <div class="max-w-full overflow-x-auto">
         <data-table
-          :data="filteredVillas"
+          :data="filteredPackages"
           :columns="columns"
           :loading="loading"
           :show-add-button="false"
-          @view="viewVilla"
-          @edit="editVilla"
-          @delete="confirmDeleteVilla"
+          @view="viewPackage"
+          @edit="editPackage"
+          @delete="confirmDeletePackage"
         />
       </div>
     </div>
 
-    <!-- Add/Edit Villa Modal -->
+    <!-- Add/Edit Package Modal -->
     <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
       <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
-            {{ isEditing ? 'Edit Villa' : 'Add New Villa' }}
+            {{ isEditing ? 'Edit Package' : 'Add New Package' }}
           </h4>
           <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
             <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -92,15 +92,15 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveVilla" novalidate>
+        <form @submit.prevent="savePackage" novalidate>
           <div class="mb-4">
             <label class="mb-2.5 block font-medium text-black dark:text-white">
               Name <span class="text-meta-1">*</span>
             </label>
             <input
-              v-model="villaForm.name"
+              v-model="packageForm.name"
               type="text"
-              placeholder="Enter villa name"
+              placeholder="Enter package name"
               :class="[
                 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
                 formErrors.name ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
@@ -113,11 +113,49 @@
 
           <div class="mb-4">
             <label class="mb-2.5 block font-medium text-black dark:text-white">
+              Category
+            </label>
+            <select
+              v-model="packageForm.category"
+              :class="[
+                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
+                formErrors.category ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
+              ]"
+              required
+              @blur="validateField('category')"
+            >
+              <option value="">Select category</option>
+              <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+            </select>
+            <p v-if="formErrors.category" class="mt-1 text-sm text-danger">{{ formErrors.category }}</p>
+          </div>
+
+          <div class="mb-4">
+            <label class="mb-2.5 block font-medium text-black dark:text-white">
+              Type
+            </label>
+            <select
+              v-model="packageForm.type"
+              :class="[
+                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
+                formErrors.type ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
+              ]"
+              required
+              @blur="validateField('type')"
+            >
+              <option value="">Select type</option>
+              <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
+            </select>
+            <p v-if="formErrors.type" class="mt-1 text-sm text-danger">{{ formErrors.type }}</p>
+          </div>
+
+          <div class="mb-4">
+            <label class="mb-2.5 block font-medium text-black dark:text-white">
               Description <span class="text-meta-1">*</span>
             </label>
             <textarea
-              v-model="villaForm.description"
-              placeholder="Enter villa description"
+              v-model="packageForm.description"
+              placeholder="Enter package description"
               rows="4"
               :class="[
                 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
@@ -131,99 +169,63 @@
 
           <div class="mb-4">
             <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Capacity <span class="text-meta-1">*</span>
+              Days <span class="text-meta-1">*</span>
             </label>
             <input
-              v-model.number="villaForm.capacity"
+              v-model.number="packageForm.days"
               type="number"
               min="1"
-              max="50"
-              placeholder="Enter villa capacity"
+              max="365"
+              placeholder="Enter number of days"
               :class="[
                 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.capacity ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
+                formErrors.days ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
               ]"
               required
-              @blur="validateField('capacity')"
+              @blur="validateField('days')"
             />
-            <p v-if="formErrors.capacity" class="mt-1 text-sm text-danger">{{ formErrors.capacity }}</p>
+            <p v-if="formErrors.days" class="mt-1 text-sm text-danger">{{ formErrors.days }}</p>
           </div>
 
           <div class="mb-4">
             <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Room Type <span class="text-meta-1">*</span>
-            </label>
-            <select
-              v-model="villaForm.room_type"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.room_type ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('room_type')"
-            >
-              <option value="">Select room type</option>
-              <option value="Standard">Standard</option>
-              <option value="Deluxe">Deluxe</option>
-              <option value="Suite">Suite</option>
-              <option value="Presidential">Presidential</option>
-              <option value="Villa">Villa</option>
-            </select>
-            <p v-if="formErrors.room_type" class="mt-1 text-sm text-danger">{{ formErrors.room_type }}</p>
-          </div>
-
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Base Price <span class="text-meta-1">*</span>
+              Cost per Pax <span class="text-meta-1">*</span>
             </label>
             <div class="relative">
               <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">IDR</span>
               <input
-                v-model.number="villaForm.base_price"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
+                v-model="packageForm.cost_per_pax"
+                type="text"
+                placeholder="0"
                 :class="[
                   'w-full rounded border-[1.5px] bg-transparent py-3 pl-8 pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.base_price ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
+                  formErrors.cost_per_pax ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
                 ]"
                 required
-                @blur="validateField('base_price')"
+                @blur="validateField('cost_per_pax')"
               />
             </div>
-            <p v-if="formErrors.base_price" class="mt-1 text-sm text-danger">{{ formErrors.base_price }}</p>
+            <p v-if="formErrors.cost_per_pax" class="mt-1 text-sm text-danger">{{ formErrors.cost_per_pax }}</p>
           </div>
 
           <div class="mb-6">
             <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Status
+              Minimum Pax <span class="text-meta-1">*</span>
             </label>
-            <div class="flex items-center">
-              <label class="flex cursor-pointer select-none items-center">
-                <div class="relative">
-                  <input
-                    type="checkbox"
-                    v-model="villaForm.is_active"
-                    class="sr-only"
-                  />
-                  <div
-                    :class="[
-                      'mr-4 flex h-5 w-5 items-center justify-center rounded border',
-                      villaForm.is_active
-                        ? 'border-primary bg-gray dark:bg-transparent'
-                        : 'border-stroke dark:border-strokedark'
-                    ]"
-                  >
-                    <span
-                      v-if="villaForm.is_active"
-                      class="h-2.5 w-2.5 rounded-sm bg-primary"
-                    ></span>
-                  </div>
-                </div>
-                Active Villa
-              </label>
-            </div>
+            <input
+              v-model.number="packageForm.min_pax"
+              type="number"
+              min="1"
+              max="100"
+              placeholder="Enter minimum pax"
+              :class="[
+                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
+                formErrors.min_pax ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
+              ]"
+              required
+              @blur="validateField('min_pax')"
+            />
+            <p v-if="formErrors.min_pax" class="mt-1 text-sm text-danger">{{ formErrors.min_pax }}</p>
           </div>
 
           <div class="flex justify-end gap-4">
@@ -245,12 +247,12 @@
       </div>
     </div>
 
-    <!-- View Villa Modal -->
+    <!-- View Package Modal -->
     <div v-if="showViewModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
       <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
         <div class="mb-5 flex items-center justify-between">
           <h4 class="text-xl font-semibold text-black dark:text-white">
-            Villa Details
+            Package Details
           </h4>
           <button @click="closeViewModal" class="text-gray-500 hover:text-gray-700">
             <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -259,50 +261,45 @@
           </button>
         </div>
 
-        <div v-if="selectedVilla" class="space-y-6">
-          <!-- Villa Information Grid -->
+        <div v-if="selectedPackage" class="space-y-6">
+          <!-- Package Information Grid -->
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
               <h5 class="mb-3 font-medium text-black dark:text-white">Basic Information</h5>
               <div class="space-y-3">
                 <div>
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
-                  <p class="text-black dark:text-white">{{ selectedVilla.name }}</p>
+                  <p class="text-black dark:text-white">{{ selectedPackage.name }}</p>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Room Type:</span>
-                  <p class="text-black dark:text-white">{{ selectedVilla.room_type }}</p>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Category:</span>
+                  <p class="text-black dark:text-white">{{ selectedPackage.category }}</p>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Capacity:</span>
-                  <p class="text-black dark:text-white">{{ selectedVilla.capacity }} guests</p>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
+                  <p class="text-black dark:text-white">{{ selectedPackage.type }}</p>
                 </div>
               </div>
             </div>
 
             <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
-              <h5 class="mb-3 font-medium text-black dark:text-white">Pricing & Status</h5>
+              <h5 class="mb-3 font-medium text-black dark:text-white">Pricing & Details</h5>
               <div class="space-y-3">
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Base Price:</span>
-                  <p class="text-black dark:text-white">{{ parseFloat(selectedVilla.base_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Days:</span>
+                  <p class="text-black dark:text-white">{{ selectedPackage.days }} days</p>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
-                  <span
-                    :class="[
-                      'inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium',
-                      selectedVilla.is_active
-                        ? 'bg-success text-success'
-                        : 'bg-red-500 text-danger'
-                    ]"
-                  >
-                    {{ selectedVilla.is_active ? 'Active' : 'Inactive' }}
-                  </span>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Cost per Pax:</span>
+                  <p class="text-black dark:text-white">IDR {{ formatCurrency(selectedPackage.cost_per_pax) }}</p>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Villa ID:</span>
-                  <p class="text-black dark:text-white">#{{ selectedVilla.id }}</p>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Min Pax:</span>
+                  <p class="text-black dark:text-white">{{ selectedPackage.min_pax }} persons</p>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Package ID:</span>
+                  <p class="text-black dark:text-white">#{{ selectedPackage.id }}</p>
                 </div>
               </div>
             </div>
@@ -311,7 +308,7 @@
           <!-- Description -->
           <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h5 class="mb-3 font-medium text-black dark:text-white">Description</h5>
-            <p class="text-gray-600 dark:text-gray-400">{{ selectedVilla.description }}</p>
+            <p class="text-gray-600 dark:text-gray-400">{{ selectedPackage.description }}</p>
           </div>
 
           <!-- Timestamps -->
@@ -320,11 +317,11 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Created:</span>
-                <p class="text-black dark:text-white">{{ formatDate(selectedVilla.created_at) }}</p>
+                <p class="text-black dark:text-white">{{ formatDate(selectedPackage.created_at) }}</p>
               </div>
               <div>
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
-                <p class="text-black dark:text-white">{{ formatDate(selectedVilla.updated_at) }}</p>
+                <p class="text-black dark:text-white">{{ formatDate(selectedPackage.updated_at) }}</p>
               </div>
             </div>
           </div>
@@ -358,7 +355,7 @@
 
         <div class="mb-6">
           <p class="text-gray-600 dark:text-gray-400">
-            Are you sure you want to delete this villa? This action cannot be undone.
+            Are you sure you want to delete this package? This action cannot be undone.
           </p>
         </div>
 
@@ -372,7 +369,7 @@
           </button>
           <button
             type="button"
-            @click="deleteVilla"
+            @click="deletePackage"
             class="flex justify-center rounded bg-red-500 py-2 px-6 font-medium text-white hover:bg-opacity-90"
           >
             Delete
@@ -387,7 +384,7 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
-import { villaService } from '../services';
+import { packageService } from '../services';
 
 export default {
   components: {
@@ -397,30 +394,35 @@ export default {
   },
   data() {
     return {
-      villas: [],
+      packages: [],
+      categories: [],
+      types: [],
       loading: false,
       searchQuery: '',
       columns: [
+        { key: 'id', label: 'ID', span: 1 },
         { key: 'name', label: 'Name', span: 2 },
+        { key: 'category', label: 'Category', span: 1 },
+        { key: 'type', label: 'Type', span: 1 },
         { key: 'description', label: 'Description', span: 2 },
-        { key: 'capacity', label: 'Capacity', span: 1 },
-        { key: 'room_type', label: 'Room Type', span: 1 },
-        { key: 'base_price', label: 'Base Price', span: 1, type: 'currency' },
-        { key: 'is_active', label: 'Status', span: 1, type: 'status' }
+        { key: 'days', label: 'Days', span: 1 },
+        { key: 'cost_per_pax', label: 'Cost/Pax', span: 1, type: 'currency' },
+        { key: 'min_pax', label: 'Min Pax', span: 1 }
       ],
       showModal: false,
       showViewModal: false,
       showDeleteModal: false,
       isEditing: false,
-      selectedVillaId: null,
-      selectedVilla: null,
-      villaForm: {
+      selectedPackageId: null,
+      selectedPackage: null,
+      packageForm: {
         name: '',
+        category: '',
+        type: '',
         description: '',
-        capacity: 1,
-        room_type: '',
-        base_price: 0,
-        is_active: true
+        days: 1,
+        cost_per_pax: '',
+        min_pax: 1
       },
       formErrors: {},
       notification: {
@@ -431,98 +433,119 @@ export default {
     };
   },
   computed: {
-    filteredVillas() {
+    filteredPackages() {
       if (!this.searchQuery) {
-        return this.villas;
+        return this.packages;
       }
 
       const query = this.searchQuery.toLowerCase();
-      return this.villas.filter(villa => {
+      return this.packages.filter(pkg => {
         return (
-          villa.name?.toLowerCase().includes(query) ||
-          villa.description?.toLowerCase().includes(query) ||
-          villa.room_type?.toLowerCase().includes(query) ||
-          String(villa.capacity || '').includes(query) ||
-          String(villa.base_price || '').includes(query)
+          pkg.name?.toLowerCase().includes(query) ||
+          pkg.category?.toLowerCase().includes(query) ||
+          pkg.type?.toLowerCase().includes(query) ||
+          pkg.description?.toLowerCase().includes(query) ||
+          String(pkg.days || '').includes(query) ||
+          String(pkg.cost_per_pax || '').includes(query) ||
+          String(pkg.min_pax || '').includes(query)
         );
       });
     }
   },
   async created() {
-    await this.fetchVillas();
+    await this.fetchPackages();
+    await this.fetchMetadata();
   },
   methods: {
-    async fetchVillas() {
+    async fetchPackages() {
       this.loading = true;
       try {
-        const response = await villaService.getVillas();
-        this.villas = response.items || response || [];
+        const response = await packageService.getPackages();
+        this.packages = response.items || response || [];
       } catch (error) {
-        console.error('Error fetching villas:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch villas';
+        console.error('Error fetching packages:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch packages';
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
     },
-    openAddVillaModal() {
+    async fetchMetadata() {
+      try {
+        // Get categories and types from environment variables
+        const envCategories = import.meta.env.VITE_PACKAGE_CATEGORIES?.split(',') || [];
+        const envTypes = import.meta.env.VITE_PACKAGE_TYPES?.split(',') || [];
+
+        this.categories = envCategories.length > 0 ? envCategories : ['DELUXE', 'STANDARD LT 1', 'STANDARD LT 2'];
+        this.types = envTypes.length > 0 ? envTypes : ['BASIC', 'ADD-ON'];
+      } catch (error) {
+        console.error('Error fetching metadata:', error);
+        // Use default values if env vars are not available
+        this.categories = ['DELUXE', 'STANDARD LT 1', 'STANDARD LT 2'];
+        this.types = ['BASIC', 'ADD-ON'];
+      }
+    },
+    openAddPackageModal() {
       this.isEditing = false;
-      this.villaForm = {
+      this.packageForm = {
         name: '',
+        category: '',
+        type: '',
         description: '',
-        capacity: 1,
-        room_type: '',
-        base_price: 0,
-        is_active: true
+        days: 1,
+        cost_per_pax: '',
+        min_pax: 1
       };
       this.showModal = true;
     },
-    async viewVilla(villa) {
+    async viewPackage(pkg) {
       try {
         this.loading = true;
-        const response = await villaService.getVillaById(villa.id);
-        this.selectedVilla = response;
+        const response = await packageService.getPackageById(pkg.id);
+        this.selectedPackage = response;
         this.showViewModal = true;
       } catch (error) {
-        console.error('Error fetching villa details:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch villa details';
+        console.error('Error fetching package details:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch package details';
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
     },
-    async editVilla(villa) {
+    async editPackage(pkg) {
       this.isEditing = true;
-      this.selectedVillaId = villa.id;
-      this.villaForm = {
-        name: villa.name,
-        description: villa.description,
-        capacity: villa.capacity,
-        room_type: villa.room_type,
-        base_price: villa.base_price,
-        is_active: villa.is_active
+      this.selectedPackageId = pkg.id;
+      this.packageForm = {
+        name: pkg.name,
+        category: pkg.category,
+        type: pkg.type,
+        description: pkg.description,
+        days: pkg.days,
+        cost_per_pax: pkg.cost_per_pax,
+        min_pax: pkg.min_pax
       };
       this.showModal = true;
     },
-    confirmDeleteVilla(villa) {
-      this.selectedVillaId = villa.id;
+    confirmDeletePackage(pkg) {
+      this.selectedPackageId = pkg.id;
       this.showDeleteModal = true;
     },
     closeModal() {
       this.showModal = false;
       this.formErrors = {};
-      this.villaForm = {
+      this.packageForm = {
         name: '',
+        category: '',
+        type: '',
         description: '',
-        capacity: 1,
-        room_type: '',
-        base_price: 0,
-        is_active: true
+        days: 1,
+        cost_per_pax: '',
+        min_pax: 1
       };
     },
     closeViewModal() {
       this.showViewModal = false;
-      this.selectedVilla = null;
+      this.selectedPackage = null;
     },
     formatDate(date) {
       if (!date) return 'N/A';
@@ -534,34 +557,44 @@ export default {
         minute: '2-digit'
       });
     },
+    formatCurrency(value) {
+      if (!value) return '0';
+      return parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    },
     validateField(fieldName) {
       this.formErrors = { ...this.formErrors };
       delete this.formErrors[fieldName];
 
       switch (fieldName) {
         case 'name':
-          if (!this.villaForm.name || this.villaForm.name.trim().length < 2) {
-            this.formErrors.name = 'Villa name must be at least 2 characters long';
+          if (!this.packageForm.name || this.packageForm.name.trim().length < 2) {
+            this.formErrors.name = 'Package name must be at least 2 characters long';
           }
           break;
+        case 'category':
+          // Category is not required - no validation needed
+          break;
+        case 'type':
+          // Type is not required - no validation needed
+          break;
         case 'description':
-          if (!this.villaForm.description || this.villaForm.description.trim().length < 10) {
+          if (!this.packageForm.description || this.packageForm.description.trim().length < 10) {
             this.formErrors.description = 'Description must be at least 10 characters long';
           }
           break;
-        case 'capacity':
-          if (!this.villaForm.capacity || this.villaForm.capacity < 1 || this.villaForm.capacity > 50) {
-            this.formErrors.capacity = 'Capacity must be between 1 and 50 guests';
+        case 'days':
+          if (!this.packageForm.days || this.packageForm.days < 1 || this.packageForm.days > 365) {
+            this.formErrors.days = 'Days must be between 1 and 365';
           }
           break;
-        case 'room_type':
-          if (!this.villaForm.room_type) {
-            this.formErrors.room_type = 'Please select a room type';
+        case 'cost_per_pax':
+          if (!this.packageForm.cost_per_pax || parseFloat(this.packageForm.cost_per_pax) <= 0) {
+            this.formErrors.cost_per_pax = 'Cost per pax must be greater than 0';
           }
           break;
-        case 'base_price':
-          if (!this.villaForm.base_price || this.villaForm.base_price <= 0) {
-            this.formErrors.base_price = 'Base price must be greater than 0';
+        case 'min_pax':
+          if (!this.packageForm.min_pax || this.packageForm.min_pax < 1 || this.packageForm.min_pax > 100) {
+            this.formErrors.min_pax = 'Minimum pax must be between 1 and 100';
           }
           break;
       }
@@ -571,10 +604,12 @@ export default {
 
       // Validate all fields
       this.validateField('name');
+      this.validateField('category');
+      this.validateField('type');
       this.validateField('description');
-      this.validateField('capacity');
-      this.validateField('room_type');
-      this.validateField('base_price');
+      this.validateField('days');
+      this.validateField('cost_per_pax');
+      this.validateField('min_pax');
 
       return Object.keys(this.formErrors).length === 0;
     },
@@ -590,7 +625,7 @@ export default {
         this.notification.show = false;
       }, 5000);
     },
-    async saveVilla() {
+    async savePackage() {
       if (!this.validateForm()) {
         this.showNotification('error', 'Please fix the validation errors before submitting');
         return;
@@ -599,32 +634,32 @@ export default {
       try {
         this.loading = true;
         if (this.isEditing) {
-          await villaService.updateVilla(this.selectedVillaId, this.villaForm);
-          this.showNotification('success', 'Villa updated successfully');
+          await packageService.updatePackage(this.selectedPackageId, this.packageForm);
+          this.showNotification('success', 'Package updated successfully');
         } else {
-          await villaService.createVilla(this.villaForm);
-          this.showNotification('success', 'Villa created successfully');
+          await packageService.createPackage(this.packageForm);
+          this.showNotification('success', 'Package created successfully');
         }
         this.closeModal();
-        await this.fetchVillas();
+        await this.fetchPackages();
       } catch (error) {
-        console.error('Error saving villa:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to save villa';
+        console.error('Error saving package:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to save package';
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
     },
-    async deleteVilla() {
+    async deletePackage() {
       try {
         this.loading = true;
-        await villaService.deleteVilla(this.selectedVillaId);
+        await packageService.deletePackage(this.selectedPackageId);
         this.showDeleteModal = false;
-        await this.fetchVillas();
-        this.showNotification('success', 'Villa deleted successfully');
+        await this.fetchPackages();
+        this.showNotification('success', 'Package deleted successfully');
       } catch (error) {
-        console.error('Error deleting villa:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to delete villa';
+        console.error('Error deleting package:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to delete package';
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;

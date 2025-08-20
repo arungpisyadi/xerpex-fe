@@ -134,6 +134,7 @@ import {
   SettingsIcon,
   SurveyIcon,
   SalesmanIcon,
+  PackageIcon,
 } from "../../icons";
 import { useSidebar } from "@/composables/useSidebar";
 
@@ -160,6 +161,11 @@ const menuGroups = [
         icon: HomeIcon,
         name: "Villas",
         path: "/villas",
+      },
+      {
+        icon: PackageIcon,
+        name: "Packages",
+        path: "/packages",
       },
       {
         icon: SurveyIcon,

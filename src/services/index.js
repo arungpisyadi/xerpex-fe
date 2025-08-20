@@ -2,6 +2,7 @@ import apiClient from './api.service';
 import authService from './auth.service';
 import userService from './user.service';
 import villaService from './villa.service';
+import packageService from './package.service';
 import bookingService from './booking.service';
 import paymentService from './payment.service';
 import reportService from './report.service';
@@ -15,6 +16,7 @@ export {
   authService,
   userService,
   villaService,
+  packageService,
   bookingService,
   paymentService,
   reportService,

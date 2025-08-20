@@ -7,7 +7,7 @@
           'rounded-lg border p-4 shadow-lg',
           notification.type === 'success'
             ? 'border-success bg-success/10 text-success'
-            : 'border-danger bg-danger/10 text-danger'
+            : 'border-danger bg-red-500/10 text-danger'
         ]"
       >
         <div class="flex items-center">
@@ -265,7 +265,7 @@
                       'inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ml-2',
                       selectedUser.is_active
                         ? 'bg-success text-success'
-                        : 'bg-danger text-danger'
+                        : 'bg-red-500 text-danger'
                     ]"
                   >
                     {{ selectedUser.is_active ? 'Active' : 'Inactive' }}
@@ -499,7 +499,7 @@ export default {
       const roleStr = String(role).toLowerCase();
       switch (roleStr) {
         case 'admin':
-          return 'bg-danger/10 text-danger border border-danger/20';
+          return 'bg-red-500/10 text-danger border border-danger/20';
         case 'manager':
           return 'bg-warning/10 text-warning border border-warning/20';
         case 'user':

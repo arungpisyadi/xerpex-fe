@@ -374,7 +374,7 @@ export default {
       if (typeof status === 'boolean') {
         return status
           ? 'bg-success/10 text-success border border-success/20'
-          : 'bg-danger/10 text-danger border border-danger/20';
+          : 'bg-red-500/10 text-danger border border-danger/20';
       }
 
       // Handle string status
@@ -387,7 +387,7 @@ export default {
         case 'inactive':
         case 'cancelled':
         case 'failed':
-          return 'bg-danger/10 text-danger border border-danger/20';
+          return 'bg-red-500/10 text-danger border border-danger/20';
         case 'pending':
         case 'processing':
           return 'bg-warning/10 text-warning border border-warning/20';

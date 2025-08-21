@@ -127,51 +127,6 @@ const erpRoutes = [
     },
   },
   {
-    path: '/reports/dashboard',
-    name: 'DashboardReport',
-    component: () => import('../views/reports/DashboardReport.vue'),
-    meta: {
-      title: 'Dashboard Report',
-      requiresAuth: true
-    },
-  },
-  {
-    path: '/reports/villa-occupancy',
-    name: 'VillaOccupancyReport',
-    component: () => import('../views/reports/VillaOccupancyReport.vue'),
-    meta: {
-      title: 'Villa Occupancy Report',
-      requiresAuth: true
-    },
-  },
-  {
-    path: '/reports/booking-status',
-    name: 'BookingStatusReport',
-    component: () => import('../views/reports/BookingStatusReport.vue'),
-    meta: {
-      title: 'Booking Status Report',
-      requiresAuth: true
-    },
-  },
-  {
-    path: '/reports/revenue',
-    name: 'RevenueReport',
-    component: () => import('../views/reports/RevenueReport.vue'),
-    meta: {
-      title: 'Revenue Report',
-      requiresAuth: true
-    },
-  },
-  {
-    path: '/reports/top-villas',
-    name: 'TopVillasReport',
-    component: () => import('../views/reports/TopVillasReport.vue'),
-    meta: {
-      title: 'Top Villas Report',
-      requiresAuth: true
-    },
-  },
-  {
     path: '/settings',
     name: 'Settings',
     component: () => import('../views/Settings.vue'),

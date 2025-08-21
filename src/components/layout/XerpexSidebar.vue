@@ -9,10 +9,7 @@ n<template>
         'lg:translate-x-0': true,
       },
     ]" @mouseenter="!isExpanded && (isHovered = true)" @mouseleave="isHovered = false">
-    <div :class="[
-        'py-8 flex',
-        !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start',
-      ]">
+    <div class="py-8 flex justify-start">
       <router-link to="/" class="flex items-cente block">
         <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/xerpex-logo.svg"
           alt="Xerpex" width="150" height="40" />
@@ -27,12 +24,7 @@ n<template>
       <nav class="mb-6">
         <div class="flex flex-col gap-4">
           <div v-for="(menuGroup, groupIndex) in menuGroups" :key="groupIndex">
-            <h2 :class="[
-                'mb-4 text-xs uppercase flex leading-[20px] text-gray-400',
-                !isExpanded && !isHovered
-                  ? 'lg:justify-center'
-                  : 'justify-start',
-              ]">
+            <h2 class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400 justify-start">
               <template v-if="isExpanded || isHovered || isMobileOpen">
                 {{ menuGroup.title }}
               </template>
@@ -40,15 +32,12 @@ n<template>
             </h2>
             <ul class="flex flex-col gap-4">
               <li v-for="(item, index) in menuGroup.items" :key="item.name">
-                <button v-if="item.subItems" @click="toggleSubmenu(groupIndex, index)" :class="[
-                    'menu-item group w-full',
+                <a v-if="item.subItems" href="#" @click.prevent="toggleSubmenu(groupIndex, index)" :class="[
+                    'menu-item group w-full justify-start',
                     {
                       'menu-item-active': isSubmenuOpen(groupIndex, index),
                       'menu-item-inactive': !isSubmenuOpen(groupIndex, index),
                     },
-                    !isExpanded && !isHovered
-                      ? 'lg:justify-center'
-                      : 'lg:justify-start',
                   ]">
                   <span :class="[
                       isSubmenuOpen(groupIndex, index)
@@ -67,9 +56,9 @@ n<template>
                         ),
                       },
                     ]" />
-                </button>
+                </a>
                 <router-link v-else-if="item.path" :to="item.path" :class="[
-                    'menu-item group',
+                    'menu-item group justify-start',
                     {
                       'menu-item-active': isActive(item.path),
                       'menu-item-inactive': !isActive(item.path),
@@ -127,7 +116,6 @@ import {
   CalenderIcon,
   UserCircleIcon,
   DocsIcon,
-  PieChartIcon,
   ChevronDownIcon,
   HorizontalDots,
   HomeIcon,
@@ -186,17 +174,6 @@ const menuGroups = [
         subItems: [
           { name: "Payments", path: "/404" },
           { name: "Invoices", path: "/404" },
-        ],
-      },
-      {
-        icon: PieChartIcon,
-        name: "Reports",
-        subItems: [
-          { name: "Dashboard Summary", path: "/reports/dashboard" },
-          { name: "Villa Occupancy", path: "/reports/villa-occupancy" },
-          { name: "Booking Status", path: "/reports/booking-status" },
-          { name: "Revenue", path: "/reports/revenue" },
-          { name: "Top Villas", path: "/reports/top-villas" },
         ],
       },
       {

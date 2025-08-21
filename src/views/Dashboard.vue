@@ -190,7 +190,6 @@ import {
   DocsIcon,
   HorizontalDots
 } from '../icons';
-import { reportService } from '../services';
 
 // Metrics
 const customerCount = ref(3782);
@@ -217,37 +216,8 @@ const monthlyTargetGrowth = ref(10);
 const monthlyEarnings = ref(3287);
 
 // Fetch dashboard data
-onMounted(async () => {
-  try {
-    // Fetch dashboard data
-    const dashboardData = await reportService.getDashboardSummary();
-
-    // Update with real data if available
-    if (dashboardData) {
-      customerCount.value = dashboardData.customer_count || customerCount.value;
-      customerGrowth.value = dashboardData.customer_growth || customerGrowth.value;
-      orderCount.value = dashboardData.order_count || orderCount.value;
-      orderGrowth.value = dashboardData.order_growth || orderGrowth.value;
-
-      // Update monthly sales chart if data available
-      if (dashboardData.monthly_sales) {
-        monthlySalesData.value.datasets[0].data = dashboardData.monthly_sales;
-      }
-
-      // Update monthly target if data available
-      if (dashboardData.target_percentage) {
-        monthlyTargetPercentage.value = dashboardData.target_percentage;
-      }
-      if (dashboardData.target_growth) {
-        monthlyTargetGrowth.value = dashboardData.target_growth;
-      }
-      if (dashboardData.daily_earnings) {
-        monthlyEarnings.value = dashboardData.daily_earnings;
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    // Using default values already set
-  }
+onMounted(() => {
+  // Dashboard is now using static data
+  // All metrics are already initialized with default values
 });
 </script>

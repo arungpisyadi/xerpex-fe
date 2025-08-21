@@ -30,3 +30,6 @@ coverage
 *.tsbuildinfo
 .vercel
 .env
+
+# Development documentation
+FRONTEND_DEVELOPMENT_GUIDE.md

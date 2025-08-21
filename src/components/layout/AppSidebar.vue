@@ -66,9 +66,10 @@
             </h2>
             <ul class="flex flex-col gap-4">
               <li v-for="(item, index) in menuGroup.items" :key="item.name">
-                <button
+                <a
                   v-if="item.subItems"
-                  @click="toggleSubmenu(groupIndex, index)"
+                  href="#"
+                  @click.prevent="toggleSubmenu(groupIndex, index)"
                   :class="[
                     'menu-item group w-full',
                     {
@@ -106,7 +107,7 @@
                       },
                     ]"
                   />
-                </button>
+                </a>
                 <router-link
                   v-else-if="item.path"
                   :to="item.path"

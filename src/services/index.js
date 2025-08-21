@@ -5,7 +5,6 @@ import villaService from './villa.service';
 import packageService from './package.service';
 import bookingService from './booking.service';
 import paymentService from './payment.service';
-import reportService from './report.service';
 import settingsService from './settings.service';
 import invoiceService from './invoice.service';
 import salesmanService from './salesman.service';
@@ -19,7 +18,6 @@ export {
   packageService,
   bookingService,
   paymentService,
-  reportService,
   settingsService,
   invoiceService,
   salesmanService,

@@ -60,84 +60,14 @@
 
       <div class="max-w-full overflow-x-auto">
         <data-table
-          :headers="headers"
-          :items="filteredInvoices"
+          :data="filteredInvoices"
+          :columns="columns"
           :loading="loading"
-          :total-items="totalItems"
-          :items-per-page="itemsPerPage"
-          :current-page="currentPage"
-          @page-changed="handlePageChange"
-        >
-          <template #item.invoice_number="{ item }">
-            <div>
-              <span class="text-sm font-medium text-black dark:text-white">{{ item.invoice_number }}</span>
-              <div v-if="showUserContext && item.user_id" class="text-xs text-gray-500">
-                User ID: {{ item.user_id }}
-              </div>
-            </div>
-          </template>
-
-          <template #item.customer_name="{ item }">
-            <div>
-              <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.customer_name }}</span>
-              <div v-if="item.customer_id" class="text-xs text-gray-500">
-                ID: {{ item.customer_id }}
-              </div>
-            </div>
-          </template>
-
-          <template #item.total="{ item }">
-            <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(item.total) }}</span>
-          </template>
-
-          <template #item.tax_total="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">${{ formatPrice(item.tax_total) }}</span>
-          </template>
-
-          <template #item.issue_date="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDate(item.issue_date) }}</span>
-          </template>
-
-          <template #item.status="{ item }">
-            <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="getStatusClass(item.status)">
-              {{ capitalizeFirstLetter(item.status) }}
-            </span>
-          </template>
-
-          <template #item.due_date="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDate(item.due_date) }}</span>
-          </template>
-
-          <template #item.actions="{ item }">
-            <div class="flex items-center space-x-3.5">
-              <button class="hover:text-primary" @click="viewInvoiceDetails(item)">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z" fill=""></path>
-                  <path d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z" fill=""></path>
-                </svg>
-              </button>
-              <button class="hover:text-success" @click="sendInvoiceEmail(item)" :title="'Send Invoice'">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill=""></path>
-                </svg>
-              </button>
-              <button class="hover:text-warning" @click="downloadInvoice(item)">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 9H15V3H9V9H5L12 16L19 9ZM5 18V20H19V18H5Z" fill=""></path>
-                </svg>
-              </button>
-              <button
-                v-if="item.status === 'pending' || item.status === 'overdue'"
-                class="hover:text-success"
-                @click="markAsPaid(item)"
-              >
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z" fill=""></path>
-                </svg>
-              </button>
-            </div>
-          </template>
-        </data-table>
+          :show-add-button="false"
+          @view="viewInvoiceDetails"
+          @edit="editInvoice"
+          @delete="deleteInvoice"
+        />
       </div>
     </div>
 
@@ -428,15 +358,14 @@ export default {
         notes: '',
         items: []
       },
-      headers: [
-        { text: 'Invoice #', value: 'invoice_number', sortable: true },
-        { text: 'Customer', value: 'customer_name', sortable: true },
-        { text: 'Amount', value: 'total', sortable: true },
-        { text: 'Tax', value: 'tax_total', sortable: true },
-        { text: 'Status', value: 'status', sortable: true },
-        { text: 'Issue Date', value: 'issue_date', sortable: true },
-        { text: 'Due Date', value: 'due_date', sortable: true },
-        { text: 'Actions', value: 'actions', sortable: false }
+      columns: [
+        { key: 'invoice_number', label: 'Invoice #', span: 1 },
+        { key: 'customer_name', label: 'Customer', span: 2 },
+        { key: 'total', label: 'Amount', span: 1, type: 'currency' },
+        { key: 'tax_total', label: 'Tax', span: 1, type: 'currency' },
+        { key: 'status', label: 'Status', span: 1, type: 'status' },
+        { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
+        { key: 'due_date', label: 'Due Date', span: 1, type: 'date' }
       ]
     };
   },
@@ -607,6 +536,16 @@ export default {
       } catch (error) {
         this.handleError(error, 'sendInvoiceEmail');
       }
+    },
+
+    editInvoice(invoice) {
+      // For now, just view the invoice details
+      this.viewInvoiceDetails(invoice);
+    },
+
+    deleteInvoice(invoice) {
+      // For now, just log - could implement delete functionality later
+      console.log('Delete invoice:', invoice.invoice_number);
     },
 
     async downloadInvoice(invoice) {

@@ -46,163 +46,135 @@
 
       <div class="max-w-full overflow-x-auto">
         <data-table
-          :headers="headers"
-          :items="filteredCustomers"
+          :data="filteredCustomers"
+          :columns="columns"
           :loading="loading"
-          :total-items="totalItems"
-          :items-per-page="itemsPerPage"
-          :current-page="currentPage"
-          @page-changed="handlePageChange"
-        >
-          <template #item.name="{ item }">
-            <div>
-              <span class="text-sm font-medium text-black dark:text-white">{{ item.name }}</span>
-              <div v-if="showUserContext && item.user_id" class="text-xs text-gray-500">
-                User ID: {{ item.user_id }}
-              </div>
-            </div>
-          </template>
-
-          <template #item.email="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.email || 'N/A' }}</span>
-          </template>
-
-          <template #item.phone="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.phone || 'N/A' }}</span>
-          </template>
-
-          <template #item.city="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.city || 'N/A' }}</span>
-          </template>
-
-          <template #item.is_active="{ item }">
-            <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="item.is_active ? 'bg-success bg-opacity-10 text-success' : 'bg-red-500 bg-opacity-10 text-danger'">
-              {{ item.is_active ? 'Active' : 'Inactive' }}
-            </span>
-          </template>
-
-          <template #item.created_at="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDate(item.created_at) }}</span>
-          </template>
-
-          <template #item.actions="{ item }">
-            <div class="flex items-center space-x-3.5">
-              <button class="hover:text-primary" @click="viewCustomerDetails(item)" title="View Details">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z" fill=""></path>
-                  <path d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z" fill=""></path>
-                </svg>
-              </button>
-
-              <button class="hover:text-warning" @click="editCustomer(item)" title="Edit Customer">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z" fill=""></path>
-                </svg>
-              </button>
-
-              <button
-                v-if="!item.is_active"
-                class="hover:text-success"
-                @click="activateCustomerAction(item)"
-                title="Activate Customer"
-              >
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z" fill=""></path>
-                </svg>
-              </button>
-
-              <button
-                v-if="item.is_active"
-                class="hover:text-danger"
-                @click="deactivateCustomerAction(item)"
-                title="Deactivate Customer"
-              >
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill=""></path>
-                </svg>
-              </button>
-
-              <button class="hover:text-primary" @click="createQuoteForCustomer(item)" title="Create Quote">
-                <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill=""></path>
-                </svg>
-              </button>
-            </div>
-          </template>
-        </data-table>
+          :show-add-button="false"
+          @view="viewCustomerDetails"
+          @edit="editCustomer"
+          @delete="confirmDeactivateCustomer"
+        />
       </div>
     </div>
 
     <!-- Customer Details Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="w-full max-w-2xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-black dark:text-white">
+    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
+        <div class="mb-5 flex items-center justify-between">
+          <h4 class="text-xl font-semibold text-black dark:text-white">
             Customer Details
-          </h3>
-          <button @click="showModal = false" class="text-gray-500 hover:text-primary">
+          </h4>
+          <button @click="closeViewModal" class="text-gray-500 hover:text-gray-700">
             <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z" fill=""></path>
+              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.37993C19.1133 -0.12665 18.2943 -0.12665 17.7877 0.37993L9.99988 8.16793L2.21228 0.37993C1.7057 -0.12665 0.886644 -0.12665 0.380059 0.37993C-0.126686 0.88651 -0.126686 1.70557 0.380059 2.21215L8.16766 10.0001L0.380059 17.7881C-0.126686 18.2947 -0.126686 19.1138 0.380059 19.6204C0.632556 19.8729 0.964511 20 1.29647 20C1.62842 20 1.96055 19.8729 2.21287 19.6204L9.99988 11.8324L17.7877 19.6204C18.04 19.8729 18.3721 20 18.7041 20C19.036 20 19.3674 19.8729 19.6205 19.6204C20.1271 19.1138 20.1271 18.2947 19.6205 17.7881L11.8323 10.0001Z" fill=""></path>
             </svg>
           </button>
         </div>
 
-        <div v-if="selectedCustomer" class="mb-6">
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Name</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.name }}</p>
+        <div v-if="selectedCustomer" class="space-y-6">
+          <!-- Customer Information Grid -->
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+              <h5 class="mb-3 font-medium text-black dark:text-white">Basic Information</h5>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                  <p class="text-black dark:text-white">{{ selectedCustomer.name }}</p>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Email:</span>
+                  <p class="text-black dark:text-white">{{ selectedCustomer.email || 'N/A' }}</p>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone:</span>
+                  <p class="text-black dark:text-white">{{ selectedCustomer.phone_number || 'N/A' }}</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Status</p>
-              <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="selectedCustomer.is_active ? 'bg-success bg-opacity-10 text-success' : 'bg-red-500 bg-opacity-10 text-danger'">
-                {{ selectedCustomer.is_active ? 'Active' : 'Inactive' }}
-              </span>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Email</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.email || 'N/A' }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Phone</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.phone || 'N/A' }}</p>
-            </div>
-            <div class="col-span-2">
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Address</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.address || 'N/A' }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">City</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.city || 'N/A' }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Country</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedCustomer.country || 'N/A' }}</p>
+
+            <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+              <h5 class="mb-3 font-medium text-black dark:text-white">Status & ID</h5>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
+                  <span
+                    :class="[
+                      'ml-2 inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium',
+                      getCustomerStatus(selectedCustomer.status)
+                        ? 'bg-success text-white'
+                        : 'bg-red-500 text-danger'
+                    ]"
+                  >
+                    {{ getCustomerStatus(selectedCustomer.status) ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Customer ID:</span>
+                  <p class="text-black dark:text-white">#{{ selectedCustomer.id }}</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="flex justify-end gap-4 mt-6">
-            <button
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-blue-500 hover:bg-blue-600"
-              @click="createQuoteForCustomer(selectedCustomer)"
-            >
-              Create Quote
-            </button>
-            <button
-              v-if="!selectedCustomer.is_active"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
-              @click="activateCustomerAction(selectedCustomer)"
-            >
-              Activate Customer
-            </button>
-            <button
-              v-if="selectedCustomer.is_active"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-500 hover:bg-red-600"
-              @click="deactivateCustomerAction(selectedCustomer)"
-            >
-              Deactivate Customer
-            </button>
+          <!-- Address Information -->
+          <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+            <h5 class="mb-3 font-medium text-black dark:text-white">Address Information</h5>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Address:</span>
+                <p class="text-black dark:text-white">{{ selectedCustomer.address || 'N/A' }}</p>
+              </div>
+              <div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Billing Address:</span>
+                <p class="text-black dark:text-white">{{ selectedCustomer.billing_address || 'Same as address' }}</p>
+              </div>
+            </div>
           </div>
+
+          <!-- Timestamps -->
+          <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+            <h5 class="mb-3 font-medium text-black dark:text-white">Timeline</h5>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Created:</span>
+                <p class="text-black dark:text-white">{{ formatDate(selectedCustomer.created_at) }}</p>
+              </div>
+              <div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
+                <p class="text-black dark:text-white">{{ formatDate(selectedCustomer.updated_at) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-4">
+          <button
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-blue-500 hover:bg-blue-600"
+            @click="createQuoteForCustomer(selectedCustomer)"
+          >
+            Create Quote
+          </button>
+          <button
+            v-if="!getCustomerStatus(selectedCustomer.status)"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
+            @click="activateCustomerAction(selectedCustomer)"
+          >
+            Activate Customer
+          </button>
+          <button
+            v-if="getCustomerStatus(selectedCustomer.status)"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-500 hover:bg-red-600"
+            @click="confirmDeactivateCustomer(selectedCustomer)"
+          >
+            Deactivate Customer
+          </button>
+          <button
+            type="button"
+            @click="closeViewModal"
+            class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-white hover:bg-opacity-90"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -248,43 +220,16 @@
             </div>
           </div>
 
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Phone
-              </label>
-              <input
-                type="tel"
-                v-model="customerForm.phone"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter phone number"
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                City
-              </label>
-              <input
-                type="text"
-                v-model="customerForm.city"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter city"
-              />
-            </div>
-          </div>
-
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Country
-              </label>
-              <input
-                type="text"
-                v-model="customerForm.country"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter country"
-              />
-            </div>
+          <div class="mb-4">
+            <label class="mb-2.5 block text-black dark:text-white">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              v-model="customerForm.phone_number"
+              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              placeholder="Enter phone number"
+            />
           </div>
 
           <div class="mb-4">
@@ -328,6 +273,45 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
+        <div class="mb-5 flex items-center justify-between">
+          <h4 class="text-xl font-semibold text-black dark:text-white">
+            Confirm Deactivation
+          </h4>
+          <button @click="showDeleteModal = false" class="text-gray-500 hover:text-gray-700">
+            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.37993C19.1133 -0.12665 18.2943 -0.12665 17.7877 0.37993L9.99988 8.16793L2.21228 0.37993C1.7057 -0.12665 0.886644 -0.12665 0.380059 0.37993C-0.126686 0.88651 -0.126686 1.70557 0.380059 2.21215L8.16766 10.0001L0.380059 17.7881C-0.126686 18.2947 -0.126686 19.1138 0.380059 19.6204C0.632556 19.8729 0.964511 20 1.29647 20C1.62842 20 1.96055 19.8729 2.21287 19.6204L9.99988 11.8324L17.7877 19.6204C18.04 19.8729 18.3721 20 18.7041 20C19.036 20 19.3674 19.8729 19.6205 19.6204C20.1271 19.1138 20.1271 18.2947 19.6205 17.7881L11.8323 10.0001Z" fill=""></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="mb-6">
+          <p class="text-gray-600 dark:text-gray-400">
+            Are you sure you want to deactivate this customer? This action will make the customer inactive but can be reversed later.
+          </p>
+        </div>
+
+        <div class="flex justify-end gap-4">
+          <button
+            type="button"
+            @click="showDeleteModal = false"
+            class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            @click="executeDeactivateCustomer"
+            class="flex justify-center rounded bg-red-500 py-2 px-6 font-medium text-white hover:bg-opacity-90"
+          >
+            Deactivate
+          </button>
+        </div>
       </div>
     </div>
   </admin-layout>
@@ -378,25 +362,24 @@ export default {
       totalItems: 0,
       showModal: false,
       showCreateModal: false,
+      showDeleteModal: false,
       selectedCustomer: null,
       editingCustomer: null,
+      customerToDeactivate: null,
       customerForm: {
         name: '',
         email: '',
-        phone: '',
+        phone_number: '',
         address: '',
-        city: '',
-        country: '',
         billing_address: ''
       },
-      headers: [
-        { text: 'Name', value: 'name', sortable: true },
-        { text: 'Email', value: 'email', sortable: true },
-        { text: 'Phone', value: 'phone', sortable: true },
-        { text: 'City', value: 'city', sortable: true },
-        { text: 'Status', value: 'is_active', sortable: true },
-        { text: 'Created', value: 'created_at', sortable: true },
-        { text: 'Actions', value: 'actions', sortable: false }
+      columns: [
+        { key: 'name', label: 'Name', span: 2 },
+        { key: 'email', label: 'Email', span: 2 },
+        { key: 'phone_number', label: 'Phone', span: 1 },
+        { key: 'address', label: 'Address', span: 2 },
+        { key: 'billing_address', label: 'Billing Address', span: 2 },
+        { key: 'created_at', label: 'Created', span: 1, type: 'date' }
       ]
     };
   },
@@ -415,17 +398,16 @@ export default {
         filtered = filtered.filter(customer =>
           customer.name?.toLowerCase().includes(query) ||
           customer.email?.toLowerCase().includes(query) ||
-          customer.phone?.includes(query) ||
-          customer.city?.toLowerCase().includes(query)
+          customer.phone_number?.includes(query)
         );
       }
 
       // Apply status filter
       if (this.statusFilter) {
         if (this.statusFilter === 'active') {
-          filtered = filtered.filter(customer => customer.is_active);
+          filtered = filtered.filter(customer => this.getCustomerStatus(customer.status));
         } else if (this.statusFilter === 'inactive') {
-          filtered = filtered.filter(customer => !customer.is_active);
+          filtered = filtered.filter(customer => !this.getCustomerStatus(customer.status));
         }
       }
 
@@ -468,10 +450,8 @@ export default {
       this.customerForm = {
         name: '',
         email: '',
-        phone: '',
+        phone_number: '',
         address: '',
-        city: '',
-        country: '',
         billing_address: ''
       };
       this.showCreateModal = true;
@@ -482,10 +462,8 @@ export default {
       this.customerForm = {
         name: customer.name || '',
         email: customer.email || '',
-        phone: customer.phone || '',
+        phone_number: customer.phone_number || '',
         address: customer.address || '',
-        city: customer.city || '',
-        country: customer.country || '',
         billing_address: customer.billing_address || ''
       };
       this.showCreateModal = true;
@@ -516,7 +494,7 @@ export default {
 
         // Update local data
         if (this.selectedCustomer && this.selectedCustomer.id === customer.id) {
-          this.selectedCustomer.is_active = true;
+          this.selectedCustomer.status = 1;
         }
 
         await this.loadData();
@@ -532,13 +510,41 @@ export default {
 
         // Update local data
         if (this.selectedCustomer && this.selectedCustomer.id === customer.id) {
-          this.selectedCustomer.is_active = false;
+          this.selectedCustomer.status = 0;
         }
 
         await this.loadData();
         console.log('Customer deactivated successfully');
       } catch (error) {
         this.handleError(error, 'deactivateCustomerAction');
+      }
+    },
+
+    closeViewModal() {
+      this.showModal = false;
+      this.selectedCustomer = null;
+    },
+
+    confirmDeactivateCustomer(customer) {
+      this.customerToDeactivate = customer;
+      this.showDeleteModal = true;
+    },
+
+    async executeDeactivateCustomer() {
+      try {
+        await customerService.deactivateCustomer(this.customerToDeactivate.id);
+
+        // Update local data
+        if (this.selectedCustomer && this.selectedCustomer.id === this.customerToDeactivate.id) {
+          this.selectedCustomer.status = 0;
+        }
+
+        this.showDeleteModal = false;
+        this.customerToDeactivate = null;
+        await this.loadData();
+        console.log('Customer deactivated successfully');
+      } catch (error) {
+        this.handleError(error, 'executeDeactivateCustomer');
       }
     },
 
@@ -550,10 +556,21 @@ export default {
       });
     },
 
+    getCustomerStatus(status) {
+      // Convert backend numeric status to boolean
+      // 0 = inactive, 1 = active
+      return status === 1;
+    },
+
     formatDate(dateString) {
-      if (!dateString) return '';
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      if (!dateString) return 'N/A';
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
   }
 };

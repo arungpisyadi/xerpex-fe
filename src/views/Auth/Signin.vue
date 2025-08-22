@@ -320,9 +320,6 @@ const loginUser = async (event: MouseEvent) => {
   authDetails.value = '';
 
   try {
-    // Call the auth service login method
-    console.log('Calling auth service login with:', { username: email.value });
-
     const result = await authService.login({
       username: email.value,
       password: password.value

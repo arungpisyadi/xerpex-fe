@@ -5,14 +5,14 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  role: 'admin' | 'finance' | 'user';
+  role: 'admin' | 'finance' | 'manager' | 'survey-admin' | 'staff';
   is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -20,6 +20,9 @@ export interface LoginResponse {
   access_token: string;
   token_type: string;
   user: User;
+  success?: boolean;
+  error?: string;
+  details?: string;
 }
 
 export interface RegisterRequest {
@@ -231,7 +234,7 @@ class AuthService {
    * @returns True if user is regular user
    */
   isRegularUser(): boolean {
-    return this.currentUser?.role === 'user';
+    return this.currentUser?.role === 'staff';
   }
 
   /**

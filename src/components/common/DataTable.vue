@@ -6,36 +6,9 @@
         {{ title }}
       </h4>
 
-      <!-- Search and Filter -->
-      <div class="flex items-center gap-3">
-        <!-- Search Input -->
-        <div class="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            v-model="searchQuery"
-            class="w-full rounded-lg border border-stroke bg-transparent py-2 pl-10 pr-4 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-          />
-          <span class="absolute left-3 top-2.5 text-gray-500">
-            <svg
-              class="fill-current"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.0467 11.22L12.6667 9.80667C12.3699 9.5245 11.9955 9.33754 11.5916 9.26983C11.1876 9.20211 10.7727 9.25673 10.4 9.42667L9.80001 8.82667C10.5071 7.88751 10.8299 6.70961 10.7038 5.53371C10.5778 4.35781 10.0115 3.27559 9.12608 2.50375C8.24069 1.73191 7.09292 1.32358 5.90909 1.35362C4.72526 1.38366 3.6004 1.84938 2.75482 2.66476C1.90923 3.48014 1.40518 4.59486 1.34806 5.77725C1.29093 6.95963 1.68552 8.12047 2.44399 9.02255C3.20246 9.92464 4.27566 10.5223 5.45025 10.6823C6.62484 10.8423 7.81206 10.5521 8.76667 9.88L9.36667 10.48C9.18345 10.8479 9.11566 11.2625 9.17125 11.6689C9.22683 12.0752 9.40275 12.4547 9.67334 12.76L11.0867 14.1733C11.3312 14.4178 11.6572 14.5547 12 14.5547C12.3428 14.5547 12.6688 14.4178 12.9133 14.1733L14.0467 13.04C14.2912 12.7955 14.4281 12.4695 14.4281 12.1267C14.4281 11.7839 14.2912 11.4578 14.0467 11.2133V11.22Z"
-                fill=""
-              ></path>
-            </svg>
-          </span>
-        </div>
-
-        <!-- Add Button -->
+      <!-- Add Button -->
+      <div v-if="showAddButton" class="flex items-center gap-3">
         <button
-          v-if="showAddButton"
           @click="$emit('add')"
           class="inline-flex items-center justify-center rounded-md bg-primary py-2 px-4 text-center font-medium text-white hover:bg-opacity-90"
         >
@@ -64,7 +37,7 @@
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto">
           <!-- Table Header -->
-          <thead class="bg-gray-2 dark:bg-meta-4">
+          <thead v-if="columns && columns.length > 0" class="bg-gray-2 dark:bg-meta-4">
             <tr>
               <th
                 v-for="(column, index) in columns"
@@ -87,7 +60,7 @@
           <tbody>
             <!-- Loading State -->
             <tr v-if="loading">
-              <td :colspan="columns.length + (showActions ? 1 : 0)" class="text-center py-10">
+              <td :colspan="(columns?.length || 0) + (showActions ? 1 : 0)" class="text-center py-10">
                 <div class="flex justify-center items-center">
                   <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
                 </div>
@@ -96,7 +69,7 @@
 
             <!-- Empty State -->
             <tr v-else-if="!filteredData.length">
-              <td :colspan="columns.length + (showActions ? 1 : 0)" class="text-center py-10">
+              <td :colspan="(columns?.length || 0) + (showActions ? 1 : 0)" class="text-center py-10">
                 <div class="text-center">
                   <p class="text-lg font-medium text-gray-600 dark:text-gray-400">No data found</p>
                   <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Try adjusting your search or filter to find what you're looking for.</p>
@@ -107,7 +80,7 @@
             <!-- Data Rows -->
             <tr v-else v-for="(item, rowIndex) in paginatedData" :key="rowIndex" class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-gray-800">
               <td
-                v-for="(column, colIndex) in columns"
+                v-for="(column, colIndex) in (columns || [])"
                 :key="colIndex"
                 :class="[
                   'p-2.5 xl:p-5',
@@ -279,28 +252,20 @@ export default {
   },
   data() {
     return {
-      searchQuery: '',
       currentPage: 1,
       isFilterOpen: false
     };
   },
   computed: {
     filteredData() {
-      if (!this.searchQuery) {
-        return this.data;
+      if (!this.data || !Array.isArray(this.data)) {
+        return [];
       }
-
-      const query = this.searchQuery.toLowerCase();
-      return this.data.filter(item => {
-        return this.columns.some(column => {
-          const value = item[column.key];
-          if (value === null || value === undefined) return false;
-          return String(value).toLowerCase().includes(query);
-        });
-      });
+      return this.data;
     },
     totalPages() {
-      return Math.ceil(this.filteredData.length / this.itemsPerPage);
+      const dataLength = this.filteredData?.length || 0;
+      return Math.ceil(dataLength / this.itemsPerPage);
     },
     startIndex() {
       return (this.currentPage - 1) * this.itemsPerPage;
@@ -412,7 +377,6 @@ export default {
       this.isFilterOpen = false;
     },
     resetFilters() {
-      this.searchQuery = '';
       this.currentPage = 1;
       this.$emit('filter-reset');
       this.isFilterOpen = false;

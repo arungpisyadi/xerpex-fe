@@ -9,6 +9,26 @@ const erpRoutes = [
       requiresAuth: true
     },
   },
+  // Customer Management
+  {
+    path: '/customers',
+    name: 'Customers',
+    component: () => import('../views/Customers.vue'),
+    meta: {
+      title: 'Customer Management',
+      requiresAuth: true
+    },
+  },
+  // Tax Management
+  {
+    path: '/taxes',
+    name: 'Taxes',
+    component: () => import('../views/Taxes.vue'),
+    meta: {
+      title: 'Tax Management',
+      requiresAuth: true
+    },
+  },
   {
     path: '/users',
     name: 'Users',
@@ -42,6 +62,16 @@ const erpRoutes = [
     component: () => import('../views/VillaDetail.vue'),
     meta: {
       title: 'Villa Detail',
+      requiresAuth: true
+    },
+  },
+  // Quote Management
+  {
+    path: '/quotes',
+    name: 'Quotes',
+    component: () => import('../views/Quotes.vue'),
+    meta: {
+      title: 'Quote Management',
       requiresAuth: true
     },
   },

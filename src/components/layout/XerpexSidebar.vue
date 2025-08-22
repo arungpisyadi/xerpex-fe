@@ -170,10 +170,12 @@ const menuGroups = [
       },
       {
         icon: DocsIcon,
-        name: "Payments",
+        name: "Revenues",
         subItems: [
-          { name: "Payments", path: "/404" },
-          { name: "Invoices", path: "/404" },
+          { name: "Customers", path: "/customers" },
+          { name: "Quotes", path: "/quotes" },
+          { name: "Invoices", path: "/invoices" },
+          { name: "Payments", path: "/payments" },
         ],
       },
       {

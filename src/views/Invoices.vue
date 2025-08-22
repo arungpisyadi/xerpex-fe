@@ -69,21 +69,33 @@
           @page-changed="handlePageChange"
         >
           <template #item.invoice_number="{ item }">
-            <span class="text-sm font-medium text-black dark:text-white">{{ item.invoice_number }}</span>
+            <div>
+              <span class="text-sm font-medium text-black dark:text-white">{{ item.invoice_number }}</span>
+              <div v-if="showUserContext && item.user_id" class="text-xs text-gray-500">
+                User ID: {{ item.user_id }}
+              </div>
+            </div>
           </template>
 
-          <template #item.booking_id="{ item }">
-            <router-link :to="`/bookings/${item.booking_id}`" class="text-sm text-primary hover:underline">
-              #{{ item.booking_id }}
-            </router-link>
+          <template #item.customer_name="{ item }">
+            <div>
+              <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.customer_name }}</span>
+              <div v-if="item.customer_id" class="text-xs text-gray-500">
+                ID: {{ item.customer_id }}
+              </div>
+            </div>
           </template>
 
-          <template #item.guest_name="{ item }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.guest_name }}</span>
+          <template #item.total="{ item }">
+            <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(item.total) }}</span>
           </template>
 
-          <template #item.amount="{ item }">
-            <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(item.amount) }}</span>
+          <template #item.tax_total="{ item }">
+            <span class="text-sm text-gray-600 dark:text-gray-400">${{ formatPrice(item.tax_total) }}</span>
+          </template>
+
+          <template #item.issue_date="{ item }">
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDate(item.issue_date) }}</span>
           </template>
 
           <template #item.status="{ item }">
@@ -104,7 +116,7 @@
                   <path d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z" fill=""></path>
                 </svg>
               </button>
-              <button class="hover:text-success" @click="sendInvoice(item)">
+              <button class="hover:text-success" @click="sendInvoiceEmail(item)" :title="'Send Invoice'">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill=""></path>
                 </svg>
@@ -130,8 +142,8 @@
     </div>
 
     <!-- Invoice Details Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="w-full max-w-xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8">
+    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-semibold text-black dark:text-white">
             Invoice Details
@@ -228,8 +240,8 @@
     </div>
 
     <!-- Create Invoice Modal -->
-    <div v-if="showCreateModal" class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="w-full max-w-xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8">
+    <div v-if="showCreateModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-semibold text-black dark:text-white">
             Create New Invoice
@@ -244,35 +256,52 @@
         <form @submit.prevent="submitInvoice" class="mb-6">
           <div class="mb-4">
             <label class="mb-2.5 block text-black dark:text-white">
-              Select Booking
+              Select Customer
             </label>
             <select
-              v-model="newInvoice.booking_id"
+              v-model="newInvoice.customer_id"
               class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              @change="fetchBookingDetails"
+              @change="fetchCustomerDetails"
+              required
             >
-              <option value="">Select a booking</option>
-              <option v-for="booking in bookings" :key="booking.id" :value="booking.id">
-                #{{ booking.id }} - {{ booking.guest_name }} ({{ formatDate(booking.check_in) }} - {{ formatDate(booking.check_out) }})
+              <option value="">Select a customer</option>
+              <option v-for="customer in customers" :key="customer.id" :value="customer.id">
+                {{ customer.name }} - {{ customer.email }}
               </option>
             </select>
           </div>
 
-          <div v-if="newInvoice.booking_id" class="mb-4 grid grid-cols-2 gap-4">
+          <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
             <div>
               <label class="mb-2.5 block text-black dark:text-white">
-                Amount
+                Subtotal Amount
               </label>
               <input
                 type="number"
                 v-model="newInvoice.amount"
                 class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter amount"
+                placeholder="Enter subtotal amount"
                 step="0.01"
                 min="0"
                 required
               />
             </div>
+            <div>
+              <label class="mb-2.5 block text-black dark:text-white">
+                Tax Amount
+              </label>
+              <input
+                type="number"
+                v-model="newInvoice.tax_total"
+                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                placeholder="Enter tax amount"
+                step="0.01"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
             <div>
               <label class="mb-2.5 block text-black dark:text-white">
                 Due Date
@@ -283,6 +312,20 @@
                 class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 required
               />
+            </div>
+            <div>
+              <label class="mb-2.5 block text-black dark:text-white">
+                Payment Terms
+              </label>
+              <select
+                v-model="newInvoice.payment_terms"
+                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              >
+                <option value="Net 15 days">Net 15 days</option>
+                <option value="Net 30 days">Net 30 days</option>
+                <option value="Net 60 days">Net 60 days</option>
+                <option value="Due on receipt">Due on receipt</option>
+              </select>
             </div>
           </div>
 
@@ -309,7 +352,7 @@
             <button
               type="submit"
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
-              :disabled="!newInvoice.booking_id || !newInvoice.amount || !newInvoice.due_date"
+              :disabled="!newInvoice.customer_id || !newInvoice.amount || !newInvoice.due_date"
             >
               Create Invoice
             </button>
@@ -324,7 +367,11 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
-import { invoiceService, bookingService } from '../services';
+import invoiceService from '../services/invoice.service';
+import customerService from '../services/customer.service';
+import authService from '../services/auth.service';
+import { useInvoicing } from '../composables/useInvoicing';
+import { handleError } from '../utils/errorHandler';
 
 export default {
   components: {
@@ -332,32 +379,62 @@ export default {
     PageBreadcrumb,
     DataTable
   },
+  setup() {
+    const {
+      invoices,
+      customers,
+      loading,
+      error,
+      overdueInvoices,
+      fetchInvoices,
+      fetchCustomers,
+      createInvoice,
+      sendInvoice,
+      markInvoiceAsPaid
+    } = useInvoicing();
+
+    return {
+      invoices,
+      customers,
+      loading,
+      error,
+      overdueInvoices,
+      fetchInvoices,
+      fetchCustomers,
+      createInvoice,
+      sendInvoice,
+      markInvoiceAsPaid,
+      authService,
+      handleError
+    };
+  },
   data() {
     return {
-      loading: true,
       searchQuery: '',
       statusFilter: '',
       dateFilter: '',
       currentPage: 1,
       itemsPerPage: 10,
       totalItems: 0,
-      invoices: [],
-      bookings: [],
       showModal: false,
       showCreateModal: false,
       selectedInvoice: null,
       newInvoice: {
-        booking_id: '',
+        customer_id: '',
         amount: '',
         due_date: '',
-        notes: ''
+        tax_total: 0,
+        payment_terms: 'Net 30 days',
+        notes: '',
+        items: []
       },
       headers: [
         { text: 'Invoice #', value: 'invoice_number', sortable: true },
-        { text: 'Booking ID', value: 'booking_id', sortable: true },
-        { text: 'Guest', value: 'guest_name', sortable: true },
-        { text: 'Amount', value: 'amount', sortable: true },
+        { text: 'Customer', value: 'customer_name', sortable: true },
+        { text: 'Amount', value: 'total', sortable: true },
+        { text: 'Tax', value: 'tax_total', sortable: true },
         { text: 'Status', value: 'status', sortable: true },
+        { text: 'Issue Date', value: 'issue_date', sortable: true },
         { text: 'Due Date', value: 'due_date', sortable: true },
         { text: 'Actions', value: 'actions', sortable: false }
       ]
@@ -365,6 +442,11 @@ export default {
   },
   computed: {
     filteredInvoices() {
+      // Ensure invoices is an array before filtering
+      if (!this.invoices || !Array.isArray(this.invoices)) {
+        return [];
+      }
+
       let filtered = [...this.invoices];
 
       // Apply search filter
@@ -372,9 +454,8 @@ export default {
         const query = this.searchQuery.toLowerCase();
         filtered = filtered.filter(invoice =>
           invoice.invoice_number?.toLowerCase().includes(query) ||
-          invoice.booking_id?.toString().includes(query) ||
-          invoice.guest_name?.toLowerCase().includes(query) ||
-          invoice.villa_name?.toLowerCase().includes(query)
+          invoice.customer_name?.toLowerCase().includes(query) ||
+          invoice.total?.toString().includes(query)
         );
       }
 
@@ -411,125 +492,129 @@ export default {
       }
 
       return filtered;
+    },
+
+    // Show user context for admin/finance users
+    showUserContext() {
+      return this.authService.canAccessAllData();
     }
   },
   async created() {
-    await this.fetchInvoices();
+    await this.loadData();
   },
   methods: {
-    async fetchInvoices() {
+    async loadData() {
       try {
-        this.loading = true;
-        const response = await invoiceService.getInvoices({
-          page: this.currentPage,
-          limit: this.itemsPerPage
-        });
-
-        this.invoices = response.items || [];
-        this.totalItems = response.total || 0;
+        await Promise.all([
+          this.fetchInvoices({
+            skip: (this.currentPage - 1) * this.itemsPerPage,
+            limit: this.itemsPerPage
+          }),
+          this.fetchCustomers({ active_only: true })
+        ]);
+        this.totalItems = this.invoices?.length || 0;
       } catch (error) {
-        console.error('Error fetching invoices:', error);
-        // Show error notification
-      } finally {
-        this.loading = false;
+        this.handleError(error, 'loadData');
       }
     },
-    async fetchBookings() {
-      try {
-        const response = await bookingService.getBookings({
-          status: 'confirmed',
-          limit: 100
-        });
 
-        this.bookings = response.items || [];
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-        // Show error notification
-      }
-    },
-    async fetchBookingDetails() {
-      if (!this.newInvoice.booking_id) return;
+    async fetchCustomerDetails() {
+      if (!this.newInvoice.customer_id) return;
 
       try {
-        const booking = await bookingService.getBookingById(this.newInvoice.booking_id);
+        const customer = await customerService.getCustomerById(this.newInvoice.customer_id);
 
-        // Set default amount from booking total
-        this.newInvoice.amount = booking.total_amount || 0;
-
-        // Set default due date (7 days from now)
+        // Set default due date (30 days from now)
         const now = new Date();
         const dueDate = new Date(now);
-        dueDate.setDate(now.getDate() + 7);
+        dueDate.setDate(now.getDate() + 30);
         this.newInvoice.due_date = dueDate.toISOString().split('T')[0];
+        this.newInvoice.payment_terms = 'Net 30 days';
       } catch (error) {
-        console.error('Error fetching booking details:', error);
-        // Show error notification
+        this.handleError(error, 'fetchCustomerDetails');
       }
     },
     async handlePageChange(page) {
       this.currentPage = page;
-      await this.fetchInvoices();
+      await this.loadData();
     },
+
     viewInvoiceDetails(invoice) {
       this.selectedInvoice = invoice;
       this.showModal = true;
     },
+
     createNewInvoice() {
       this.newInvoice = {
-        booking_id: '',
+        customer_id: '',
         amount: '',
         due_date: '',
-        notes: ''
+        tax_total: 0,
+        payment_terms: 'Net 30 days',
+        notes: '',
+        items: []
       };
-      this.fetchBookings();
       this.showCreateModal = true;
     },
+
     async submitInvoice() {
       try {
-        await invoiceService.createInvoice(this.newInvoice);
+        const invoiceData = {
+          ...this.newInvoice,
+          issue_date: new Date().toISOString().split('T')[0],
+          status: 'draft',
+          total: parseFloat(this.newInvoice.amount) + parseFloat(this.newInvoice.tax_total)
+        };
+
+        await this.createInvoice(invoiceData);
         this.showCreateModal = false;
-        await this.fetchInvoices();
+        await this.loadData();
+
         // Show success notification
+        console.log('Invoice created successfully');
       } catch (error) {
-        console.error('Error creating invoice:', error);
-        // Show error notification
+        this.handleError(error, 'submitInvoice');
       }
     },
+
     async markAsPaid(invoice) {
       try {
-        await invoiceService.updateInvoiceStatus(invoice.id, 'paid');
+        await this.markInvoiceAsPaid(invoice.id, {
+          payment_date: new Date().toISOString().split('T')[0]
+        });
 
         // Update local data
         if (this.selectedInvoice && this.selectedInvoice.id === invoice.id) {
           this.selectedInvoice.status = 'paid';
-          this.selectedInvoice.payment_date = new Date().toISOString();
         }
 
-        // Refresh the invoice list
-        await this.fetchInvoices();
+        await this.loadData();
+        console.log('Invoice marked as paid successfully');
+      } catch (error) {
+        this.handleError(error, 'markAsPaid');
+      }
+    },
 
-        // Show success notification
-      } catch (error) {
-        console.error('Error marking invoice as paid:', error);
-        // Show error notification
-      }
-    },
-    async sendInvoice(invoice) {
+    async sendInvoiceEmail(invoice) {
       try {
-        await invoiceService.sendInvoice(invoice.id);
-        // Show success notification
+        await this.sendInvoice(invoice.id, {
+          recipient_email: invoice.customer_email,
+          subject: `Invoice ${invoice.invoice_number}`,
+          message: 'Please find your invoice attached.'
+        });
+
+        console.log('Invoice sent successfully');
       } catch (error) {
-        console.error('Error sending invoice:', error);
-        // Show error notification
+        this.handleError(error, 'sendInvoiceEmail');
       }
     },
+
     async downloadInvoice(invoice) {
       try {
-        await invoiceService.downloadInvoice(invoice.id);
-        // Show success notification
+        await invoiceService.downloadInvoice(invoice.id, `invoice-${invoice.invoice_number}.pdf`);
+        console.log('Invoice downloaded successfully');
       } catch (error) {
-        console.error('Error downloading invoice:', error);
-        // Show error notification
+        this.handleError(error, 'downloadInvoice');
       }
     },
     formatDate(dateString) {

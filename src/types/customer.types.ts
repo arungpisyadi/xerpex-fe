@@ -3,12 +3,10 @@ export interface Customer {
   user_id: number;  // Added for role-based access control
   name: string;
   email?: string;
-  phone?: string;
+  phone_number?: string;
   address?: string;
-  city?: string;
-  country?: string;
   billing_address?: string;
-  is_active: boolean;
+  status: number; // 0 = inactive, 1 = active
   created_at: string;
   updated_at: string;
 }
@@ -16,10 +14,8 @@ export interface Customer {
 export interface CreateCustomerRequest {
   name: string;
   email?: string;
-  phone?: string;
+  phone_number?: string;
   address?: string;
-  city?: string;
-  country?: string;
   billing_address?: string;
 }
 

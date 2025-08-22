@@ -20,8 +20,8 @@
           </div>
           <div>
             <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Status</p>
-            <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="getStatusClass(customer.is_active)">
-              {{ customer.is_active ? 'Active' : 'Inactive' }}
+            <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="getStatusClass(customer.is_active ?? (customer.status === 1))">
+              {{ (customer.is_active ?? (customer.status === 1)) ? 'Active' : 'Inactive' }}
             </span>
           </div>
           <div>
@@ -89,7 +89,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 };
 
-const getStatusClass = (isActive: boolean) => {
+const getStatusClass = (isActive: boolean | undefined) => {
   return isActive
     ? 'bg-success bg-opacity-10 text-success'
     : 'bg-gray-500 bg-opacity-10 text-gray-500';

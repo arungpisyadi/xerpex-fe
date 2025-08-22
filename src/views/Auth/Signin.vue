@@ -324,19 +324,12 @@ const loginUser = async (event: MouseEvent) => {
     console.log('Calling auth service login with:', { username: email.value });
 
     const result = await authService.login({
-      username: email.value,
+      email: email.value,
       password: password.value
     });
 
-    // Handle login result
-    if (!result.success) {
-      // Display the error from the backend
-      authError.value = result.error || 'Authentication failed. Please try again.';
-      // Set details message if available
-      authDetails.value = result.details || '';
-      console.error('Login failed:', authError.value, 'Details:', authDetails.value);
-      return;
-    }
+    // Successful login - LoginResponse contains access_token, token_type, and user
+    console.log('Login successful:', result);
 
     // Successful login - redirect to dashboard
     console.log('Login successful, redirecting...');

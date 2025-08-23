@@ -10,10 +10,13 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import VueApexCharts from 'vue3-apexcharts'
+import { plugin, defaultConfig } from '@formkit/vue'
+import config from './formkit.config'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(VueApexCharts)
+app.use(plugin, defaultConfig(config()))
 
 app.mount('#app')

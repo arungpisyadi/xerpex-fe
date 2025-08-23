@@ -12,106 +12,134 @@
         </button>
       </div>
 
-      <form @submit.prevent="handleSubmit" class="mb-6">
+      <FormKit
+        type="form"
+        @submit="handleSubmit"
+        :classes="{
+          form: 'mb-6'
+        }"
+      >
         <div class="mb-4 grid grid-cols-2 gap-4">
-          <div>
-            <label class="mb-2.5 block text-black dark:text-white">
-              Name <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              v-model="form.name"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              :class="{ 'border-red-500': errors.name }"
-              placeholder="Enter customer name"
-              required
-            />
-            <p v-if="errors.name" class="mt-1 text-sm text-red-500">{{ errors.name }}</p>
-          </div>
-          <div>
-            <label class="mb-2.5 block text-black dark:text-white">
-              Email
-            </label>
-            <input
-              type="email"
-              v-model="form.email"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              :class="{ 'border-red-500': errors.email }"
-              placeholder="Enter email address"
-            />
-            <p v-if="errors.email" class="mt-1 text-sm text-red-500">{{ errors.email }}</p>
-          </div>
-        </div>
-
-        <div class="mb-4 grid grid-cols-2 gap-4">
-          <div>
-            <label class="mb-2.5 block text-black dark:text-white">
-              Phone
-            </label>
-            <input
-              type="tel"
-              v-model="form.phone"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              :class="{ 'border-red-500': errors.phone }"
-              placeholder="Enter phone number"
-            />
-            <p v-if="errors.phone" class="mt-1 text-sm text-red-500">{{ errors.phone }}</p>
-          </div>
-          <div>
-            <label class="mb-2.5 block text-black dark:text-white">
-              City
-            </label>
-            <input
-              type="text"
-              v-model="form.city"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              :class="{ 'border-red-500': errors.city }"
-              placeholder="Enter city"
-            />
-            <p v-if="errors.city" class="mt-1 text-sm text-red-500">{{ errors.city }}</p>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="mb-2.5 block text-black dark:text-white">
-            Country
-          </label>
-          <input
+          <FormKit
             type="text"
-            v-model="form.country"
-            class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            :class="{ 'border-red-500': errors.country }"
-            placeholder="Enter country"
+            name="name"
+            label="Name"
+            v-model="form.name"
+            validation="required"
+            placeholder="Enter customer name"
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          >
+            <template #label="{ label }">
+              {{ label }} <span class="text-red-500">*</span>
+            </template>
+          </FormKit>
+
+          <FormKit
+            type="email"
+            name="email"
+            label="Email"
+            v-model="form.email"
+            validation="email"
+            placeholder="Enter email address"
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
           />
-          <p v-if="errors.country" class="mt-1 text-sm text-red-500">{{ errors.country }}</p>
+        </div>
+
+        <div class="mb-4 grid grid-cols-2 gap-4">
+          <FormKit
+            type="tel"
+            name="phone"
+            label="Phone"
+            v-model="form.phone"
+            placeholder="Enter phone number"
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          />
+
+          <FormKit
+            type="text"
+            name="city"
+            label="City"
+            v-model="form.city"
+            placeholder="Enter city"
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          />
         </div>
 
         <div class="mb-4">
-          <label class="mb-2.5 block text-black dark:text-white">
-            Address
-          </label>
-          <textarea
+          <FormKit
+            type="text"
+            name="country"
+            label="Country"
+            v-model="form.country"
+            placeholder="Enter country"
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          />
+        </div>
+
+        <div class="mb-4">
+          <FormKit
+            type="textarea"
+            name="address"
+            label="Address"
             v-model="form.address"
-            class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            :class="{ 'border-red-500': errors.address }"
             placeholder="Enter address"
             rows="3"
-          ></textarea>
-          <p v-if="errors.address" class="mt-1 text-sm text-red-500">{{ errors.address }}</p>
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          />
         </div>
 
         <div class="mb-4">
-          <label class="mb-2.5 block text-black dark:text-white">
-            Billing Address
-          </label>
-          <textarea
+          <FormKit
+            type="textarea"
+            name="billing_address"
+            label="Billing Address"
             v-model="form.billing_address"
-            class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            :class="{ 'border-red-500': errors.billing_address }"
             placeholder="Enter billing address (leave empty to use same as address)"
             rows="3"
-          ></textarea>
-          <p v-if="errors.billing_address" class="mt-1 text-sm text-red-500">{{ errors.billing_address }}</p>
+            :classes="{
+              outer: '',
+              wrapper: '',
+              label: 'mb-2.5 block text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+              message: 'mt-1 text-sm text-red-500'
+            }"
+          />
         </div>
 
         <div class="flex justify-end gap-4 mt-6">
@@ -122,16 +150,18 @@
           >
             Cancel
           </button>
-          <button
+          <FormKit
             type="submit"
-            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
             :disabled="loading || !form.name"
+            :classes="{
+              input: 'flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+            }"
           >
             <span v-if="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
             {{ isEditing ? 'Update Customer' : 'Create Customer' }}
-          </button>
+          </FormKit>
         </div>
-      </form>
+      </FormKit>
     </div>
   </div>
 </template>
@@ -154,7 +184,6 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const errors = ref<Record<string, string>>({});
 
 const form = reactive<CreateCustomerRequest>({
   name: '',
@@ -188,54 +217,35 @@ watch(() => props.customer, (customer) => {
       billing_address: ''
     });
   }
-  errors.value = {};
 }, { immediate: true });
 
-const validateForm = (): boolean => {
-  errors.value = {};
-
-  if (!form.name.trim()) {
-    errors.value.name = 'Name is required';
-  }
-
-  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.value.email = 'Please enter a valid email address';
-  }
-
-  return Object.keys(errors.value).length === 0;
-};
-
-const handleSubmit = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
+const handleSubmit = async (formData: any) => {
   try {
     loading.value = true;
 
+    // Use FormKit's form data instead of reactive form
+    const submitData = {
+      name: formData.name,
+      email: formData.email || '',
+      phone: formData.phone || '',
+      address: formData.address || '',
+      city: formData.city || '',
+      country: formData.country || '',
+      billing_address: formData.billing_address || ''
+    };
+
     if (props.isEditing && props.customer) {
-      const updateData: UpdateCustomerRequest = { ...form };
+      const updateData: UpdateCustomerRequest = { ...submitData };
       await customerService.updateCustomer(props.customer.id, updateData);
     } else {
-      await customerService.createCustomer(form);
+      await customerService.createCustomer(submitData);
     }
 
     emit('saved');
   } catch (error: any) {
     console.error('Error saving customer:', error);
-
-    // Handle validation errors from API
-    if (error.response?.status === 422 && error.response.data?.detail) {
-      const apiErrors = error.response.data.detail;
-      if (Array.isArray(apiErrors)) {
-        apiErrors.forEach((err: any) => {
-          if (err.loc && err.loc.length > 1) {
-            const field = err.loc[1];
-            errors.value[field] = err.msg;
-          }
-        });
-      }
-    }
+    // FormKit will handle displaying validation errors
+    throw error;
   } finally {
     loading.value = false;
   }

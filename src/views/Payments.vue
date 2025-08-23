@@ -172,94 +172,126 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitPayment" class="mb-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="submitPayment"
+          :classes="{
+            form: 'mb-6'
+          }"
+        >
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Select Invoice
-            </label>
-            <select
+            <FormKit
+              type="select"
+              name="invoice_id"
+              label="Select Invoice"
               v-model="paymentForm.invoice_id"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              required
-            >
-              <option value="">Select an invoice</option>
-              <option v-for="invoice in availableInvoices" :key="invoice.id" :value="invoice.id">
-                {{ invoice.invoice_number }} - ${{ formatPrice(invoice.total) }} ({{ capitalizeFirstLetter(invoice.status) }})
-              </option>
-            </select>
+              :options="availableInvoices.map(invoice => ({
+                label: `${invoice.invoice_number} - $${formatPrice(invoice.total)} (${capitalizeFirstLetter(invoice.status)})`,
+                value: invoice.id
+              }))"
+              placeholder="Select an invoice"
+              validation="required"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Amount
-              </label>
-              <input
-                type="number"
-                v-model="paymentForm.amount"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter payment amount"
-                step="0.01"
-                min="0"
-                required
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Payment Method
-              </label>
-              <select
-                v-model="paymentForm.payment_method"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                required
-              >
-                <option value="">Select method</option>
-                <option value="cash">Cash</option>
-                <option value="bank_transfer">Bank Transfer</option>
-                <option value="credit_card">Credit Card</option>
-                <option value="debit_card">Debit Card</option>
-                <option value="digital_wallet">Digital Wallet</option>
-                <option value="check">Check</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+            <FormKit
+              type="number"
+              name="amount"
+              label="Amount"
+              v-model="paymentForm.amount"
+              placeholder="Enter payment amount"
+              step="0.01"
+              min="0"
+              validation="required|min:0"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
+            <FormKit
+              type="select"
+              name="payment_method"
+              label="Payment Method"
+              v-model="paymentForm.payment_method"
+              :options="[
+                { label: 'Cash', value: 'cash' },
+                { label: 'Bank Transfer', value: 'bank_transfer' },
+                { label: 'Credit Card', value: 'credit_card' },
+                { label: 'Debit Card', value: 'debit_card' },
+                { label: 'Digital Wallet', value: 'digital_wallet' },
+                { label: 'Check', value: 'check' },
+                { label: 'Other', value: 'other' }
+              ]"
+              placeholder="Select method"
+              validation="required"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Payment Date
-              </label>
-              <input
-                type="date"
-                v-model="paymentForm.payment_date"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                required
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Reference Number
-              </label>
-              <input
-                type="text"
-                v-model="paymentForm.reference_number"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter reference number"
-              />
-            </div>
+            <FormKit
+              type="date"
+              name="payment_date"
+              label="Payment Date"
+              v-model="paymentForm.payment_date"
+              validation="required"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
+            <FormKit
+              type="text"
+              name="reference_number"
+              label="Reference Number"
+              v-model="paymentForm.reference_number"
+              placeholder="Enter reference number"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Notes
-            </label>
-            <textarea
+            <FormKit
+              type="textarea"
+              name="notes"
+              label="Notes"
               v-model="paymentForm.notes"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               placeholder="Enter payment notes"
-              rows="4"
-            ></textarea>
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[100px]',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="flex justify-end gap-4 mt-6">
@@ -270,15 +302,16 @@
             >
               Cancel
             </button>
-            <button
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
-              :disabled="!paymentForm.invoice_id || !paymentForm.amount || !paymentForm.payment_method"
+              :classes="{
+                input: 'flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
               Record Payment
-            </button>
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
   </admin-layout>

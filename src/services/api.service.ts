@@ -3,7 +3,7 @@ import type { AxiosInstance, AxiosResponse } from 'axios';
 
 // Create axios instance with base URL and default headers
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://your-api-domain.com/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://kebunsu-api.tugugroup.co.id/api/v1',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'

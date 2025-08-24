@@ -92,181 +92,177 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveBooking" novalidate>
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="saveBooking"
+          :classes="{
+            form: 'space-y-4'
+          }"
+        >
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Customer Name <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model="bookingForm.customer_name"
-                type="text"
-                placeholder="Enter customer name"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.customer_name ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('customer_name')"
-              />
-              <p v-if="formErrors.customer_name" class="mt-1 text-sm text-danger">{{ formErrors.customer_name }}</p>
-            </div>
+            <FormKit
+              type="text"
+              name="customer_name"
+              label="Customer Name"
+              placeholder="Enter customer name"
+              v-model="bookingForm.customer_name"
+              validation="required|length:2"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Customer Email <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model="bookingForm.customer_email"
-                type="email"
-                placeholder="Enter customer email"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.customer_email ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('customer_email')"
-              />
-              <p v-if="formErrors.customer_email" class="mt-1 text-sm text-danger">{{ formErrors.customer_email }}</p>
-            </div>
+            <FormKit
+              type="email"
+              name="customer_email"
+              label="Customer Email"
+              placeholder="Enter customer email"
+              v-model="bookingForm.customer_email"
+              validation="required|email"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Customer Phone <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model="bookingForm.customer_phone"
-                type="text"
-                placeholder="Enter customer phone"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.customer_phone ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('customer_phone')"
-              />
-              <p v-if="formErrors.customer_phone" class="mt-1 text-sm text-danger">{{ formErrors.customer_phone }}</p>
-            </div>
+            <FormKit
+              type="text"
+              name="customer_phone"
+              label="Customer Phone"
+              placeholder="Enter customer phone"
+              v-model="bookingForm.customer_phone"
+              validation="required|length:8"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Villa <span class="text-meta-1">*</span>
-              </label>
-              <select
-                v-model="bookingForm.villa_id"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.villa_id ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('villa_id')"
-              >
-                <option value="" disabled>Select a villa</option>
-                <option v-for="villa in villas" :key="villa.id" :value="villa.id">
-                  {{ villa.name }}
-                </option>
-              </select>
-              <p v-if="formErrors.villa_id" class="mt-1 text-sm text-danger">{{ formErrors.villa_id }}</p>
-            </div>
+            <FormKit
+              type="select"
+              name="villa_id"
+              label="Villa"
+              v-model="bookingForm.villa_id"
+              validation="required"
+              :options="[
+                { label: 'Select a villa', value: '', attrs: { disabled: true } },
+                ...villas.map(villa => ({ label: villa.name, value: villa.id }))
+              ]"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Check-in Date <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model="bookingForm.check_in_date"
-                type="date"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.check_in_date ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('check_in_date')"
-              />
-              <p v-if="formErrors.check_in_date" class="mt-1 text-sm text-danger">{{ formErrors.check_in_date }}</p>
-            </div>
+            <FormKit
+              type="date"
+              name="check_in_date"
+              label="Check-in Date"
+              v-model="bookingForm.check_in_date"
+              validation="required"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Check-out Date <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model="bookingForm.check_out_date"
-                type="date"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.check_out_date ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('check_out_date')"
-              />
-              <p v-if="formErrors.check_out_date" class="mt-1 text-sm text-danger">{{ formErrors.check_out_date }}</p>
-            </div>
+            <FormKit
+              type="date"
+              name="check_out_date"
+              label="Check-out Date"
+              v-model="bookingForm.check_out_date"
+              validation="required"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Number of Guests <span class="text-meta-1">*</span>
-              </label>
-              <input
-                v-model.number="bookingForm.num_guests"
-                type="number"
-                min="1"
-                placeholder="Enter number of guests"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.num_guests ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('num_guests')"
-              />
-              <p v-if="formErrors.num_guests" class="mt-1 text-sm text-danger">{{ formErrors.num_guests }}</p>
-            </div>
+            <FormKit
+              type="number"
+              name="num_guests"
+              label="Number of Guests"
+              placeholder="Enter number of guests"
+              v-model="bookingForm.num_guests"
+              validation="required|min:1|max:20"
+              min="1"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
 
-            <div class="mb-4">
-              <label class="mb-2.5 block font-medium text-black dark:text-white">
-                Status
-              </label>
-              <select
-                v-model="bookingForm.status"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                required
-              >
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
+            <FormKit
+              type="select"
+              name="status"
+              label="Status"
+              v-model="bookingForm.status"
+              :options="[
+                { label: 'Pending', value: 'pending' },
+                { label: 'Confirmed', value: 'confirmed' },
+                { label: 'Cancelled', value: 'cancelled' },
+                { label: 'Completed', value: 'completed' }
+              ]"
+              :classes="{
+                outer: 'mb-4',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
           </div>
 
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Special Requests
-            </label>
-            <textarea
-              v-model="bookingForm.special_requests"
-              placeholder="Enter special requests"
-              rows="3"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            ></textarea>
-          </div>
+          <FormKit
+            type="textarea"
+            name="special_requests"
+            label="Special Requests"
+            placeholder="Enter special requests"
+            v-model="bookingForm.special_requests"
+            rows="3"
+            :classes="{
+              outer: 'mb-4',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
           <div class="flex justify-end gap-4">
-            <button
+            <FormKit
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
               {{ isEditing ? 'Update' : 'Save' }}
-            </button>
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
 

@@ -92,116 +92,117 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveUser" novalidate>
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Username <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="userForm.username"
-              type="text"
-              placeholder="Enter username"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.username ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('username')"
-            />
-            <p v-if="formErrors.username" class="mt-1 text-sm text-danger">{{ formErrors.username }}</p>
-          </div>
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="saveUser"
+          :classes="{
+            form: 'space-y-4'
+          }"
+        >
+          <FormKit
+            type="text"
+            name="username"
+            label="Username"
+            placeholder="Enter username"
+            v-model="userForm.username"
+            validation="required|length:3"
+            :classes="{
+              outer: 'mb-4',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Email <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="userForm.email"
-              type="email"
-              placeholder="Enter email"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.email ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('email')"
-            />
-            <p v-if="formErrors.email" class="mt-1 text-sm text-danger">{{ formErrors.email }}</p>
-          </div>
+          <FormKit
+            type="email"
+            name="email"
+            label="Email"
+            placeholder="Enter email"
+            v-model="userForm.email"
+            validation="required|email"
+            :classes="{
+              outer: 'mb-4',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Full Name <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="userForm.full_name"
-              type="text"
-              placeholder="Enter full name"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.full_name ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('full_name')"
-            />
-            <p v-if="formErrors.full_name" class="mt-1 text-sm text-danger">{{ formErrors.full_name }}</p>
-          </div>
+          <FormKit
+            type="text"
+            name="full_name"
+            label="Full Name"
+            placeholder="Enter full name"
+            v-model="userForm.full_name"
+            validation="required|length:2"
+            :classes="{
+              outer: 'mb-4',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
-          <div class="mb-4" v-if="!isEditing">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Password <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="userForm.password"
-              type="password"
-              placeholder="Enter password"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.password ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              :required="!isEditing"
-              @blur="validateField('password')"
-            />
-            <p v-if="formErrors.password" class="mt-1 text-sm text-danger">{{ formErrors.password }}</p>
-          </div>
+          <FormKit
+            v-if="!isEditing"
+            type="password"
+            name="password"
+            label="Password"
+            placeholder="Enter password"
+            v-model="userForm.password"
+            validation="required|length:6"
+            :classes="{
+              outer: 'mb-4',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
-          <div class="mb-6">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Role <span class="text-meta-1">*</span>
-            </label>
-            <select
-              v-model="userForm.role"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.role ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('role')"
-            >
-              <option value="">Select role</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="user">User</option>
-            </select>
-            <p v-if="formErrors.role" class="mt-1 text-sm text-danger">{{ formErrors.role }}</p>
-          </div>
+          <FormKit
+            type="select"
+            name="role"
+            label="Role"
+            v-model="userForm.role"
+            validation="required"
+            :options="[
+              { label: 'Select role', value: '', attrs: { disabled: true } },
+              { label: 'Admin', value: 'admin' },
+              { label: 'Manager', value: 'manager' },
+              { label: 'Finance', value: 'finance' },
+              { label: 'Survey', value: 'survey' },
+              { label: 'Staff', value: 'staff' }
+            ]"
+            :classes="{
+              outer: 'mb-6',
+              label: 'mb-2.5 block font-medium text-black dark:text-white',
+              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+              message: 'mt-1 text-sm text-danger'
+            }"
+          />
 
           <div class="flex justify-end gap-4">
-            <button
+            <FormKit
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600'
+              }"
             >
               {{ isEditing ? 'Update' : 'Save' }}
-            </button>
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
 

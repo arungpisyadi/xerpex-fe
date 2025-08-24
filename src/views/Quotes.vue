@@ -152,93 +152,123 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitQuote" class="mb-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="submitQuote"
+          :classes="{
+            form: 'mb-6'
+          }"
+        >
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Select Customer
-            </label>
-            <select
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
               v-model="newQuote.customer_id"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              required
-            >
-              <option value="">Select a customer</option>
-              <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                {{ customer.name }} - {{ customer.email }}
-              </option>
-            </select>
+              :options="customers.map(customer => ({ label: `${customer.name} - ${customer.email}`, value: customer.id }))"
+              placeholder="Select a customer"
+              validation="required"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div v-if="newQuote.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Subtotal Amount
-              </label>
-              <input
-                type="number"
-                v-model="newQuote.amount"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter subtotal amount"
-                step="0.01"
-                min="0"
-                required
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Tax Amount
-              </label>
-              <input
-                type="number"
-                v-model="newQuote.tax_total"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter tax amount"
-                step="0.01"
-                min="0"
-              />
-            </div>
+            <FormKit
+              type="number"
+              name="amount"
+              label="Subtotal Amount"
+              v-model="newQuote.amount"
+              placeholder="Enter subtotal amount"
+              step="0.01"
+              min="0"
+              validation="required|min:0"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
+            <FormKit
+              type="number"
+              name="tax_total"
+              label="Tax Amount"
+              v-model="newQuote.tax_total"
+              placeholder="Enter tax amount"
+              step="0.01"
+              min="0"
+              validation="min:0"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div v-if="newQuote.customer_id" class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Expiry Date
-            </label>
-            <input
+            <FormKit
               type="date"
+              name="expiry_date"
+              label="Expiry Date"
               v-model="newQuote.expiry_date"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
             />
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Notes
-            </label>
-            <textarea
+            <FormKit
+              type="textarea"
+              name="notes"
+              label="Notes"
               v-model="newQuote.notes"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               placeholder="Enter notes"
-              rows="4"
-            ></textarea>
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[100px]',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="flex justify-end gap-4 mt-6">
-            <button
+            <FormKit
               type="button"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               @click="showCreateModal = false"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
-              :disabled="!newQuote.customer_id || !newQuote.amount"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
-              Create Quote
-            </button>
+              Save
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
   </admin-layout>

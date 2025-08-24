@@ -183,111 +183,144 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitInvoice" class="mb-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="submitInvoice"
+          :classes="{
+            form: 'mb-6'
+          }"
+        >
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Select Customer
-            </label>
-            <select
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
               v-model="newInvoice.customer_id"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              @change="fetchCustomerDetails"
-              required
-            >
-              <option value="">Select a customer</option>
-              <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                {{ customer.name }} - {{ customer.email }}
-              </option>
-            </select>
+              :options="customers.map(customer => ({ label: `${customer.name} - ${customer.email}`, value: customer.id }))"
+              placeholder="Select a customer"
+              validation="required"
+              @input="fetchCustomerDetails"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Subtotal Amount
-              </label>
-              <input
-                type="number"
-                v-model="newInvoice.amount"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter subtotal amount"
-                step="0.01"
-                min="0"
-                required
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Tax Amount
-              </label>
-              <input
-                type="number"
-                v-model="newInvoice.tax_total"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter tax amount"
-                step="0.01"
-                min="0"
-              />
-            </div>
+            <FormKit
+              type="number"
+              name="amount"
+              label="Subtotal Amount"
+              v-model="newInvoice.amount"
+              placeholder="Enter subtotal amount"
+              step="0.01"
+              min="0"
+              validation="required|min:0"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
+            <FormKit
+              type="number"
+              name="tax_total"
+              label="Tax Amount"
+              v-model="newInvoice.tax_total"
+              placeholder="Enter tax amount"
+              step="0.01"
+              min="0"
+              validation="min:0"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Due Date
-              </label>
-              <input
-                type="date"
-                v-model="newInvoice.due_date"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                required
-              />
-            </div>
-            <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Payment Terms
-              </label>
-              <select
-                v-model="newInvoice.payment_terms"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              >
-                <option value="Net 15 days">Net 15 days</option>
-                <option value="Net 30 days">Net 30 days</option>
-                <option value="Net 60 days">Net 60 days</option>
-                <option value="Due on receipt">Due on receipt</option>
-              </select>
-            </div>
+            <FormKit
+              type="date"
+              name="due_date"
+              label="Due Date"
+              v-model="newInvoice.due_date"
+              validation="required"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
+            <FormKit
+              type="select"
+              name="payment_terms"
+              label="Payment Terms"
+              v-model="newInvoice.payment_terms"
+              :options="[
+                { label: 'Net 15 days', value: 'Net 15 days' },
+                { label: 'Net 30 days', value: 'Net 30 days' },
+                { label: 'Net 60 days', value: 'Net 60 days' },
+                { label: 'Due on receipt', value: 'Due on receipt' }
+              ]"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Notes
-            </label>
-            <textarea
+            <FormKit
+              type="textarea"
+              name="notes"
+              label="Notes"
               v-model="newInvoice.notes"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               placeholder="Enter notes"
-              rows="4"
-            ></textarea>
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[100px]',
+                message: 'text-sm text-red-500 mt-1'
+              }"
+            />
           </div>
 
           <div class="flex justify-end gap-4 mt-6">
-            <button
+            <FormKit
               type="button"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               @click="showCreateModal = false"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
-              :disabled="!newInvoice.customer_id || !newInvoice.amount || !newInvoice.due_date"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
-              Create Invoice
-            </button>
+              Save
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
   </admin-layout>

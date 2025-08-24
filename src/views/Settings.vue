@@ -45,122 +45,163 @@
               General Settings
             </h3>
 
-            <form @submit.prevent="saveGeneralSettings">
+            <FormKit
+              type="form"
+              @submit="saveGeneralSettings"
+              :actions="false"
+              :classes="{
+                form: 'space-y-6'
+              }"
+            >
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Company Name <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.general.companyName"
+                  <FormKit
                     type="text"
+                    name="companyName"
+                    label="Company Name"
                     placeholder="Enter company name"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    v-model="settings.general.companyName"
+                    validation="required"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
 
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Company Email <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.general.companyEmail"
+                  <FormKit
                     type="email"
+                    name="companyEmail"
+                    label="Company Email"
                     placeholder="Enter company email"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    v-model="settings.general.companyEmail"
+                    validation="required|email"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
               </div>
 
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Company Phone
-                  </label>
-                  <input
-                    v-model="settings.general.companyPhone"
+                  <FormKit
                     type="text"
+                    name="companyPhone"
+                    label="Company Phone"
                     placeholder="Enter company phone"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                    v-model="settings.general.companyPhone"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
 
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Company Address
-                  </label>
-                  <textarea
-                    v-model="settings.general.companyAddress"
-                    rows="4"
+                  <FormKit
+                    type="textarea"
+                    name="companyAddress"
+                    label="Company Address"
                     placeholder="Enter company address"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                  ></textarea>
+                    v-model="settings.general.companyAddress"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
+                    rows="4"
+                  />
                 </div>
               </div>
-
 
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Bank Account Information</h4>
 
                 <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div class="w-full xl:w-1/2">
-                    <label class="mb-2.5 block text-black dark:text-white">
-                      Bank Name
-                    </label>
-                    <input
-                      v-model="settings.general.bankName"
+                    <FormKit
                       type="text"
+                      name="bankName"
+                      label="Bank Name"
                       placeholder="Enter bank name"
-                      class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                      v-model="settings.general.bankName"
+                      :classes="{
+                        outer: 'mb-0',
+                        label: 'mb-2.5 block text-black dark:text-white',
+                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                        message: 'text-meta-1 text-sm mt-1'
+                      }"
                     />
                   </div>
 
                   <div class="w-full xl:w-1/2">
-                    <label class="mb-2.5 block text-black dark:text-white">
-                      Account Holder Name
-                    </label>
-                    <input
-                      v-model="settings.general.bankAccountHolderName"
+                    <FormKit
                       type="text"
+                      name="bankAccountHolderName"
+                      label="Account Holder Name"
                       placeholder="Enter account holder name"
-                      class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                      v-model="settings.general.bankAccountHolderName"
+                      :classes="{
+                        outer: 'mb-0',
+                        label: 'mb-2.5 block text-black dark:text-white',
+                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                        message: 'text-meta-1 text-sm mt-1'
+                      }"
                     />
                   </div>
                 </div>
 
                 <div class="mb-6 flex flex-col gap-6 xl:flex-row">
                   <div class="w-full xl:w-1/2">
-                    <label class="mb-2.5 block text-black dark:text-white">
-                      Bank Account Number
-                    </label>
-                    <input
-                      v-model="settings.general.bankAccountNumber"
+                    <FormKit
                       type="text"
+                      name="bankAccountNumber"
+                      label="Bank Account Number"
                       placeholder="Enter bank account number"
-                      class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                      v-model="settings.general.bankAccountNumber"
+                      :classes="{
+                        outer: 'mb-0',
+                        label: 'mb-2.5 block text-black dark:text-white',
+                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                        message: 'text-meta-1 text-sm mt-1'
+                      }"
                     />
                   </div>
 
                   <div class="w-full xl:w-1/2">
-                    <label class="mb-2.5 block text-black dark:text-white">
-                      SWIFT Number
-                    </label>
-                    <input
-                      v-model="settings.general.bankSwiftNumber"
+                    <FormKit
                       type="text"
+                      name="bankSwiftNumber"
+                      label="SWIFT Number"
                       placeholder="Enter SWIFT number"
-                      class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                      v-model="settings.general.bankSwiftNumber"
+                      :classes="{
+                        outer: 'mb-0',
+                        label: 'mb-2.5 block text-black dark:text-white',
+                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                        message: 'text-meta-1 text-sm mt-1'
+                      }"
                     />
                   </div>
                 </div>
               </div>
 
-              <button
+              <FormKit
                 type="submit"
                 :disabled="loading"
-                class="flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50"
+                :classes="{
+                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
+                }"
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -169,8 +210,8 @@
                   </svg>
                 </span>
                 {{ loading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </form>
+              </FormKit>
+            </FormKit>
           </div>
         </div>
 
@@ -181,112 +222,143 @@
               Booking Settings
             </h3>
 
-            <form @submit.prevent="saveBookingSettings">
+            <FormKit
+              type="form"
+              @submit="saveBookingSettings"
+              :classes="{
+                form: 'space-y-6'
+              }"
+            >
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Check-in Time <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.booking.checkInTime"
+                  <FormKit
                     type="time"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    name="checkInTime"
+                    label="Check-in Time"
+                    v-model="settings.booking.checkInTime"
+                    validation="required"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
 
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Check-out Time <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.booking.checkOutTime"
+                  <FormKit
                     type="time"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    name="checkOutTime"
+                    label="Check-out Time"
+                    v-model="settings.booking.checkOutTime"
+                    validation="required"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
               </div>
 
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Minimum Booking Days <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.booking.minBookingDays"
+                  <FormKit
                     type="number"
+                    name="minBookingDays"
+                    label="Minimum Booking Days"
+                    v-model="settings.booking.minBookingDays"
+                    validation="required|min:1"
                     min="1"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
 
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Maximum Booking Days <span class="text-meta-1">*</span>
-                  </label>
-                  <input
-                    v-model="settings.booking.maxBookingDays"
+                  <FormKit
                     type="number"
+                    name="maxBookingDays"
+                    label="Maximum Booking Days"
+                    v-model="settings.booking.maxBookingDays"
+                    validation="required|min:1"
                     min="1"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                    required
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
               </div>
 
               <div class="mb-4.5">
-                <label class="mb-2.5 block text-black dark:text-white">
-                  Advance Booking Days
-                </label>
-                <input
-                  v-model="settings.booking.advanceBookingDays"
+                <FormKit
                   type="number"
+                  name="advanceBookingDays"
+                  label="Advance Booking Days"
+                  v-model="settings.booking.advanceBookingDays"
                   min="0"
-                  class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                  help="Maximum days in advance a booking can be made"
+                  :classes="{
+                    outer: 'mb-0',
+                    label: 'mb-2.5 block text-black dark:text-white',
+                    input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                    help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
+                    message: 'text-meta-1 text-sm mt-1'
+                  }"
                 />
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Maximum days in advance a booking can be made</p>
               </div>
 
               <div class="mb-4.5 flex items-center">
-                <label class="flex cursor-pointer select-none items-center">
-                  <div class="relative">
-                    <input
-                      type="checkbox"
-                      v-model="settings.booking.allowPartialPayment"
-                      class="sr-only"
-                    />
-                    <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                    <div
-                      :class="[
-                        settings.booking.allowPartialPayment ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                        'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                      ]"
-                    ></div>
-                  </div>
-                  <span class="ml-3 text-black dark:text-white">Allow Partial Payment</span>
-                </label>
-              </div>
-
-              <div class="mb-6" v-if="settings.booking.allowPartialPayment">
-                <label class="mb-2.5 block text-black dark:text-white">
-                  Minimum Deposit Percentage
-                </label>
-                <input
-                  v-model="settings.booking.minDepositPercentage"
-                  type="number"
-                  min="0"
-                  max="100"
-                  class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                <FormKit
+                  type="checkbox"
+                  name="allowPartialPayment"
+                  label="Allow Partial Payment"
+                  v-model="settings.booking.allowPartialPayment"
+                  :classes="{
+                    outer: 'mb-0',
+                    wrapper: 'flex cursor-pointer select-none items-center',
+                    input: 'sr-only',
+                    decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                    decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                    label: 'ml-3 text-black dark:text-white'
+                  }"
+                  decorator-icon
                 />
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Percentage of total amount required as deposit</p>
               </div>
 
-              <button
+              <FormKit
+                v-if="settings.booking.allowPartialPayment"
+                type="number"
+                name="minDepositPercentage"
+                label="Minimum Deposit Percentage"
+                v-model="settings.booking.minDepositPercentage"
+                min="0"
+                max="100"
+                help="Percentage of total amount required as deposit"
+                :classes="{
+                  outer: 'mb-6',
+                  label: 'mb-2.5 block text-black dark:text-white',
+                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                  help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
+                  message: 'text-meta-1 text-sm mt-1'
+                }"
+              />
+
+              <FormKit
                 type="submit"
                 :disabled="loading"
-                class="flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50"
+                :classes="{
+                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
+                }"
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -295,8 +367,8 @@
                   </svg>
                 </span>
                 {{ loading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </form>
+              </FormKit>
+            </FormKit>
           </div>
         </div>
 
@@ -307,115 +379,130 @@
               Payment Settings
             </h3>
 
-            <form @submit.prevent="savePaymentSettings">
+            <FormKit
+              type="form"
+              @submit="savePaymentSettings"
+              :classes="{
+                form: 'space-y-6'
+              }"
+            >
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Payment Methods</h4>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.payment.enableCreditCard"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.payment.enableCreditCard ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Enable Credit Card Payments</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="enableCreditCard"
+                    label="Enable Credit Card Payments"
+                    v-model="settings.payment.enableCreditCard"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.payment.enableBankTransfer"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.payment.enableBankTransfer ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Enable Bank Transfer</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="enableBankTransfer"
+                    label="Enable Bank Transfer"
+                    v-model="settings.payment.enableBankTransfer"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.payment.enablePaypal"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.payment.enablePaypal ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Enable PayPal</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="enablePaypal"
+                    label="Enable PayPal"
+                    v-model="settings.payment.enablePaypal"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
               </div>
 
-              <div class="mb-4.5" v-if="settings.payment.enableBankTransfer">
-                <label class="mb-2.5 block text-black dark:text-white">
-                  Bank Account Details
-                </label>
-                <textarea
-                  v-model="settings.payment.bankAccountDetails"
-                  rows="4"
-                  placeholder="Enter bank account details"
-                  class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
-                ></textarea>
-              </div>
+              <FormKit
+                v-if="settings.payment.enableBankTransfer"
+                type="textarea"
+                name="bankAccountDetails"
+                label="Bank Account Details"
+                placeholder="Enter bank account details"
+                v-model="settings.payment.bankAccountDetails"
+                rows="4"
+                :classes="{
+                  outer: 'mb-4.5',
+                  label: 'mb-2.5 block text-black dark:text-white',
+                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                  message: 'text-meta-1 text-sm mt-1'
+                }"
+              />
 
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Payment Due Days
-                  </label>
-                  <input
-                    v-model="settings.payment.paymentDueDays"
+                  <FormKit
                     type="number"
+                    name="paymentDueDays"
+                    label="Payment Due Days"
+                    v-model="settings.payment.paymentDueDays"
                     min="0"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                    help="Number of days before check-in that full payment is due"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
-                  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Number of days before check-in that full payment is due</p>
                 </div>
 
                 <div class="w-full xl:w-1/2">
-                  <label class="mb-2.5 block text-black dark:text-white">
-                    Late Payment Fee (%)
-                  </label>
-                  <input
-                    v-model="settings.payment.latePaymentFeePercentage"
+                  <FormKit
                     type="number"
+                    name="latePaymentFeePercentage"
+                    label="Late Payment Fee (%)"
+                    v-model="settings.payment.latePaymentFeePercentage"
                     min="0"
                     max="100"
-                    class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                    :classes="{
+                      outer: 'mb-0',
+                      label: 'mb-2.5 block text-black dark:text-white',
+                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                      message: 'text-meta-1 text-sm mt-1'
+                    }"
                   />
                 </div>
               </div>
 
-              <button
+              <FormKit
                 type="submit"
                 :disabled="loading"
-                class="flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50"
+                :classes="{
+                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
+                }"
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -424,8 +511,8 @@
                   </svg>
                 </span>
                 {{ loading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </form>
+              </FormKit>
+            </FormKit>
           </div>
         </div>
 
@@ -436,60 +523,66 @@
               Notification Settings
             </h3>
 
-            <form @submit.prevent="saveNotificationSettings">
+            <FormKit
+              type="form"
+              @submit="saveNotificationSettings"
+              :classes="{
+                form: 'space-y-6'
+              }"
+            >
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Notification Methods</h4>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.notification.enableEmailNotifications"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.notification.enableEmailNotifications ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Enable Email Notifications</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="enableEmailNotifications"
+                    label="Enable Email Notifications"
+                    v-model="settings.notification.enableEmailNotifications"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.notification.enableSmsNotifications"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.notification.enableSmsNotifications ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Enable SMS Notifications</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="enableSmsNotifications"
+                    label="Enable SMS Notifications"
+                    v-model="settings.notification.enableSmsNotifications"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
               </div>
 
               <div class="mb-4.5">
-                <label class="mb-2.5 block text-black dark:text-white">
-                  Notification Email
-                </label>
-                <input
-                  v-model="settings.notification.notificationEmail"
+                <FormKit
                   type="email"
+                  name="notificationEmail"
+                  label="Notification Email"
                   placeholder="Enter notification email"
-                  class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500"
+                  v-model="settings.notification.notificationEmail"
+                  :classes="{
+                    outer: 'mb-0',
+                    label: 'mb-2.5 block text-black dark:text-white',
+                    input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
+                    message: 'text-meta-1 text-sm mt-1'
+                  }"
                 />
               </div>
 
@@ -497,70 +590,66 @@
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Notification Types</h4>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.notification.sendBookingConfirmation"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.notification.sendBookingConfirmation ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Send Booking Confirmation</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="sendBookingConfirmation"
+                    label="Send Booking Confirmation"
+                    v-model="settings.notification.sendBookingConfirmation"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
 
                 <div class="mb-4 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.notification.sendPaymentReminders"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.notification.sendPaymentReminders ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Send Payment Reminders</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="sendPaymentReminders"
+                    label="Send Payment Reminders"
+                    v-model="settings.notification.sendPaymentReminders"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
 
                 <div class="mb-6 flex items-center">
-                  <label class="flex cursor-pointer select-none items-center">
-                    <div class="relative">
-                      <input
-                        type="checkbox"
-                        v-model="settings.notification.sendCheckInReminders"
-                        class="sr-only"
-                      />
-                      <div class="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
-                      <div
-                        :class="[
-                          settings.notification.sendCheckInReminders ? 'bg-brand-500 left-[30px]' : 'bg-white left-1',
-                          'absolute left-1 top-1 h-6 w-6 rounded-full transition'
-                        ]"
-                      ></div>
-                    </div>
-                    <span class="ml-3 text-black dark:text-white">Send Check-in Reminders</span>
-                  </label>
+                  <FormKit
+                    type="checkbox"
+                    name="sendCheckInReminders"
+                    label="Send Check-in Reminders"
+                    v-model="settings.notification.sendCheckInReminders"
+                    :classes="{
+                      outer: 'mb-0',
+                      wrapper: 'flex cursor-pointer select-none items-center',
+                      input: 'sr-only',
+                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
+                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
+                      label: 'ml-3 text-black dark:text-white'
+                    }"
+                    decorator-icon
+                  />
                 </div>
               </div>
 
-              <button
+              <FormKit
                 type="submit"
                 :disabled="loading"
-                class="flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50"
+                :classes="{
+                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
+                }"
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -569,8 +658,8 @@
                   </svg>
                 </span>
                 {{ loading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </form>
+              </FormKit>
+            </FormKit>
           </div>
         </div>
       </template>

@@ -92,158 +92,205 @@
           </button>
         </div>
 
-        <form @submit.prevent="savePackage" novalidate>
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="savePackage"
+          :classes="{
+            form: ''
+          }"
+        >
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Name <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="packageForm.name"
+            <FormKit
               type="text"
+              name="name"
+              label="Name"
+              v-model="packageForm.name"
               placeholder="Enter package name"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.name ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('name')"
-            />
-            <p v-if="formErrors.name" class="mt-1 text-sm text-danger">{{ formErrors.name }}</p>
+              validation="required|length:2"
+              validation-messages="{
+                required: 'Package name is required',
+                length: 'Package name must be at least 2 characters long'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Category
-            </label>
-            <select
+            <FormKit
+              type="select"
+              name="category"
+              label="Category"
               v-model="packageForm.category"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.category ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('category')"
-            >
-              <option value="">Select category</option>
-              <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
-            </select>
-            <p v-if="formErrors.category" class="mt-1 text-sm text-danger">{{ formErrors.category }}</p>
+              :options="categoryOptions"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Type
-            </label>
-            <select
+            <FormKit
+              type="select"
+              name="type"
+              label="Type"
               v-model="packageForm.type"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.type ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('type')"
-            >
-              <option value="">Select type</option>
-              <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
-            </select>
-            <p v-if="formErrors.type" class="mt-1 text-sm text-danger">{{ formErrors.type }}</p>
+              :options="typeOptions"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Description <span class="text-meta-1">*</span>
-            </label>
-            <textarea
+            <FormKit
+              type="textarea"
+              name="description"
+              label="Description"
               v-model="packageForm.description"
               placeholder="Enter package description"
-              rows="4"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.description ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('description')"
-            ></textarea>
-            <p v-if="formErrors.description" class="mt-1 text-sm text-danger">{{ formErrors.description }}</p>
+              validation="required|length:10"
+              validation-messages="{
+                required: 'Description is required',
+                length: 'Description must be at least 10 characters long'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark min-h-[100px]',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Days <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model.number="packageForm.days"
+            <FormKit
               type="number"
+              name="days"
+              label="Days"
+              v-model="packageForm.days"
+              placeholder="Enter number of days"
               min="1"
               max="365"
-              placeholder="Enter number of days"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.days ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('days')"
-            />
-            <p v-if="formErrors.days" class="mt-1 text-sm text-danger">{{ formErrors.days }}</p>
+              validation="required|between:1,365"
+              validation-messages="{
+                required: 'Days is required',
+                between: 'Days must be between 1 and 365'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Cost per Pax <span class="text-meta-1">*</span>
-            </label>
-            <div class="relative">
-              <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">IDR</span>
-              <input
-                v-model="packageForm.cost_per_pax"
-                type="text"
-                placeholder="0"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 pl-8 pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.cost_per_pax ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('cost_per_pax')"
-              />
-            </div>
-            <p v-if="formErrors.cost_per_pax" class="mt-1 text-sm text-danger">{{ formErrors.cost_per_pax }}</p>
+            <FormKit
+              type="text"
+              name="cost_per_pax"
+              label="Cost per Pax"
+              v-model="packageForm.cost_per_pax"
+              placeholder="0"
+              validation="required|min:1"
+              validation-messages="{
+                required: 'Cost per pax is required',
+                min: 'Cost per pax must be greater than 0'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: 'relative',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 pl-8! pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+              <template #prefix>
+                <span class="absolute left-1 top-1/2 -translate-y-2 text-gray-500 text-xs">IDR</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-6">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Minimum Pax <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model.number="packageForm.min_pax"
+            <FormKit
               type="number"
+              name="min_pax"
+              label="Minimum Pax"
+              v-model="packageForm.min_pax"
+              placeholder="Enter minimum pax"
               min="1"
               max="100"
-              placeholder="Enter minimum pax"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.min_pax ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('min_pax')"
-            />
-            <p v-if="formErrors.min_pax" class="mt-1 text-sm text-danger">{{ formErrors.min_pax }}</p>
+              validation="required|between:1,100"
+              validation-messages="{
+                required: 'Minimum pax is required',
+                between: 'Minimum pax must be between 1 and 100'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="flex justify-end gap-4">
-            <button
+            <FormKit
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
               {{ isEditing ? 'Update' : 'Save' }}
-            </button>
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
 
@@ -450,6 +497,18 @@ export default {
           String(pkg.min_pax || '').includes(query)
         );
       });
+    },
+    categoryOptions() {
+      return [
+        { label: 'Select category', value: '' },
+        ...this.categories.map(category => ({ label: category, value: category }))
+      ];
+    },
+    typeOptions() {
+      return [
+        { label: 'Select type', value: '' },
+        ...this.types.map(type => ({ label: type, value: type }))
+      ];
     }
   },
   async created() {
@@ -561,58 +620,6 @@ export default {
       if (!value) return '0';
       return parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     },
-    validateField(fieldName) {
-      this.formErrors = { ...this.formErrors };
-      delete this.formErrors[fieldName];
-
-      switch (fieldName) {
-        case 'name':
-          if (!this.packageForm.name || this.packageForm.name.trim().length < 2) {
-            this.formErrors.name = 'Package name must be at least 2 characters long';
-          }
-          break;
-        case 'category':
-          // Category is not required - no validation needed
-          break;
-        case 'type':
-          // Type is not required - no validation needed
-          break;
-        case 'description':
-          if (!this.packageForm.description || this.packageForm.description.trim().length < 10) {
-            this.formErrors.description = 'Description must be at least 10 characters long';
-          }
-          break;
-        case 'days':
-          if (!this.packageForm.days || this.packageForm.days < 1 || this.packageForm.days > 365) {
-            this.formErrors.days = 'Days must be between 1 and 365';
-          }
-          break;
-        case 'cost_per_pax':
-          if (!this.packageForm.cost_per_pax || parseFloat(this.packageForm.cost_per_pax) <= 0) {
-            this.formErrors.cost_per_pax = 'Cost per pax must be greater than 0';
-          }
-          break;
-        case 'min_pax':
-          if (!this.packageForm.min_pax || this.packageForm.min_pax < 1 || this.packageForm.min_pax > 100) {
-            this.formErrors.min_pax = 'Minimum pax must be between 1 and 100';
-          }
-          break;
-      }
-    },
-    validateForm() {
-      this.formErrors = {};
-
-      // Validate all fields
-      this.validateField('name');
-      this.validateField('category');
-      this.validateField('type');
-      this.validateField('description');
-      this.validateField('days');
-      this.validateField('cost_per_pax');
-      this.validateField('min_pax');
-
-      return Object.keys(this.formErrors).length === 0;
-    },
     showNotification(type, message) {
       this.notification = {
         show: true,
@@ -625,19 +632,26 @@ export default {
         this.notification.show = false;
       }, 5000);
     },
-    async savePackage() {
-      if (!this.validateForm()) {
-        this.showNotification('error', 'Please fix the validation errors before submitting');
-        return;
-      }
-
+    async savePackage(formData) {
       try {
         this.loading = true;
+
+        // FormKit provides the form data, but we'll use our packageForm for consistency
+        const packageData = {
+          name: this.packageForm.name,
+          category: this.packageForm.category,
+          type: this.packageForm.type,
+          description: this.packageForm.description,
+          days: this.packageForm.days,
+          cost_per_pax: this.packageForm.cost_per_pax,
+          min_pax: this.packageForm.min_pax
+        };
+
         if (this.isEditing) {
-          await packageService.updatePackage(this.selectedPackageId, this.packageForm);
+          await packageService.updatePackage(this.selectedPackageId, packageData);
           this.showNotification('success', 'Package updated successfully');
         } else {
-          await packageService.createPackage(this.packageForm);
+          await packageService.createPackage(packageData);
           this.showNotification('success', 'Package created successfully');
         }
         this.closeModal();

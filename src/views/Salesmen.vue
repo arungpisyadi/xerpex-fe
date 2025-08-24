@@ -68,94 +68,149 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitSalesman" class="mb-6">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="submitSalesman"
+          :classes="{
+            form: 'mb-6'
+          }"
+        >
           <div class="mb-4 grid grid-cols-2 gap-4">
             <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                First Name <span class="text-meta-1">*</span>
-              </label>
-              <input
+              <FormKit
                 type="text"
+                name="first_name"
+                label="First Name"
                 v-model="salesmanForm.first_name"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 placeholder="Enter first name"
-                required
-              />
+                validation="required|length:2"
+                validation-messages="{
+                  required: 'First name is required',
+                  length: 'First name must be at least 2 characters long'
+                }"
+                :classes="{
+                  outer: '',
+                  wrapper: '',
+                  label: 'mb-2.5 block font-medium text-black dark:text-white',
+                  input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                  message: 'mt-1 text-sm text-danger'
+                }"
+              >
+                <template #label="context">
+                  {{ context.label }} <span class="text-meta-1">*</span>
+                </template>
+              </FormKit>
             </div>
             <div>
-              <label class="mb-2.5 block text-black dark:text-white">
-                Last Name <span class="text-meta-1">*</span>
-              </label>
-              <input
+              <FormKit
                 type="text"
+                name="last_name"
+                label="Last Name"
                 v-model="salesmanForm.last_name"
-                class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 placeholder="Enter last name"
-                required
-              />
+                validation="required|length:2"
+                validation-messages="{
+                  required: 'Last name is required',
+                  length: 'Last name must be at least 2 characters long'
+                }"
+                :classes="{
+                  outer: '',
+                  wrapper: '',
+                  label: 'mb-2.5 block font-medium text-black dark:text-white',
+                  input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                  message: 'mt-1 text-sm text-danger'
+                }"
+              >
+                <template #label="context">
+                  {{ context.label }} <span class="text-meta-1">*</span>
+                </template>
+              </FormKit>
             </div>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Email <span class="text-meta-1">*</span>
-            </label>
-            <input
+            <FormKit
               type="email"
+              name="email"
+              label="Email"
               v-model="salesmanForm.email"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               placeholder="Enter email address"
-              required
-            />
+              validation="required|email"
+              validation-messages="{
+                required: 'Email is required',
+                email: 'Please enter a valid email address'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block text-black dark:text-white">
-              Phone Number
-            </label>
-            <input
+            <FormKit
               type="tel"
+              name="phone_number"
+              label="Phone Number"
               v-model="salesmanForm.phone_number"
-              class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               placeholder="Enter phone number"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
             />
           </div>
 
-          <div class="mb-4">
-            <label class="flex items-center">
-              <input
-                type="checkbox"
-                v-model="salesmanForm.is_active"
-                class="sr-only"
-              />
-              <div class="mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark" :class="salesmanForm.is_active ? 'bg-primary border-primary' : ''">
-                <span v-if="salesmanForm.is_active" class="text-white">
-                  <svg class="fill-current" width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.08369 0.2C9.32369 0.44 9.32369 0.84 9.08369 1.08L4.16369 6C3.92369 6.24 3.52369 6.24 3.28369 6L0.916687 3.64C0.676687 3.4 0.676687 3 0.916687 2.76C1.15669 2.52 1.55669 2.52 1.79669 2.76L3.72369 4.68L8.20369 0.2C8.44369 -0.04 8.84369 -0.04 9.08369 0.2Z" fill=""></path>
-                  </svg>
-                </span>
-              </div>
-              <span class="text-black dark:text-white">Active</span>
-            </label>
+          <div class="mb-6">
+            <FormKit
+              type="checkbox"
+              name="is_active"
+              label="Active"
+              v-model="salesmanForm.is_active"
+              :classes="{
+                outer: '',
+                wrapper: 'flex items-center',
+                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white mt-2!',
+                input: 'sr-only',
+                decorator: 'mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark',
+                decoratorIcon: 'h-2.5 w-2.5 rounded-sm bg-primary',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
           </div>
 
           <div class="flex justify-end gap-4 mt-6">
-            <button
+            <FormKit
               type="button"
-              class="btn btn-outline-primary"
               @click="closeModal"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
-            <button
+            </FormKit>
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
               :disabled="submitting"
+              :classes="{
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+              }"
             >
-              {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
-            </button>
+              {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Save') }}
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
   </admin-layout>

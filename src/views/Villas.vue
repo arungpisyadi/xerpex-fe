@@ -92,156 +92,194 @@
           </button>
         </div>
 
-        <form @submit.prevent="saveVilla" novalidate>
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="saveVilla"
+          :classes="{
+            form: ''
+          }"
+        >
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Name <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model="villaForm.name"
+            <FormKit
               type="text"
+              name="name"
+              label="Name"
+              v-model="villaForm.name"
               placeholder="Enter villa name"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.name ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('name')"
-            />
-            <p v-if="formErrors.name" class="mt-1 text-sm text-danger">{{ formErrors.name }}</p>
+              validation="required|length:2"
+              validation-messages="{
+                required: 'Villa name is required',
+                length: 'Villa name must be at least 2 characters long'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Description <span class="text-meta-1">*</span>
-            </label>
-            <textarea
+            <FormKit
+              type="textarea"
+              name="description"
+              label="Description"
               v-model="villaForm.description"
               placeholder="Enter villa description"
-              rows="4"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.description ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('description')"
-            ></textarea>
-            <p v-if="formErrors.description" class="mt-1 text-sm text-danger">{{ formErrors.description }}</p>
+              validation="required|length:10"
+              validation-messages="{
+                required: 'Description is required',
+                length: 'Description must be at least 10 characters long'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark min-h-[100px]',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Capacity <span class="text-meta-1">*</span>
-            </label>
-            <input
-              v-model.number="villaForm.capacity"
+            <FormKit
               type="number"
+              name="capacity"
+              label="Capacity"
+              v-model="villaForm.capacity"
+              placeholder="Enter villa capacity"
               min="1"
               max="50"
-              placeholder="Enter villa capacity"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.capacity ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('capacity')"
-            />
-            <p v-if="formErrors.capacity" class="mt-1 text-sm text-danger">{{ formErrors.capacity }}</p>
-          </div>
-
-          <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Room Type <span class="text-meta-1">*</span>
-            </label>
-            <select
-              v-model="villaForm.room_type"
-              :class="[
-                'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                formErrors.room_type ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-              ]"
-              required
-              @blur="validateField('room_type')"
+              validation="required|between:1,50"
+              validation-messages="{
+                required: 'Capacity is required',
+                between: 'Capacity must be between 1 and 50 guests'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
             >
-              <option value="">Select room type</option>
-              <option value="Standard">Standard</option>
-              <option value="Deluxe">Deluxe</option>
-              <option value="Suite">Suite</option>
-              <option value="Presidential">Presidential</option>
-              <option value="Villa">Villa</option>
-            </select>
-            <p v-if="formErrors.room_type" class="mt-1 text-sm text-danger">{{ formErrors.room_type }}</p>
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Base Price <span class="text-meta-1">*</span>
-            </label>
-            <div class="relative">
-              <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-xs">IDR</span>
-              <input
-                v-model.number="villaForm.base_price"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
-                :class="[
-                  'w-full rounded border-[1.5px] bg-transparent py-3 pl-8 pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary',
-                  formErrors.base_price ? 'border-danger' : 'border-stroke dark:border-form-strokedark'
-                ]"
-                required
-                @blur="validateField('base_price')"
-              />
-            </div>
-            <p v-if="formErrors.base_price" class="mt-1 text-sm text-danger">{{ formErrors.base_price }}</p>
+            <FormKit
+              type="select"
+              name="room_type"
+              label="Room Type"
+              v-model="villaForm.room_type"
+              :options="[
+                { label: 'Select room type', value: '' },
+                { label: 'Standard', value: 'Standard' },
+                { label: 'Deluxe', value: 'Deluxe' },
+                { label: 'Suite', value: 'Suite' },
+                { label: 'Presidential', value: 'Presidential' },
+                { label: 'Villa', value: 'Villa' }
+              ]"
+              validation="required"
+              validation-messages="{
+                required: 'Please select a room type'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: '',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+            </FormKit>
+          </div>
+
+          <div class="mb-4">
+            <FormKit
+              type="number"
+              name="base_price"
+              label="Base Price"
+              v-model="villaForm.base_price"
+              placeholder="0.00"
+              min="0"
+              step="100000"
+              validation="required|min:0"
+              validation-messages="{
+                required: 'Base price is required',
+                min: 'Base price must be greater than 0'
+              }"
+              :classes="{
+                outer: '',
+                wrapper: 'relative',
+                label: 'mb-2.5 block font-medium text-black dark:text-white',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 pl-8! pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            >
+              <template #label="context">
+                {{ context.label }} <span class="text-meta-1">*</span>
+              </template>
+              <template #prefix>
+                <span class="absolute left-1 top-1/2 -translate-y-2 text-gray-500 text-xs">IDR</span>
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-6">
-            <label class="mb-2.5 block font-medium text-black dark:text-white">
-              Status
-            </label>
-            <div class="flex items-center">
-              <label class="flex cursor-pointer select-none items-center">
-                <div class="relative">
-                  <input
-                    type="checkbox"
-                    v-model="villaForm.is_active"
-                    class="sr-only"
-                  />
-                  <div
-                    :class="[
-                      'mr-4 flex h-5 w-5 items-center justify-center rounded border',
-                      villaForm.is_active
-                        ? 'border-primary bg-gray dark:bg-transparent'
-                        : 'border-stroke dark:border-strokedark'
-                    ]"
-                  >
-                    <span
-                      v-if="villaForm.is_active"
-                      class="h-2.5 w-2.5 rounded-sm bg-primary"
-                    ></span>
-                  </div>
-                </div>
-                Active Villa
-              </label>
-            </div>
+            <FormKit
+              type="checkbox"
+              name="is_active"
+              label="Active Villa"
+              v-model="villaForm.is_active"
+              :classes="{
+                outer: '',
+                wrapper: 'flex items-center',
+                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white mt-2!',
+                input: 'sr-only',
+                decorator: 'mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark',
+                decoratorIcon: 'h-2.5 w-2.5 rounded-sm bg-primary',
+                message: 'mt-1 text-sm text-danger'
+              }"
+            />
           </div>
 
           <div class="flex justify-end gap-4">
             <button
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark dark:text-white text-sm bg-red-500"
             >
               Cancel
             </button>
-            <button
+            <FormKit
               type="submit"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+              :classes="{
+                outer: 'mb-0!',
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed mr-0!'
+              }"
             >
               {{ isEditing ? 'Update' : 'Save' }}
-            </button>
+            </FormKit>
           </div>
-        </form>
+        </FormKit>
       </div>
     </div>
 

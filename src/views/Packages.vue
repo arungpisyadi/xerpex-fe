@@ -272,18 +272,19 @@
           </div>
 
           <div class="flex justify-end gap-4">
-            <button
+            <FormKit
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! text-sm hover:shadow-1 dark:border-strokedark dark:text-white"
+              :classes="{
+                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
+              }"
             >
               Cancel
-            </button>
+            </FormKit>
             <FormKit
               type="submit"
               :classes="{
-                outer: 'mb-0!',
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed mr-0!'
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
               }"
             >
               {{ isEditing ? 'Update' : 'Save' }}

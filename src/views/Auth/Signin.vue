@@ -33,9 +33,7 @@
                   type="form"
                   @submit="loginUser"
                   :actions="false"
-                  :classes="{
-                    form: 'space-y-5'
-                  }"
+
                 >
                   <!-- Email -->
                   <FormKit
@@ -45,17 +43,7 @@
                     v-model="email"
                     validation="required|email"
                     placeholder="info@gmail.com"
-                    :classes="{
-                      outer: '',
-                      wrapper: '',
-                      label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                      input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800',
-                      message: 'mt-1 text-sm text-error-500'
-                    }"
                   >
-                    <template #label="{ label }">
-                      {{ label }}<span class="text-error-500">*</span>
-                    </template>
                   </FormKit>
 
                   <!-- Password -->
@@ -66,75 +54,26 @@
                     v-model="password"
                     validation="required"
                     placeholder="Enter your password"
-                    :classes="{
-                      outer: '',
-                      wrapper: 'relative',
-                      label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                      input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800',
-                      message: 'mt-1 text-sm text-error-500'
-                    }"
+
                   >
-                    <template #label="{ label }">
-                      {{ label }}<span class="text-error-500">*</span>
-                    </template>
                   </FormKit>
 
                   <!-- Checkbox -->
+                  <FormKit
+                    type="checkbox"
+                    name="keepLoggedIn"
+                    label="Keep me logged in"
+                    v-model="keepLoggedIn"
+                  >
+                  </FormKit>
                   <div class="flex items-center justify-between">
-                    <FormKit
-                      type="checkbox"
-                      name="keepLoggedIn"
-                      label="Keep me logged in"
-                      v-model="keepLoggedIn"
-                      :classes="{
-                        outer: 'mb-0',
-                        wrapper: 'mb-0 flex items-center',
-                        label: 'text-sm font-medium text-gray-700 cursor-pointer select-none dark:text-gray-400 ml-3',
-                        input: 'sr-only',
-                        decorator: 'mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px] hover:border-brand-500 dark:hover:border-brand-500',
-                        decoratorIcon: 'w-3.5 h-3.5'
-                      }"
-                      :decorator-classes="{
-                        base: keepLoggedIn
-                          ? 'border-brand-500 bg-brand-500'
-                          : 'bg-transparent border-gray-300 dark:border-gray-700'
-                      }"
-                    >
-                      <template #decoratorIcon>
-                        <span :class="keepLoggedIn ? '' : 'opacity-0'">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                              stroke="white"
-                              stroke-width="1.94437"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </template>
-                    </FormKit>
                   </div>
 
                   <!-- Submit Button -->
                   <FormKit
                     type="submit"
                     :disabled="isLoading"
-                    :classes="{
-                      input: 'flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-70 disabled:cursor-not-allowed'
-                    }"
                   >
-                    <svg v-if="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {{ isLoading ? 'Signing In...' : 'Sign In' }}
                   </FormKit>
                 </FormKit>
                 <!-- <div class="mt-5">

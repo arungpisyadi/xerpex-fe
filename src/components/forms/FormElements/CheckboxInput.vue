@@ -7,14 +7,7 @@
           type="checkbox"
           v-model="checkboxOne"
           label="Default"
-          :classes="{
-            outer: 'mb-0',
-            wrapper: 'mb-0 flex items-center',
-            label: 'text-sm font-medium text-gray-700 cursor-pointer select-none dark:text-gray-400 ml-3',
-            input: 'sr-only',
-            decorator: 'mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px] hover:border-brand-500 dark:hover:border-brand-500',
-            decoratorIcon: 'w-3.5 h-3.5'
-          }"
+
           :decorator-classes="{
             base: checkboxOne
               ? 'border-brand-500 bg-brand-500'
@@ -49,14 +42,7 @@
           type="checkbox"
           v-model="checkboxTwo"
           label="Checked"
-          :classes="{
-            outer: 'mb-0',
-            wrapper: 'mb-0 flex items-center',
-            label: 'text-sm font-medium text-gray-700 cursor-pointer select-none dark:text-gray-400 ml-3',
-            input: 'sr-only',
-            decorator: 'mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px] hover:border-brand-500 dark:hover:border-brand-500',
-            decoratorIcon: 'w-3.5 h-3.5'
-          }"
+
           :decorator-classes="{
             base: checkboxTwo
               ? 'border-brand-500 bg-brand-500'
@@ -92,14 +78,7 @@
           v-model="checkboxThree"
           label="Disabled"
           disabled
-          :classes="{
-            outer: 'mb-0',
-            wrapper: 'mb-0 flex items-center',
-            label: 'text-sm font-medium text-gray-300 cursor-pointer select-none dark:text-gray-700 ml-3',
-            input: 'sr-only peer',
-            decorator: 'mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]',
-            decoratorIcon: 'w-3.5 h-3.5'
-          }"
+
           :decorator-classes="{
             base: checkboxThree
               ? 'bg-transparent border-gray-200 dark:border-gray-800'

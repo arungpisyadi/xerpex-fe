@@ -105,9 +105,7 @@
                 type="form"
                 @submit="handleSubmit"
                 :actions="false"
-                :classes="{
-                  form: 'space-y-5'
-                }"
+
               >
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <!-- First Name -->
@@ -117,11 +115,7 @@
                     label="First Name"
                     placeholder="Enter your first name"
                     validation="required"
-                    :classes="{
-                      outer: 'sm:col-span-1',
-                      label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                      input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                    }"
+
                   />
                   <!-- Last Name -->
                   <FormKit
@@ -130,11 +124,7 @@
                     label="Last Name"
                     placeholder="Enter your last name"
                     validation="required"
-                    :classes="{
-                      outer: 'sm:col-span-1',
-                      label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                      input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                    }"
+
                   />
                 </div>
                 <!-- Email -->
@@ -144,10 +134,7 @@
                   label="Email"
                   placeholder="Enter your email"
                   validation="required|email"
-                  :classes="{
-                    label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                    input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                  }"
+
                 />
                 <!-- Password -->
                 <FormKit
@@ -156,26 +143,14 @@
                   label="Password"
                   placeholder="Enter your password"
                   validation="required|length:6"
-                  :classes="{
-                    label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-                    inner: 'relative',
-                    input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-                  }"
+
                 />
                 <!-- Terms and Conditions Checkbox -->
                 <FormKit
                   type="checkbox"
                   name="agreeToTerms"
                   validation="required"
-                  :classes="{
-                    outer: '',
-                    wrapper: 'flex items-start text-sm font-normal text-gray-700 cursor-pointer select-none dark:text-gray-400',
-                    inner: 'relative mr-3',
-                    input: 'sr-only',
-                    decorator: 'flex h-5 w-5 items-center justify-center rounded-md border-[1.25px] bg-transparent border-gray-300 dark:border-gray-700 peer-checked:border-brand-500 peer-checked:bg-brand-500',
-                    icon: 'w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100',
-                    label: 'inline-block font-normal text-gray-500 dark:text-gray-400'
-                  }"
+
                 >
                   <template #label>
                     By creating an account means you agree to the
@@ -189,9 +164,7 @@
                 <!-- Submit Button -->
                 <FormKit
                   type="submit"
-                  :classes="{
-                    input: 'flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600'
-                  }"
+
                 >
                   Sign Up
                 </FormKit>

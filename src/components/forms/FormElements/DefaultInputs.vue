@@ -6,12 +6,7 @@
         type="text"
         v-model="formData.input"
         label="Input"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       />
     </div>
 
@@ -22,12 +17,7 @@
         v-model="formData.inputWithPlaceholder"
         label="Input with Placeholder"
         placeholder="info@gmail.com"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       />
     </div>
 
@@ -43,13 +33,7 @@
           { label: 'Template', value: 'template' },
           { label: 'Development', value: 'development' }
         ]"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0 relative z-20 bg-transparent',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800',
-          selectIcon: 'absolute z-30 text-gray-500 -translate-y-1/2 pointer-events-none right-4 top-1/2 dark:text-gray-400'
-        }"
+
       />
     </div>
 
@@ -60,12 +44,7 @@
         v-model="formData.password"
         label="Password Input"
         placeholder="Enter your password"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0 relative',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       />
     </div>
 
@@ -76,12 +55,7 @@
         v-model="formData.date"
         label="Date Picker Input"
         placeholder="Select date"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0 relative',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       >
         <template #suffix>
           <span class="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
@@ -112,12 +86,7 @@
         v-model="formData.time"
         label="Time Select Input"
         placeholder="Select time"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0 relative',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       >
         <template #suffix>
           <span class="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 dark:text-gray-400">
@@ -148,12 +117,7 @@
         v-model="formData.cardNumber"
         label="Input with Payment"
         placeholder="Card number"
-        :classes="{
-          outer: 'mb-0',
-          wrapper: 'mb-0 relative',
-          label: 'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-          input: 'dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800'
-        }"
+
       >
         <template #prefix>
           <span class="absolute left-0 top-1/2 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">

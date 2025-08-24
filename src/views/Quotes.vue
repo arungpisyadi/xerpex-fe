@@ -156,9 +156,7 @@
           type="form"
           :actions="false"
           @submit="submitQuote"
-          :classes="{
-            form: 'mb-6'
-          }"
+
         >
           <div class="mb-4">
             <FormKit
@@ -169,13 +167,7 @@
               :options="customers.map(customer => ({ label: `${customer.name} - ${customer.email}`, value: customer.id }))"
               placeholder="Select a customer"
               validation="required"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -189,13 +181,7 @@
               step="0.01"
               min="0"
               validation="required|min:0"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
             <FormKit
               type="number"
@@ -206,13 +192,7 @@
               step="0.01"
               min="0"
               validation="min:0"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -222,13 +202,7 @@
               name="expiry_date"
               label="Expiry Date"
               v-model="newQuote.expiry_date"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -239,13 +213,7 @@
               label="Notes"
               v-model="newQuote.notes"
               placeholder="Enter notes"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[100px]',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -253,17 +221,13 @@
             <FormKit
               type="button"
               @click="showCreateModal = false"
-              :classes="{
-                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
-              }"
+
             >
               Cancel
             </FormKit>
             <FormKit
               type="submit"
-              :classes="{
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-              }"
+
             >
               Save
             </FormKit>

@@ -197,9 +197,7 @@
           type="form"
           :actions="false"
           @submit="submitCustomer"
-          :classes="{
-            form: 'mb-6'
-          }"
+
         >
           <div class="mb-4 grid grid-cols-2 gap-4">
             <FormKit
@@ -209,13 +207,7 @@
               v-model="customerForm.name"
               placeholder="Enter customer name"
               validation="required"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
             <FormKit
               type="email"
@@ -223,13 +215,7 @@
               label="Email"
               v-model="customerForm.email"
               placeholder="Enter email address"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -240,13 +226,7 @@
               label="Phone Number"
               v-model="customerForm.phone_number"
               placeholder="Enter phone number"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -257,13 +237,7 @@
               label="Address"
               v-model="customerForm.address"
               placeholder="Enter full address"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[80px]',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -274,13 +248,7 @@
               label="Billing Address"
               v-model="customerForm.billing_address"
               placeholder="Enter billing address (leave empty to use same as address)"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary min-h-[80px]',
-                message: 'text-sm text-red-500 mt-1'
-              }"
+
             />
           </div>
 
@@ -294,9 +262,7 @@
             </button>
             <FormKit
               type="submit"
-              :classes="{
-                input: 'flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-              }"
+
             >
               {{ editingCustomer ? 'Update Customer' : 'Create Customer' }}
             </FormKit>

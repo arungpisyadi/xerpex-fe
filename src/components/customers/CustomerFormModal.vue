@@ -15,9 +15,7 @@
       <FormKit
         type="form"
         @submit="handleSubmit"
-        :classes="{
-          form: 'mb-6'
-        }"
+
       >
         <div class="mb-4 grid grid-cols-2 gap-4">
           <FormKit
@@ -27,13 +25,7 @@
             v-model="form.name"
             validation="required"
             placeholder="Enter customer name"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           >
             <template #label="{ label }">
               {{ label }} <span class="text-red-500">*</span>
@@ -47,13 +39,7 @@
             v-model="form.email"
             validation="email"
             placeholder="Enter email address"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
         </div>
 
@@ -64,13 +50,7 @@
             label="Phone"
             v-model="form.phone"
             placeholder="Enter phone number"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
 
           <FormKit
@@ -79,13 +59,7 @@
             label="City"
             v-model="form.city"
             placeholder="Enter city"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
         </div>
 
@@ -96,13 +70,7 @@
             label="Country"
             v-model="form.country"
             placeholder="Enter country"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
         </div>
 
@@ -114,13 +82,7 @@
             v-model="form.address"
             placeholder="Enter address"
             rows="3"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
         </div>
 
@@ -132,13 +94,7 @@
             v-model="form.billing_address"
             placeholder="Enter billing address (leave empty to use same as address)"
             rows="3"
-            :classes="{
-              outer: '',
-              wrapper: '',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-red-500'
-            }"
+
           />
         </div>
 
@@ -153,9 +109,7 @@
           <FormKit
             type="submit"
             :disabled="loading || !form.name"
-            :classes="{
-              input: 'flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-            }"
+
           >
             <span v-if="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
             {{ isEditing ? 'Update Customer' : 'Create Customer' }}

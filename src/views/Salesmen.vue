@@ -72,9 +72,7 @@
           type="form"
           :actions="false"
           @submit="submitSalesman"
-          :classes="{
-            form: 'mb-6'
-          }"
+
         >
           <div class="mb-4 grid grid-cols-2 gap-4">
             <div>
@@ -89,13 +87,7 @@
                   required: 'First name is required',
                   length: 'First name must be at least 2 characters long'
                 }"
-                :classes="{
-                  outer: '',
-                  wrapper: '',
-                  label: 'mb-2.5 block font-medium text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                  message: 'mt-1 text-sm text-danger'
-                }"
+
               >
                 <template #label="context">
                   {{ context.label }} <span class="text-meta-1">*</span>
@@ -114,13 +106,7 @@
                   required: 'Last name is required',
                   length: 'Last name must be at least 2 characters long'
                 }"
-                :classes="{
-                  outer: '',
-                  wrapper: '',
-                  label: 'mb-2.5 block font-medium text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                  message: 'mt-1 text-sm text-danger'
-                }"
+
               >
                 <template #label="context">
                   {{ context.label }} <span class="text-meta-1">*</span>
@@ -141,13 +127,7 @@
                 required: 'Email is required',
                 email: 'Please enter a valid email address'
               }"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -162,13 +142,7 @@
               label="Phone Number"
               v-model="salesmanForm.phone_number"
               placeholder="Enter phone number"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
           </div>
 
@@ -178,15 +152,7 @@
               name="is_active"
               label="Active"
               v-model="salesmanForm.is_active"
-              :classes="{
-                outer: '',
-                wrapper: 'flex items-center',
-                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white mt-2!',
-                input: 'sr-only',
-                decorator: 'mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark',
-                decoratorIcon: 'h-2.5 w-2.5 rounded-sm bg-primary',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
           </div>
 
@@ -194,18 +160,14 @@
             <FormKit
               type="button"
               @click="closeModal"
-              :classes="{
-                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
-              }"
+
             >
               Cancel
             </FormKit>
             <FormKit
               type="submit"
               :disabled="submitting"
-              :classes="{
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-              }"
+
             >
               {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Save') }}
             </FormKit>

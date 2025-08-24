@@ -49,9 +49,7 @@
               type="form"
               @submit="saveGeneralSettings"
               :actions="false"
-              :classes="{
-                form: 'space-y-6'
-              }"
+
             >
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
@@ -62,12 +60,7 @@
                     placeholder="Enter company name"
                     v-model="settings.general.companyName"
                     validation="required"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
 
@@ -79,12 +72,7 @@
                     placeholder="Enter company email"
                     v-model="settings.general.companyEmail"
                     validation="required|email"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
               </div>
@@ -97,12 +85,7 @@
                     label="Company Phone"
                     placeholder="Enter company phone"
                     v-model="settings.general.companyPhone"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
 
@@ -113,12 +96,7 @@
                     label="Company Address"
                     placeholder="Enter company address"
                     v-model="settings.general.companyAddress"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                     rows="4"
                   />
                 </div>
@@ -135,12 +113,7 @@
                       label="Bank Name"
                       placeholder="Enter bank name"
                       v-model="settings.general.bankName"
-                      :classes="{
-                        outer: 'mb-0',
-                        label: 'mb-2.5 block text-black dark:text-white',
-                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                        message: 'text-meta-1 text-sm mt-1'
-                      }"
+
                     />
                   </div>
 
@@ -151,12 +124,7 @@
                       label="Account Holder Name"
                       placeholder="Enter account holder name"
                       v-model="settings.general.bankAccountHolderName"
-                      :classes="{
-                        outer: 'mb-0',
-                        label: 'mb-2.5 block text-black dark:text-white',
-                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                        message: 'text-meta-1 text-sm mt-1'
-                      }"
+
                     />
                   </div>
                 </div>
@@ -169,12 +137,7 @@
                       label="Bank Account Number"
                       placeholder="Enter bank account number"
                       v-model="settings.general.bankAccountNumber"
-                      :classes="{
-                        outer: 'mb-0',
-                        label: 'mb-2.5 block text-black dark:text-white',
-                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                        message: 'text-meta-1 text-sm mt-1'
-                      }"
+
                     />
                   </div>
 
@@ -185,12 +148,7 @@
                       label="SWIFT Number"
                       placeholder="Enter SWIFT number"
                       v-model="settings.general.bankSwiftNumber"
-                      :classes="{
-                        outer: 'mb-0',
-                        label: 'mb-2.5 block text-black dark:text-white',
-                        input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                        message: 'text-meta-1 text-sm mt-1'
-                      }"
+
                     />
                   </div>
                 </div>
@@ -199,9 +157,7 @@
               <FormKit
                 type="submit"
                 :disabled="loading"
-                :classes="{
-                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
-                }"
+
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -225,9 +181,7 @@
             <FormKit
               type="form"
               @submit="saveBookingSettings"
-              :classes="{
-                form: 'space-y-6'
-              }"
+
             >
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div class="w-full xl:w-1/2">
@@ -237,12 +191,7 @@
                     label="Check-in Time"
                     v-model="settings.booking.checkInTime"
                     validation="required"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
 
@@ -253,12 +202,7 @@
                     label="Check-out Time"
                     v-model="settings.booking.checkOutTime"
                     validation="required"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
               </div>
@@ -272,12 +216,7 @@
                     v-model="settings.booking.minBookingDays"
                     validation="required|min:1"
                     min="1"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
 
@@ -289,12 +228,7 @@
                     v-model="settings.booking.maxBookingDays"
                     validation="required|min:1"
                     min="1"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
               </div>
@@ -307,13 +241,7 @@
                   v-model="settings.booking.advanceBookingDays"
                   min="0"
                   help="Maximum days in advance a booking can be made"
-                  :classes="{
-                    outer: 'mb-0',
-                    label: 'mb-2.5 block text-black dark:text-white',
-                    input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                    help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
-                    message: 'text-meta-1 text-sm mt-1'
-                  }"
+
                 />
               </div>
 
@@ -323,14 +251,7 @@
                   name="allowPartialPayment"
                   label="Allow Partial Payment"
                   v-model="settings.booking.allowPartialPayment"
-                  :classes="{
-                    outer: 'mb-0',
-                    wrapper: 'flex cursor-pointer select-none items-center',
-                    input: 'sr-only',
-                    decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                    decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                    label: 'ml-3 text-black dark:text-white'
-                  }"
+
                   decorator-icon
                 />
               </div>
@@ -344,21 +265,13 @@
                 min="0"
                 max="100"
                 help="Percentage of total amount required as deposit"
-                :classes="{
-                  outer: 'mb-6',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                  help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
-                  message: 'text-meta-1 text-sm mt-1'
-                }"
+
               />
 
               <FormKit
                 type="submit"
                 :disabled="loading"
-                :classes="{
-                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
-                }"
+
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -382,9 +295,7 @@
             <FormKit
               type="form"
               @submit="savePaymentSettings"
-              :classes="{
-                form: 'space-y-6'
-              }"
+
             >
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Payment Methods</h4>
@@ -395,14 +306,7 @@
                     name="enableCreditCard"
                     label="Enable Credit Card Payments"
                     v-model="settings.payment.enableCreditCard"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -413,14 +317,7 @@
                     name="enableBankTransfer"
                     label="Enable Bank Transfer"
                     v-model="settings.payment.enableBankTransfer"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -431,14 +328,7 @@
                     name="enablePaypal"
                     label="Enable PayPal"
                     v-model="settings.payment.enablePaypal"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -452,12 +342,7 @@
                 placeholder="Enter bank account details"
                 v-model="settings.payment.bankAccountDetails"
                 rows="4"
-                :classes="{
-                  outer: 'mb-4.5',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                  message: 'text-meta-1 text-sm mt-1'
-                }"
+
               />
 
               <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -469,13 +354,7 @@
                     v-model="settings.payment.paymentDueDays"
                     min="0"
                     help="Number of days before check-in that full payment is due"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      help: 'mt-1 text-sm text-gray-500 dark:text-gray-400',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
 
@@ -487,12 +366,7 @@
                     v-model="settings.payment.latePaymentFeePercentage"
                     min="0"
                     max="100"
-                    :classes="{
-                      outer: 'mb-0',
-                      label: 'mb-2.5 block text-black dark:text-white',
-                      input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                      message: 'text-meta-1 text-sm mt-1'
-                    }"
+
                   />
                 </div>
               </div>
@@ -500,9 +374,7 @@
               <FormKit
                 type="submit"
                 :disabled="loading"
-                :classes="{
-                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
-                }"
+
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -526,9 +398,7 @@
             <FormKit
               type="form"
               @submit="saveNotificationSettings"
-              :classes="{
-                form: 'space-y-6'
-              }"
+
             >
               <div class="mb-4.5">
                 <h4 class="mb-4 text-lg font-medium text-black dark:text-white">Notification Methods</h4>
@@ -539,14 +409,7 @@
                     name="enableEmailNotifications"
                     label="Enable Email Notifications"
                     v-model="settings.notification.enableEmailNotifications"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -557,14 +420,7 @@
                     name="enableSmsNotifications"
                     label="Enable SMS Notifications"
                     v-model="settings.notification.enableSmsNotifications"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -577,12 +433,7 @@
                   label="Notification Email"
                   placeholder="Enter notification email"
                   v-model="settings.notification.notificationEmail"
-                  :classes="{
-                    outer: 'mb-0',
-                    label: 'mb-2.5 block text-black dark:text-white',
-                    input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-brand-500 active:border-brand-500 disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-brand-500',
-                    message: 'text-meta-1 text-sm mt-1'
-                  }"
+
                 />
               </div>
 
@@ -595,14 +446,7 @@
                     name="sendBookingConfirmation"
                     label="Send Booking Confirmation"
                     v-model="settings.notification.sendBookingConfirmation"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -613,14 +457,7 @@
                     name="sendPaymentReminders"
                     label="Send Payment Reminders"
                     v-model="settings.notification.sendPaymentReminders"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -631,14 +468,7 @@
                     name="sendCheckInReminders"
                     label="Send Check-in Reminders"
                     v-model="settings.notification.sendCheckInReminders"
-                    :classes="{
-                      outer: 'mb-0',
-                      wrapper: 'flex cursor-pointer select-none items-center',
-                      input: 'sr-only',
-                      decorator: 'relative block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]',
-                      decoratorIcon: 'absolute left-1 top-1 h-6 w-6 rounded-full transition bg-white',
-                      label: 'ml-3 text-black dark:text-white'
-                    }"
+
                     decorator-icon
                   />
                 </div>
@@ -647,9 +477,7 @@
               <FormKit
                 type="submit"
                 :disabled="loading"
-                :classes="{
-                  input: 'flex w-full justify-center rounded bg-brand-500 p-3 font-medium text-gray hover:bg-brand-600 disabled:opacity-50'
-                }"
+
               >
                 <span v-if="loading" class="mr-2">
                   <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">

@@ -96,9 +96,7 @@
           type="form"
           :actions="false"
           @submit="saveUser"
-          :classes="{
-            form: 'space-y-4'
-          }"
+
         >
           <FormKit
             type="text"
@@ -107,12 +105,7 @@
             placeholder="Enter username"
             v-model="userForm.username"
             validation="required|length:3"
-            :classes="{
-              outer: 'mb-4',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <FormKit
@@ -122,12 +115,7 @@
             placeholder="Enter email"
             v-model="userForm.email"
             validation="required|email"
-            :classes="{
-              outer: 'mb-4',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <FormKit
@@ -137,12 +125,7 @@
             placeholder="Enter full name"
             v-model="userForm.full_name"
             validation="required|length:2"
-            :classes="{
-              outer: 'mb-4',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <FormKit
@@ -153,12 +136,7 @@
             placeholder="Enter password"
             v-model="userForm.password"
             validation="required|length:6"
-            :classes="{
-              outer: 'mb-4',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <FormKit
@@ -175,29 +153,20 @@
               { label: 'Survey', value: 'survey' },
               { label: 'Staff', value: 'staff' }
             ]"
-            :classes="{
-              outer: 'mb-6',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <div class="flex justify-end gap-4">
             <FormKit
               type="button"
               @click="closeModal"
-              :classes="{
-                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
-              }"
+
             >
               Cancel
             </FormKit>
             <FormKit
               type="submit"
-              :classes="{
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600'
-              }"
+
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </FormKit>

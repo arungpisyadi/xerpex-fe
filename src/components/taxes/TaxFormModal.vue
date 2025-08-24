@@ -51,18 +51,14 @@
           <FormKit
             type="button"
             @click="$emit('close')"
-            :classes="{
-              input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
-            }"
+
           >
             Cancel
           </FormKit>
           <FormKit
             type="submit"
             :disabled="loading || !form.name || form.percentage === null"
-            :classes="{
-              input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-            }"
+
           >
             {{ isEditing ? 'Update' : 'Save' }}
           </FormKit>

@@ -84,9 +84,7 @@
           </button>
         </div>
 
-        <FormKit type="form" :actions="false" @submit="submitSurvey" :classes="{
-            form: 'mb-6 space-y-6'
-          }">
+        <FormKit type="form" :actions="false" @submit="submitSurvey" >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Client Information -->
             <div class="flex flex-col space-y-8">
@@ -96,44 +94,19 @@
               </h4>
 
               <FormKit type="text" name="client_name" label="Client Name" placeholder="Enter client name"
-                v-model="surveyForm.client_name" validation="required" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                v-model="surveyForm.client_name" validation="required"  />
 
               <FormKit type="email" name="email" label="Email" placeholder="Enter email address"
-                v-model="surveyForm.email" validation="required|email" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                v-model="surveyForm.email" validation="required|email"  />
 
               <FormKit type="tel" name="phone_number" label="Phone Number" placeholder="Enter phone number"
-                v-model="surveyForm.phone_number" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                v-model="surveyForm.phone_number"  />
 
               <FormKit type="number" name="estimated_paxes" label="Estimated Paxes"
-                placeholder="Enter estimated number of guests" v-model="surveyForm.estimated_paxes" min="0" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                placeholder="Enter estimated number of guests" v-model="surveyForm.estimated_paxes" min="0"  />
 
               <FormKit type="text" name="villa_types" label="Villa Types" placeholder="Enter preferred villa types"
-                v-model="surveyForm.villa_types" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                v-model="surveyForm.villa_types"  />
             </div>
 
             <!-- Survey Details -->
@@ -152,12 +125,7 @@
                   { label: 'Quoted', value: 'quoted' },
                   { label: 'Closed Won', value: 'closed_won' },
                   { label: 'Closed Lost', value: 'closed_lost' }
-                ]" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                ]"  />
 
               <FormKit type="select" name="priority" label="Priority" v-model="surveyForm.priority"
                 validation="required" :options="[
@@ -165,59 +133,30 @@
                   { label: 'Medium', value: 'medium' },
                   { label: 'High', value: 'high' },
                   { label: 'Urgent', value: 'urgent' }
-                ]" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                ]"  />
 
               <FormKit type="select" name="salesman_id" label="Assigned Salesman" v-model="surveyForm.salesman_id"
                 validation="required" :options="[
                   { label: 'Select a salesman', value: '', attrs: { disabled: true } },
                   ...salesmen.map(salesman => ({ label: salesman.full_name, value: salesman.id }))
-                ]" :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                ]"  />
 
               <FormKit type="date" name="follow_up_date" label="Follow-up Date" v-model="surveyForm.follow_up_date"
-                :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                 />
 
               <FormKit type="date" name="visiting_date" label="Visiting Date" v-model="surveyForm.visiting_date"
-                :classes="{
-                  outer: '',
-                  label: 'mb-2.5 block text-black dark:text-white',
-                  input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-                  message: 'mt-1 text-sm text-danger'
-                }" />
+                 />
             </div>
           </div>
 
           <FormKit type="textarea" name="notes" label="Notes" placeholder="Enter additional notes"
-            v-model="surveyForm.notes" rows="4" :classes="{
-              outer: 'mt-6',
-              label: 'mb-2.5 block text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary',
-              message: 'mt-1 text-sm text-danger'
-            }" />
+            v-model="surveyForm.notes" rows="4"  />
 
           <div class="flex justify-end gap-4 mt-6">
-            <FormKit type="button" @click="closeModal" :classes="{
-                input: 'btn btn-outline-primary bg-red-500!'
-              }">
+            <FormKit type="button" @click="closeModal" >
               Cancel
             </FormKit>
-            <FormKit type="submit" :disabled="submitting" :classes="{
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50'
-              }">
+            <FormKit type="submit" :disabled="submitting" >
               {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
             </FormKit>
           </div>

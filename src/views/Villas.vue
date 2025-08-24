@@ -96,9 +96,7 @@
           type="form"
           :actions="false"
           @submit="saveVilla"
-          :classes="{
-            form: ''
-          }"
+
         >
           <div class="mb-4">
             <FormKit
@@ -112,13 +110,7 @@
                 required: 'Villa name is required',
                 length: 'Villa name must be at least 2 characters long'
               }"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -138,13 +130,7 @@
                 required: 'Description is required',
                 length: 'Description must be at least 10 characters long'
               }"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark min-h-[100px]',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -166,13 +152,7 @@
                 required: 'Capacity is required',
                 between: 'Capacity must be between 1 and 50 guests'
               }"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -198,13 +178,7 @@
               validation-messages="{
                 required: 'Please select a room type'
               }"
-              :classes="{
-                outer: '',
-                wrapper: '',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -226,13 +200,7 @@
                 required: 'Base price is required',
                 min: 'Base price must be greater than 0'
               }"
-              :classes="{
-                outer: '',
-                wrapper: 'relative',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 pl-8! pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -249,15 +217,7 @@
               name="is_active"
               label="Active Villa"
               v-model="villaForm.is_active"
-              :classes="{
-                outer: '',
-                wrapper: 'flex items-center',
-                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white mt-2!',
-                input: 'sr-only',
-                decorator: 'mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark',
-                decoratorIcon: 'h-2.5 w-2.5 rounded-sm bg-primary',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
           </div>
 
@@ -271,10 +231,7 @@
             </button>
             <FormKit
               type="submit"
-              :classes="{
-                outer: 'mb-0!',
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed mr-0!'
-              }"
+
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </FormKit>

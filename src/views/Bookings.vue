@@ -96,9 +96,7 @@
           type="form"
           :actions="false"
           @submit="saveBooking"
-          :classes="{
-            form: 'space-y-4'
-          }"
+
         >
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormKit
@@ -108,12 +106,7 @@
               placeholder="Enter customer name"
               v-model="bookingForm.customer_name"
               validation="required|length:2"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -123,12 +116,7 @@
               placeholder="Enter customer email"
               v-model="bookingForm.customer_email"
               validation="required|email"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -138,12 +126,7 @@
               placeholder="Enter customer phone"
               v-model="bookingForm.customer_phone"
               validation="required|length:8"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -156,12 +139,7 @@
                 { label: 'Select a villa', value: '', attrs: { disabled: true } },
                 ...villas.map(villa => ({ label: villa.name, value: villa.id }))
               ]"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -170,12 +148,7 @@
               label="Check-in Date"
               v-model="bookingForm.check_in_date"
               validation="required"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -184,12 +157,7 @@
               label="Check-out Date"
               v-model="bookingForm.check_out_date"
               validation="required"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -200,12 +168,7 @@
               v-model="bookingForm.num_guests"
               validation="required|min:1|max:20"
               min="1"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
 
             <FormKit
@@ -219,12 +182,7 @@
                 { label: 'Cancelled', value: 'cancelled' },
                 { label: 'Completed', value: 'completed' }
               ]"
-              :classes="{
-                outer: 'mb-4',
-                label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-                message: 'mt-1 text-sm text-danger'
-              }"
+
             />
           </div>
 
@@ -235,29 +193,20 @@
             placeholder="Enter special requests"
             v-model="bookingForm.special_requests"
             rows="3"
-            :classes="{
-              outer: 'mb-4',
-              label: 'mb-2.5 block font-medium text-black dark:text-white',
-              input: 'w-full rounded border-[1.5px] bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
-              message: 'mt-1 text-sm text-danger'
-            }"
+
           />
 
           <div class="flex justify-end gap-4">
             <FormKit
               type="button"
               @click="closeModal"
-              :classes="{
-                input: 'flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white bg-red-500! hover:shadow-1 dark:border-strokedark dark:text-white'
-              }"
+
             >
               Cancel
             </FormKit>
             <FormKit
               type="submit"
-              :classes="{
-                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
-              }"
+
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </FormKit>

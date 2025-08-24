@@ -220,7 +220,7 @@
               v-model="villaForm.base_price"
               placeholder="0.00"
               min="0"
-              step="5000"
+              step="100000"
               validation="required|min:0"
               validation-messages="{
                 required: 'Base price is required',
@@ -230,7 +230,7 @@
                 outer: '',
                 wrapper: 'relative',
                 label: 'mb-2.5 block font-medium text-black dark:text-white',
-                input: 'w-full rounded border-[1.5px] bg-transparent py-3 pl-8 pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
+                input: 'w-full rounded border-[1.5px] bg-transparent py-3 pl-8! pr-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:focus:border-primary border-stroke dark:border-form-strokedark',
                 message: 'mt-1 text-sm text-danger'
               }"
             >
@@ -238,7 +238,7 @@
                 {{ context.label }} <span class="text-meta-1">*</span>
               </template>
               <template #prefix>
-                <span class="absolute left-2 top-12 -translate-y-2 text-gray-500 text-xs">IDR</span>
+                <span class="absolute left-1 top-1/2 -translate-y-2 text-gray-500 text-xs">IDR</span>
               </template>
             </FormKit>
           </div>
@@ -252,7 +252,7 @@
               :classes="{
                 outer: '',
                 wrapper: 'flex items-center',
-                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white',
+                label: 'flex cursor-pointer select-none items-center font-medium text-black dark:text-white mt-2!',
                 input: 'sr-only',
                 decorator: 'mr-4 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark',
                 decoratorIcon: 'h-2.5 w-2.5 rounded-sm bg-primary',
@@ -265,14 +265,14 @@
             <button
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark dark:text-white text-sm bg-red-500"
             >
               Cancel
             </button>
             <FormKit
               type="submit"
               :classes="{
-                input: 'flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed'
+                input: 'flex items-center justify-center px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed mr-0!'
               }"
             >
               {{ isEditing ? 'Update' : 'Save' }}

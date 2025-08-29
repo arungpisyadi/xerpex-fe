@@ -160,13 +160,11 @@
             <FormKit
               type="button"
               @click="closeModal"
-
             >
               Cancel
             </FormKit>
             <FormKit
               type="submit"
-
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </FormKit>

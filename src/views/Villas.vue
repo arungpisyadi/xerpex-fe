@@ -222,13 +222,12 @@
           </div>
 
           <div class="flex justify-end gap-4">
-            <button
+            <FormKit
               type="button"
               @click="closeModal"
-              class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark dark:text-white text-sm bg-red-500"
             >
               Cancel
-            </button>
+            </FormKit>
             <FormKit
               type="submit"
 

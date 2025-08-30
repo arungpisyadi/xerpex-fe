@@ -120,6 +120,25 @@ export function useInvoicing() {
     }
   };
 
+  const updateQuote = async (quoteId: number, quoteData: any) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const quote = await quoteService.updateQuote(quoteId, quoteData);
+      // Update local quote in the array
+      const index = quotes.value.findIndex(q => q.id === quoteId);
+      if (index !== -1) {
+        quotes.value[index] = quote;
+      }
+      return quote;
+    } catch (err) {
+      error.value = handleError(err, 'updateQuote').message;
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const sendQuote = async (quoteId: number) => {
     try {
       const result = await quoteService.sendQuote(quoteId);
@@ -358,6 +377,7 @@ export function useInvoicing() {
     // Quote methods
     fetchQuotes,
     createQuote,
+    updateQuote,
     sendQuote,
     acceptQuote,
     convertQuoteToInvoice,

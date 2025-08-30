@@ -76,6 +76,24 @@ const erpRoutes = [
     },
   },
   {
+    path: '/quotes/create',
+    name: 'CreateQuote',
+    component: () => import('../views/Quotes/CreateQuote.vue'),
+    meta: {
+      title: 'Create Quote',
+      requiresAuth: true
+    },
+  },
+  {
+    path: '/quotes/edit/:id',
+    name: 'EditQuote',
+    component: () => import('../views/Quotes/EditQuote.vue'),
+    meta: {
+      title: 'Edit Quote',
+      requiresAuth: true
+    },
+  },
+  {
     path: '/packages',
     name: 'Packages',
     component: () => import('../views/Packages.vue'),

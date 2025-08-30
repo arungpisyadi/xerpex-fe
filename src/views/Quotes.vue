@@ -1,7 +1,7 @@
 <template>
   <admin-layout>
     <div class="mb-6">
-      <page-breadcrumb :items="[{ text: 'Home', link: '/' }, { text: 'Quotes' }]" />
+      <page-breadcrumb page-title="Quotes" :items="[{ text: 'Home', link: '/' }, { text: 'Quotes' }]" />
     </div>
 
     <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -36,7 +36,7 @@
               <option value="expired">Expired</option>
             </select>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="createNewQuote">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="navigateToCreateQuote">
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -60,181 +60,6 @@
       </div>
     </div>
 
-    <!-- Quote Details Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="w-full max-w-2xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-black dark:text-white">
-            Quote Details
-          </h3>
-          <button @click="showModal = false" class="text-gray-500 hover:text-primary">
-            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z" fill=""></path>
-            </svg>
-          </button>
-        </div>
-
-        <div v-if="selectedQuote" class="mb-6">
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Quote Number</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedQuote.quote_number }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Status</p>
-              <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="getStatusClass(selectedQuote.status)">
-                {{ capitalizeFirstLetter(selectedQuote.status) }}
-              </span>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Customer</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedQuote.customer_name }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Total Amount</p>
-              <p class="text-base font-medium text-black dark:text-white">${{ formatPrice(selectedQuote.total) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Tax Amount</p>
-              <p class="text-base font-medium text-black dark:text-white">${{ formatPrice(selectedQuote.tax_total) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Issue Date</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ formatDate(selectedQuote.issue_date) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Expiry Date</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ formatDate(selectedQuote.expiry_date) }}</p>
-            </div>
-          </div>
-
-          <div class="flex justify-end gap-4 mt-6">
-            <button
-              v-if="selectedQuote.status === 'draft'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-blue-500 hover:bg-blue-600"
-              @click="sendQuoteToCustomer(selectedQuote)"
-            >
-              Send Quote
-            </button>
-            <button
-              v-if="selectedQuote.status === 'sent'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
-              @click="acceptQuoteAction(selectedQuote)"
-            >
-              Accept Quote
-            </button>
-            <button
-              v-if="selectedQuote.status === 'accepted'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-orange-500 hover:bg-orange-600"
-              @click="convertToInvoice(selectedQuote)"
-            >
-              Convert to Invoice
-            </button>
-            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" @click="downloadQuote(selectedQuote)">
-              Download PDF
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Create Quote Modal -->
-    <div v-if="showCreateModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
-      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-black dark:text-white">
-            Create New Quote
-          </h3>
-          <button @click="showCreateModal = false" class="text-gray-500 hover:text-primary">
-            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z" fill=""></path>
-            </svg>
-          </button>
-        </div>
-
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="submitQuote"
-
-        >
-          <div class="mb-4">
-            <FormKit
-              type="select"
-              name="customer_id"
-              label="Select Customer"
-              v-model="newQuote.customer_id"
-              :options="customers.map(customer => ({ label: `${customer.name} - ${customer.email}`, value: customer.id }))"
-              placeholder="Select a customer"
-              validation="required"
-
-            />
-          </div>
-
-          <div v-if="newQuote.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <FormKit
-              type="number"
-              name="amount"
-              label="Subtotal Amount"
-              v-model="newQuote.amount"
-              placeholder="Enter subtotal amount"
-              step="0.01"
-              min="0"
-              validation="required|min:0"
-
-            />
-            <FormKit
-              type="number"
-              name="tax_total"
-              label="Tax Amount"
-              v-model="newQuote.tax_total"
-              placeholder="Enter tax amount"
-              step="0.01"
-              min="0"
-              validation="min:0"
-
-            />
-          </div>
-
-          <div v-if="newQuote.customer_id" class="mb-4">
-            <FormKit
-              type="date"
-              name="expiry_date"
-              label="Expiry Date"
-              v-model="newQuote.expiry_date"
-
-            />
-          </div>
-
-          <div class="mb-4">
-            <FormKit
-              type="textarea"
-              name="notes"
-              label="Notes"
-              v-model="newQuote.notes"
-              placeholder="Enter notes"
-
-            />
-          </div>
-
-          <div class="flex justify-end gap-4 mt-6">
-            <FormKit
-              type="button"
-              @click="showCreateModal = false"
-
-            >
-              Cancel
-            </FormKit>
-            <FormKit
-              type="submit"
-
-            >
-              Save
-            </FormKit>
-          </div>
-        </FormKit>
-      </div>
-    </div>
   </admin-layout>
 </template>
 
@@ -255,15 +80,9 @@ export default {
   setup() {
     const {
       quotes,
-      customers,
       loading,
       error,
-      draftQuotes,
-      sentQuotes,
-      acceptedQuotes,
       fetchQuotes,
-      fetchCustomers,
-      createQuote,
       sendQuote,
       acceptQuote,
       convertQuoteToInvoice
@@ -271,15 +90,9 @@ export default {
 
     return {
       quotes,
-      customers,
       loading,
       error,
-      draftQuotes,
-      sentQuotes,
-      acceptedQuotes,
       fetchQuotes,
-      fetchCustomers,
-      createQuote,
       sendQuote,
       acceptQuote,
       convertQuoteToInvoice,
@@ -294,17 +107,6 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       totalItems: 0,
-      showModal: false,
-      showCreateModal: false,
-      selectedQuote: null,
-      newQuote: {
-        customer_id: '',
-        amount: '',
-        tax_total: 0,
-        expiry_date: '',
-        notes: '',
-        items: []
-      },
       columns: [
         { key: 'quote_number', label: 'Quote #', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
@@ -354,13 +156,10 @@ export default {
   methods: {
     async loadData() {
       try {
-        await Promise.all([
-          this.fetchQuotes({
-            skip: (this.currentPage - 1) * this.itemsPerPage,
-            limit: this.itemsPerPage
-          }),
-          this.fetchCustomers({ active_only: true })
-        ]);
+        await this.fetchQuotes({
+          skip: (this.currentPage - 1) * this.itemsPerPage,
+          limit: this.itemsPerPage
+        });
         this.totalItems = this.quotes.length;
       } catch (error) {
         this.handleError(error, 'loadData');
@@ -373,39 +172,12 @@ export default {
     },
 
     viewQuoteDetails(quote) {
-      this.selectedQuote = quote;
-      this.showModal = true;
+      // Navigate to quote details view (can be implemented later)
+      console.log('View quote details:', quote.quote_number);
     },
 
-    createNewQuote() {
-      this.newQuote = {
-        customer_id: '',
-        amount: '',
-        tax_total: 0,
-        expiry_date: '',
-        notes: '',
-        items: []
-      };
-      this.showCreateModal = true;
-    },
-
-    async submitQuote() {
-      try {
-        const quoteData = {
-          ...this.newQuote,
-          issue_date: new Date().toISOString().split('T')[0],
-          status: 'draft',
-          total: parseFloat(this.newQuote.amount) + parseFloat(this.newQuote.tax_total)
-        };
-
-        await this.createQuote(quoteData);
-        this.showCreateModal = false;
-        await this.loadData();
-
-        console.log('Quote created successfully');
-      } catch (error) {
-        this.handleError(error, 'submitQuote');
-      }
+    navigateToCreateQuote() {
+      this.$router.push('/quotes/create');
     },
 
     async sendQuoteToCustomer(quote) {
@@ -448,8 +220,7 @@ export default {
     },
 
     editQuote(quote) {
-      // For now, just view the quote details
-      this.viewQuoteDetails(quote);
+      this.$router.push(`/quotes/edit/${quote.id}`);
     },
 
     deleteQuote(quote) {

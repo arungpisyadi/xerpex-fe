@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+pimport apiClient from './api.service';
 import type {
   Package,
   CreatePackageRequest,
@@ -18,13 +18,34 @@ class PackageService {
   async getPackages(params: PackageFilters = {}): Promise<PackageListResponse> {
     try {
       const response = await apiClient.get('/packages', { params });
+
+      // Handle different response structures
+      const data = response.data;
+      let packages = [];
+      let total = 0;
+
+      if (Array.isArray(data)) {
+        // Direct array response
+        packages = data;
+        total = data.length;
+      } else if (data && Array.isArray(data.packages)) {
+        // Paginated response with packages array
+        packages = data.packages;
+        total = data.total || data.packages.length;
+      } else if (data && Array.isArray(data.data)) {
+        // Response with data array
+        packages = data.data;
+        total = data.total || data.data.length;
+      }
+
       return {
-        packages: response.data || [],
-        total: response.data?.length || 0,
+        packages,
+        total,
         skip: params.skip || 0,
         limit: params.limit || 100
       };
     } catch (error) {
+      console.error('PackageService.getPackages error:', error);
       throw error;
     }
   }

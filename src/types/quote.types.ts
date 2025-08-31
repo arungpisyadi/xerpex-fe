@@ -18,7 +18,6 @@ export interface Quote {
   expiry_date?: string;
   status: QuoteStatus;
   total: number;
-  tax_total: number;
   customer_name?: string;
   items: QuoteItem[];
   created_at: string;
@@ -31,7 +30,6 @@ export interface CreateQuoteRequest {
   expiry_date?: string;
   status: QuoteStatus;
   total: number;
-  tax_total: number;
   items: Omit<QuoteItem, 'id'>[];
 }
 

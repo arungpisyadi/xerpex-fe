@@ -128,54 +128,61 @@
             :disabled="!isEditable"
           >
             <div class="grid grid-cols-1 gap-[1rem] sm:grid-cols-12 items-center">
-              <!-- Description -->
-              <div class="sm:col-span-5">
+              <!-- Package Selection -->
+              <div class="sm:col-span-4">
                 <FormKit
-                  type="text"
-                  name="description"
-                  label="Description"
-                  placeholder="Item description"
+                  type="select"
+                  name="package_id"
+                  label="Package"
+                  :options="packageOptions"
+                  placeholder="Select a package"
                   validation="required"
+                  @input="onPackageSelect"
                   :disabled="!isEditable"
-                />
-              </div>
-
-              <!-- Quantity -->
-              <div class="sm:col-span-2">
-                <FormKit
-                  type="number"
-                  name="quantity"
-                  label="Quantity"
-                  placeholder="1"
-                  :min="1"
-                  :step="1"
-                  validation="required|min:1"
-                  @input="calculateItemAmount"
-                  :disabled="!isEditable"
+                  help="Select package from available options"
                 />
               </div>
 
               <!-- Unit Price -->
-              <div class="sm:col-span-2">
+              <div class="sm:col-span-3">
                 <FormKit
-                  type="number"
+                  type="currency"
                   name="unit_price"
                   label="Unit Price"
                   placeholder="0.00"
+                  currency="IDR"
                   :step="0.01"
                   :min="0"
                   validation="required|min:0"
                   @input="calculateItemAmount"
                   :disabled="!isEditable"
+                  help="Price per person (editable)"
                 />
               </div>
 
-              <!-- Amount (calculated) -->
+              <!-- Discount -->
+              <div class="sm:col-span-2">
+                <FormKit
+                  type="currency"
+                  name="discount"
+                  label="Discount"
+                  placeholder="0.00"
+                  currency="IDR"
+                  :step="0.01"
+                  :min="0"
+                  @input="calculateItemAmount"
+                  :disabled="!isEditable"
+                  help="Discount amount in Rp"
+                />
+              </div>
+
+              <!-- Line Total (calculated) -->
               <div class="sm:col-span-3">
                 <FormKit
-                  type="number"
-                  name="amount"
-                  label="Amount"
+                  type="currency"
+                  name="line_total"
+                  label="Line Total"
+                  currency="IDR"
                   :step="0.01"
                   :min="0"
                   readonly
@@ -194,11 +201,6 @@
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
               <span class="font-[500] text-black dark:text-white">${{ formatPrice(calculations.subtotal) }}</span>
-            </div>
-
-            <div class="flex justify-between text-sm">
-              <span class="text-[#4b5563] dark:text-gray-400">Tax ({{ taxRate }}%):</span>
-              <span class="font-[500] text-black dark:text-white">${{ formatPrice(calculations.tax_total) }}</span>
             </div>
 
             <hr class="border-[#d1d5db] dark:border-gray-600">
@@ -258,8 +260,10 @@ import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import quoteService from '../../services/quote.service'
+import packageService from '../../services/package.service'
 import type { Customer } from '../../types/customer.types'
 import type { Quote, UpdateQuoteRequest, QuoteItem } from '../../types/quote.types'
+import type { Package } from '../../types/package.types'
 import { handleError } from '../../utils/errorHandler'
 
 // Router
@@ -282,7 +286,7 @@ const loading = ref(false)
 const loadingQuote = ref(true)
 const error = ref<string | null>(null)
 const quote = ref<Quote | null>(null)
-const taxRate = ref(10) // Default 10% tax rate
+const packages = ref<Package[]>([])
 
 // Form data structure
 const quoteForm = ref({
@@ -291,10 +295,10 @@ const quoteForm = ref({
   notes: '',
   items: [
     {
-      description: '',
-      quantity: 1,
+      package_id: '',
       unit_price: 0,
-      amount: 0
+      discount: 0,
+      line_total: 0
     }
   ]
 })
@@ -311,21 +315,31 @@ const customerOptions = computed(() => {
   }))
 })
 
+const packageOptions = computed(() => {
+  console.log('Packages for options:', packages.value)
+  if (!packages.value || !Array.isArray(packages.value)) {
+    return []
+  }
+
+  return packages.value.map((pkg: Package) => ({
+    label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
+    value: pkg.id,
+    cost_per_pax: pkg.cost_per_pax
+  }))
+})
+
 const calculations = computed(() => {
   const items = quoteForm.value.items || []
 
   const subtotal = items.reduce((sum, item) => {
-    const quantity = Number(item.quantity) || 0
-    const unitPrice = Number(item.unit_price) || 0
-    return sum + (quantity * unitPrice)
+    const lineTotal = Number(item.line_total) || 0
+    return sum + lineTotal
   }, 0)
 
-  const tax_total = subtotal * (taxRate.value / 100)
-  const total = subtotal + tax_total
+  const total = subtotal
 
   return {
     subtotal,
-    tax_total,
     total
   }
 })
@@ -341,10 +355,9 @@ const isFormValid = computed(() => {
 
   // Check if all items have required fields
   return form.items.every(item =>
-    item.description &&
-    item.description.trim() !== '' &&
-    Number(item.quantity) > 0 &&
-    Number(item.unit_price) >= 0
+    item.package_id &&
+    Number(item.unit_price) >= 0 &&
+    Number(item.discount) >= 0
   )
 })
 
@@ -370,13 +383,26 @@ const getStatusClass = (status: string | undefined) => {
   }
 }
 
-const calculateItemAmount = () => {
-  // This will be triggered by FormKit's reactivity
-  // The amount calculation is handled in the watcher below
+const onPackageSelect = (value: number | undefined, node: any) => {
+  if (!value) return
+
+  const selectedPackage = packages.value.find(pkg => pkg.id === value)
+  if (selectedPackage && node?.parent?.value) {
+    // Auto-populate unit_price from package cost_per_pax
+    node.parent.value.unit_price = selectedPackage.cost_per_pax
+    // Trigger calculation
+    calculateItemAmount()
+  }
 }
 
-const formatPrice = (price: number): string => {
-  return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+const calculateItemAmount = () => {
+  // This will be triggered by FormKit's reactivity
+  // The line_total calculation is handled in the watcher below
+}
+
+const formatPrice = (price: number | string | null | undefined): string => {
+  const numPrice = Number(price) || 0
+  return numPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
 }
 
 const formatDate = (date: Date | string): string => {
@@ -409,16 +435,16 @@ const loadQuoteData = async () => {
       expiry_date: quote.value.expiry_date || '',
       notes: '', // Notes field doesn't exist in Quote type, so we'll leave it empty
       items: quote.value.items?.map(item => ({
-        description: item.package_name || '',
-        quantity: 1, // Default quantity since it's not stored in the current structure
+        package_id: item.package_id?.toString() || '',
         unit_price: item.unit_price || 0,
-        amount: item.line_total || 0
+        discount: item.discount || 0,
+        line_total: item.line_total || 0
       })) || [
         {
-          description: '',
-          quantity: 1,
+          package_id: '',
           unit_price: 0,
-          amount: 0
+          discount: 0,
+          line_total: 0
         }
       ]
     }
@@ -456,13 +482,11 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
       expiry_date: quoteForm.value.expiry_date || undefined,
       status: status,
       total: calculations.value.total,
-      tax_total: calculations.value.tax_total,
       items: quoteForm.value.items.map(item => ({
-        package_id: 0, // Using 0 for custom items without package
+        package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
-        discount: 0,
-        line_total: Number(item.quantity) * Number(item.unit_price),
-        package_name: item.description // Store description as package_name
+        discount: Number(item.discount),
+        line_total: Number(item.line_total)
       }))
     }
 
@@ -483,26 +507,53 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
 
 // Watchers
 watch(() => quoteForm.value.items, (newItems) => {
-  // Update amount for each item when quantity or unit_price changes
+  // Update line_total for each item when unit_price or discount changes
   newItems.forEach(item => {
-    const quantity = Number(item.quantity) || 0
     const unitPrice = Number(item.unit_price) || 0
-    item.amount = quantity * unitPrice
+    const discount = Number(item.discount) || 0
+    item.line_total = Math.max(0, unitPrice - discount)
   })
 }, { deep: true })
 
 // Lifecycle
 onMounted(async () => {
   try {
-    // Load customers for the dropdown and quote data in parallel
+    // Load customers, packages, and quote data in parallel
     await Promise.all([
       fetchCustomers({ active_only: true }),
+      loadPackages(),
       loadQuoteData()
     ])
   } catch (error) {
     handleError(error, 'loadData')
   }
 })
+
+const loadPackages = async () => {
+  try {
+    // Ensure we have authentication token before making the request
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No authentication token found')
+      packages.value = []
+      return
+    }
+
+    const response = await packageService.getPackages({ active_only: true })
+    console.log('Package service response:', response)
+    packages.value = Array.isArray(response) ? response : (response.packages || [])
+    console.log('Packages loaded successfully:', packages.value.length, 'packages')
+  } catch (error: any) {
+    console.error('Error loading packages:', error)
+    // Show user-friendly error message
+    if (error.response?.status === 401) {
+      console.error('Authentication failed - please log in again')
+    } else if (error.response?.status === 404) {
+      console.error('Packages endpoint not found')
+    }
+    packages.value = []
+  }
+}
 </script>
 
 <style scoped>

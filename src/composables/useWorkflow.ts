@@ -23,10 +23,7 @@ export interface QuoteWorkflowData {
     unit_price: number;
     discount: number;
   }>;
-  taxes: Tax[];
-  selectedTaxes: number[];
   subtotal: number;
-  tax_total: number;
   total: number;
   quote: Quote | null;
 }
@@ -43,10 +40,7 @@ export function useQuoteWorkflow() {
     customer: null,
     packages: [],
     selectedPackages: [],
-    taxes: [],
-    selectedTaxes: [],
     subtotal: 0,
-    tax_total: 0,
     total: 0,
     quote: null
   });
@@ -54,7 +48,6 @@ export function useQuoteWorkflow() {
   const steps = [
     { key: 'customer-selection', title: 'Select Customer', completed: false },
     { key: 'package-selection', title: 'Select Packages', completed: false },
-    { key: 'tax-calculation', title: 'Apply Taxes', completed: false },
     { key: 'review-quote', title: 'Review Quote', completed: false },
     { key: 'quote-created', title: 'Quote Created', completed: false }
   ];
@@ -69,8 +62,6 @@ export function useQuoteWorkflow() {
         return workflowData.customer !== null;
       case 'package-selection':
         return workflowData.selectedPackages.length > 0;
-      case 'tax-calculation':
-        return true; // Tax selection is optional
       case 'review-quote':
         return workflowData.total > 0;
       default:
@@ -107,18 +98,6 @@ export function useQuoteWorkflow() {
     }
   };
 
-  const loadTaxes = async () => {
-    try {
-      loading.value = true;
-      const response = await taxService.getTaxes({ active_only: true });
-      workflowData.taxes = response.taxes;
-    } catch (error) {
-      ErrorHandler.logError(error, 'useQuoteWorkflow.loadTaxes');
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  };
 
   // Step navigation
   const nextStep = () => {
@@ -164,7 +143,7 @@ export function useQuoteWorkflow() {
       });
     }
 
-    calculateSubtotal();
+    calculateTotal();
   };
 
   const removePackage = (packageId: number) => {
@@ -173,7 +152,7 @@ export function useQuoteWorkflow() {
     );
     if (index !== -1) {
       workflowData.selectedPackages.splice(index, 1);
-      calculateSubtotal();
+      calculateTotal();
     }
   };
 
@@ -183,7 +162,7 @@ export function useQuoteWorkflow() {
     );
     if (item) {
       item.quantity = Math.max(1, quantity);
-      calculateSubtotal();
+      calculateTotal();
     }
   };
 
@@ -193,50 +172,17 @@ export function useQuoteWorkflow() {
     );
     if (item) {
       item.discount = Math.max(0, discount);
-      calculateSubtotal();
+      calculateTotal();
     }
-  };
-
-  // Tax management
-  const toggleTax = (taxId: number) => {
-    const index = workflowData.selectedTaxes.indexOf(taxId);
-    if (index !== -1) {
-      workflowData.selectedTaxes.splice(index, 1);
-    } else {
-      workflowData.selectedTaxes.push(taxId);
-    }
-    calculateTaxes();
   };
 
   // Calculations
-  const calculateSubtotal = () => {
+  const calculateTotal = () => {
     workflowData.subtotal = workflowData.selectedPackages.reduce((total, item) => {
       const lineTotal = (item.unit_price * item.quantity) - item.discount;
       return total + Math.max(0, lineTotal);
     }, 0);
-    calculateTaxes();
-  };
-
-  const calculateTaxes = async () => {
-    if (workflowData.selectedTaxes.length === 0 || workflowData.subtotal === 0) {
-      workflowData.tax_total = 0;
-      workflowData.total = workflowData.subtotal;
-      return;
-    }
-
-    try {
-      const calculation = await taxService.calculateTaxes({
-        amount: workflowData.subtotal,
-        tax_ids: workflowData.selectedTaxes
-      });
-
-      workflowData.tax_total = calculation.tax_total;
-      workflowData.total = calculation.total;
-    } catch (error) {
-      ErrorHandler.logError(error, 'useQuoteWorkflow.calculateTaxes');
-      workflowData.tax_total = 0;
-      workflowData.total = workflowData.subtotal;
-    }
+    workflowData.total = workflowData.subtotal;
   };
 
   // Quote creation
@@ -257,7 +203,6 @@ export function useQuoteWorkflow() {
         issue_date: new Date().toISOString().split('T')[0],
         status: 'draft',
         total: workflowData.total,
-        tax_total: workflowData.tax_total,
         items: workflowData.selectedPackages.map(item => ({
           package_id: item.package.id,
           unit_price: item.unit_price,
@@ -287,10 +232,7 @@ export function useQuoteWorkflow() {
       customer: null,
       packages: [],
       selectedPackages: [],
-      taxes: [],
-      selectedTaxes: [],
       subtotal: 0,
-      tax_total: 0,
       total: 0,
       quote: null
     });
@@ -312,7 +254,6 @@ export function useQuoteWorkflow() {
     // Methods
     loadCustomers,
     loadPackages,
-    loadTaxes,
     nextStep,
     previousStep,
     goToStep,
@@ -321,9 +262,7 @@ export function useQuoteWorkflow() {
     removePackage,
     updatePackageQuantity,
     updatePackageDiscount,
-    toggleTax,
-    calculateSubtotal,
-    calculateTaxes,
+    calculateTotal,
     createQuote,
     resetWorkflow
   };

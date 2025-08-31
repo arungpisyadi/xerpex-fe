@@ -47,7 +47,7 @@
               <option value="year">This Year</option>
             </select>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="createNewInvoice">
+          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="navigateToCreateInvoice">
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -71,216 +71,6 @@
       </div>
     </div>
 
-    <!-- Invoice Details Modal -->
-    <div v-if="showModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
-      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-black dark:text-white">
-            Invoice Details
-          </h3>
-          <button @click="showModal = false" class="text-gray-500 hover:text-primary">
-            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z" fill=""></path>
-            </svg>
-          </button>
-        </div>
-
-        <div v-if="selectedInvoice" class="mb-6">
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Invoice Number</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedInvoice.invoice_number }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Status</p>
-              <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium" :class="getStatusClass(selectedInvoice.status)">
-                {{ capitalizeFirstLetter(selectedInvoice.status) }}
-              </span>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Amount</p>
-              <p class="text-base font-medium text-black dark:text-white">${{ formatPrice(selectedInvoice.amount) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Issue Date</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ formatDate(selectedInvoice.issue_date) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Due Date</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ formatDate(selectedInvoice.due_date) }}</p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Payment Date</p>
-              <p class="text-base font-medium text-black dark:text-white">{{ selectedInvoice.payment_date ? formatDate(selectedInvoice.payment_date) : 'Not paid yet' }}</p>
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Booking Details</p>
-            <div class="rounded border border-stroke p-4 dark:border-strokedark">
-              <div class="flex justify-between mb-2">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Booking ID:</span>
-                <router-link :to="`/bookings/${selectedInvoice.booking_id}`" class="text-sm text-primary hover:underline">
-                  #{{ selectedInvoice.booking_id }}
-                </router-link>
-              </div>
-              <div class="flex justify-between mb-2">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Guest:</span>
-                <span class="text-sm text-black dark:text-white">{{ selectedInvoice.guest_name }}</span>
-              </div>
-              <div class="flex justify-between mb-2">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Villa:</span>
-                <router-link :to="`/villas/${selectedInvoice.villa_id}`" class="text-sm text-primary hover:underline">
-                  {{ selectedInvoice.villa_name }}
-                </router-link>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Stay Period:</span>
-                <span class="text-sm text-black dark:text-white">
-                  {{ formatDate(selectedInvoice.check_in) }} - {{ formatDate(selectedInvoice.check_out) }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="selectedInvoice.notes" class="mb-4">
-            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Notes</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-100 dark:bg-gray-800 rounded">
-              {{ selectedInvoice.notes }}
-            </p>
-          </div>
-
-          <div class="flex justify-end gap-4 mt-6">
-            <button
-              v-if="selectedInvoice.status === 'pending' || selectedInvoice.status === 'overdue'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
-              @click="markAsPaid(selectedInvoice)"
-            >
-              Mark as Paid
-            </button>
-            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="sendInvoice(selectedInvoice)">
-              Send Invoice
-            </button>
-            <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" @click="downloadInvoice(selectedInvoice)">
-              Download PDF
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Create Invoice Modal -->
-    <div v-if="showCreateModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
-      <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-7.5">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold text-black dark:text-white">
-            Create New Invoice
-          </h3>
-          <button @click="showCreateModal = false" class="text-gray-500 hover:text-primary">
-            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z" fill=""></path>
-            </svg>
-          </button>
-        </div>
-
-        <FormKit
-          type="form"
-          :actions="false"
-          @submit="submitInvoice"
-
-        >
-          <div class="mb-4">
-            <FormKit
-              type="select"
-              name="customer_id"
-              label="Select Customer"
-              v-model="newInvoice.customer_id"
-              :options="customers.map(customer => ({ label: `${customer.name} - ${customer.email}`, value: customer.id }))"
-              placeholder="Select a customer"
-              validation="required"
-              @input="fetchCustomerDetails"
-
-            />
-          </div>
-
-          <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <FormKit
-              type="number"
-              name="amount"
-              label="Subtotal Amount"
-              v-model="newInvoice.amount"
-              placeholder="Enter subtotal amount"
-              step="0.01"
-              min="0"
-              validation="required|min:0"
-
-            />
-            <FormKit
-              type="number"
-              name="tax_total"
-              label="Tax Amount"
-              v-model="newInvoice.tax_total"
-              placeholder="Enter tax amount"
-              step="0.01"
-              min="0"
-              validation="min:0"
-
-            />
-          </div>
-
-          <div v-if="newInvoice.customer_id" class="mb-4 grid grid-cols-2 gap-4">
-            <FormKit
-              type="date"
-              name="due_date"
-              label="Due Date"
-              v-model="newInvoice.due_date"
-              validation="required"
-
-            />
-            <FormKit
-              type="select"
-              name="payment_terms"
-              label="Payment Terms"
-              v-model="newInvoice.payment_terms"
-              :options="[
-                { label: 'Net 15 days', value: 'Net 15 days' },
-                { label: 'Net 30 days', value: 'Net 30 days' },
-                { label: 'Net 60 days', value: 'Net 60 days' },
-                { label: 'Due on receipt', value: 'Due on receipt' }
-              ]"
-
-            />
-          </div>
-
-          <div class="mb-4">
-            <FormKit
-              type="textarea"
-              name="notes"
-              label="Notes"
-              v-model="newInvoice.notes"
-              placeholder="Enter notes"
-
-            />
-          </div>
-
-          <div class="flex justify-end gap-4 mt-6">
-            <FormKit
-              type="button"
-              @click="showCreateModal = false"
-
-            >
-              Cancel
-            </FormKit>
-            <FormKit
-              type="submit"
-
-            >
-              Save
-            </FormKit>
-          </div>
-        </FormKit>
-      </div>
-    </div>
   </admin-layout>
 </template>
 
@@ -289,7 +79,6 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import invoiceService from '../services/invoice.service';
-import customerService from '../services/customer.service';
 import authService from '../services/auth.service';
 import { useInvoicing } from '../composables/useInvoicing';
 import { handleError } from '../utils/errorHandler';
@@ -303,26 +92,20 @@ export default {
   setup() {
     const {
       invoices,
-      customers,
       loading,
       error,
       overdueInvoices,
       fetchInvoices,
-      fetchCustomers,
-      createInvoice,
       sendInvoice,
       markInvoiceAsPaid
     } = useInvoicing();
 
     return {
       invoices,
-      customers,
       loading,
       error,
       overdueInvoices,
       fetchInvoices,
-      fetchCustomers,
-      createInvoice,
       sendInvoice,
       markInvoiceAsPaid,
       authService,
@@ -337,18 +120,6 @@ export default {
       currentPage: 1,
       itemsPerPage: 10,
       totalItems: 0,
-      showModal: false,
-      showCreateModal: false,
-      selectedInvoice: null,
-      newInvoice: {
-        customer_id: '',
-        amount: '',
-        due_date: '',
-        tax_total: 0,
-        payment_terms: 'Net 30 days',
-        notes: '',
-        items: []
-      },
       columns: [
         { key: 'invoice_number', label: 'Invoice #', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
@@ -425,76 +196,28 @@ export default {
   methods: {
     async loadData() {
       try {
-        await Promise.all([
-          this.fetchInvoices({
-            skip: (this.currentPage - 1) * this.itemsPerPage,
-            limit: this.itemsPerPage
-          }),
-          this.fetchCustomers({ active_only: true })
-        ]);
+        await this.fetchInvoices({
+          skip: (this.currentPage - 1) * this.itemsPerPage,
+          limit: this.itemsPerPage
+        });
         this.totalItems = this.invoices?.length || 0;
       } catch (error) {
         this.handleError(error, 'loadData');
       }
     },
 
-    async fetchCustomerDetails() {
-      if (!this.newInvoice.customer_id) return;
-
-      try {
-        const customer = await customerService.getCustomerById(this.newInvoice.customer_id);
-
-        // Set default due date (30 days from now)
-        const now = new Date();
-        const dueDate = new Date(now);
-        dueDate.setDate(now.getDate() + 30);
-        this.newInvoice.due_date = dueDate.toISOString().split('T')[0];
-        this.newInvoice.payment_terms = 'Net 30 days';
-      } catch (error) {
-        this.handleError(error, 'fetchCustomerDetails');
-      }
-    },
     async handlePageChange(page) {
       this.currentPage = page;
       await this.loadData();
     },
 
     viewInvoiceDetails(invoice) {
-      this.selectedInvoice = invoice;
-      this.showModal = true;
+      // Navigate to invoice details view (can be implemented later)
+      console.log('View invoice details:', invoice.invoice_number);
     },
 
-    createNewInvoice() {
-      this.newInvoice = {
-        customer_id: '',
-        amount: '',
-        due_date: '',
-        tax_total: 0,
-        payment_terms: 'Net 30 days',
-        notes: '',
-        items: []
-      };
-      this.showCreateModal = true;
-    },
-
-    async submitInvoice() {
-      try {
-        const invoiceData = {
-          ...this.newInvoice,
-          issue_date: new Date().toISOString().split('T')[0],
-          status: 'draft',
-          total: parseFloat(this.newInvoice.amount) + parseFloat(this.newInvoice.tax_total)
-        };
-
-        await this.createInvoice(invoiceData);
-        this.showCreateModal = false;
-        await this.loadData();
-
-        // Show success notification
-        console.log('Invoice created successfully');
-      } catch (error) {
-        this.handleError(error, 'submitInvoice');
-      }
+    navigateToCreateInvoice() {
+      this.$router.push('/invoices/create');
     },
 
     async markAsPaid(invoice) {
@@ -502,11 +225,6 @@ export default {
         await this.markInvoiceAsPaid(invoice.id, {
           payment_date: new Date().toISOString().split('T')[0]
         });
-
-        // Update local data
-        if (this.selectedInvoice && this.selectedInvoice.id === invoice.id) {
-          this.selectedInvoice.status = 'paid';
-        }
 
         await this.loadData();
         console.log('Invoice marked as paid successfully');
@@ -530,8 +248,7 @@ export default {
     },
 
     editInvoice(invoice) {
-      // For now, just view the invoice details
-      this.viewInvoiceDetails(invoice);
+      this.$router.push(`/invoices/edit/${invoice.id}`);
     },
 
     deleteInvoice(invoice) {

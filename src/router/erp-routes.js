@@ -166,6 +166,24 @@ const erpRoutes = [
     },
   },
   {
+    path: '/invoices/create',
+    name: 'CreateInvoice',
+    component: () => import('../views/Invoices/CreateInvoice.vue'),
+    meta: {
+      title: 'Create Invoice',
+      requiresAuth: true
+    },
+  },
+  {
+    path: '/invoices/edit/:id',
+    name: 'EditInvoice',
+    component: () => import('../views/Invoices/EditInvoice.vue'),
+    meta: {
+      title: 'Edit Invoice',
+      requiresAuth: true
+    },
+  },
+  {
     path: '/invoices/:id',
     name: 'InvoiceDetail',
     component: () => import('../views/InvoiceDetail.vue'),

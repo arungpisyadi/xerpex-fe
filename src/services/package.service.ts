@@ -1,4 +1,4 @@
-pimport apiClient from './api.service';
+import apiClient from './api.service';
 import type {
   Package,
   CreatePackageRequest,

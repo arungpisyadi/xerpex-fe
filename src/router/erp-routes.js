@@ -185,10 +185,10 @@ const erpRoutes = [
   },
   {
     path: '/invoices/:id',
-    name: 'InvoiceDetail',
-    component: () => import('../views/InvoiceDetail.vue'),
+    name: 'InvoiceView',
+    component: () => import('../views/Invoices/InvoiceView.vue'),
     meta: {
-      title: 'Invoice Detail',
+      title: 'Invoice View',
       requiresAuth: true
     },
   },

@@ -94,6 +94,15 @@ const erpRoutes = [
     },
   },
   {
+    path: '/quotes/:id',
+    name: 'QuoteView',
+    component: () => import('../views/Quotes/QuoteView.vue'),
+    meta: {
+      title: 'Quote View',
+      requiresAuth: true
+    },
+  },
+  {
     path: '/packages',
     name: 'Packages',
     component: () => import('../views/Packages.vue'),

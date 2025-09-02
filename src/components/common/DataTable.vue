@@ -125,6 +125,17 @@
                     </svg>
                   </button>
 
+                  <!-- WhatsApp Button -->
+                  <a
+                    v-if="showWhatsAppButton"
+                    class="text-gray-500 hover:text-green-600 transition-colors"
+                    title="Send WhatsApp Message"
+                    target="_blank"
+                    :href="getWhatsAppUrl(item)"
+                  >
+                    <WhatsAppIcon width="14" height="14" />
+                  </a>
+
                   <!-- Edit Button -->
                   <button
                     v-if="showEditButton"
@@ -202,8 +213,13 @@
 </template>
 
 <script>
+import WhatsAppIcon from '../../icons/WhatsAppIcon.vue';
+
 export default {
   name: 'DataTable',
+  components: {
+    WhatsAppIcon
+  },
   props: {
     title: {
       type: String,
@@ -237,6 +253,14 @@ export default {
       type: Boolean,
       default: true
     },
+    showWhatsAppButton: {
+      type: Boolean,
+      default: false
+    },
+    waPhoneNumber: {
+      type: String,
+      default: ''
+    },
     showAddButton: {
       type: Boolean,
       default: true
@@ -255,6 +279,13 @@ export default {
       currentPage: 1,
       isFilterOpen: false
     };
+  },
+  mounted() {
+    console.log('DataTable mounted with props:', {
+      showWhatsAppButton: this.showWhatsAppButton,
+      waPhoneNumber: this.waPhoneNumber,
+      dataLength: this.data?.length || 0
+    });
   },
   computed: {
     filteredData() {
@@ -380,6 +411,22 @@ export default {
       this.currentPage = 1;
       this.$emit('filter-reset');
       this.isFilterOpen = false;
+    },
+    getWhatsAppUrl(item) {
+      console.log('getWhatsAppUrl called with item:', item);
+      console.log('waPhoneNumber:', this.waPhoneNumber);
+      const message = `Selamat Siang
+Data survey
+Nama : ${item.client_name}
+Est tgl : ${item.visiting_date}
+Est jmlh : ${item.estimated_paxes}
+Villa/aula : ${item.villa_types}
+Kontak : ${item.phone_number}
+Ket: ${item.notes}`;
+      const encodedMessage = encodeURIComponent(message);
+      const url = `https://wa.me/${this.waPhoneNumber}?text=${encodedMessage}`;
+      console.log('Generated WhatsApp URL:', url);
+      return url;
     }
   }
 };

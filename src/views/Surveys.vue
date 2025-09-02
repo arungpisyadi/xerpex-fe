@@ -61,8 +61,7 @@
       </div>
 
       <div class="max-w-full overflow-x-auto">
-        <data-table :data="filteredSurveys" :columns="columns" :loading="loading" :show-add-button="false"
-          @edit="editSurvey" @delete="deleteSurveyConfirm" />
+        <data-table :show-whatsapp-button="true" :data="filteredSurveys" :columns="columns" :loading="loading" :show-add-button="false" :wa-phone-number="waPhoneNumber" @edit="editSurvey" @delete="deleteSurveyConfirm" @view="viewSurvey" />
       </div>
     </div>
 
@@ -72,7 +71,7 @@
         class="w-full max-w-4xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-6">
           <h3 class="text-xl font-semibold text-black dark:text-white">
-            {{ isEditing ? 'Edit Survey' : 'Add New Survey' }}
+            {{ isViewMode ? 'View Survey' : (isEditing ? 'Edit Survey' : 'Add New Survey') }}
           </h3>
           <button @click="closeModal" class="text-gray-500 hover:text-primary">
             <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -84,83 +83,176 @@
           </button>
         </div>
 
-        <FormKit type="form" :actions="false" @submit="submitSurvey" >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Client Information -->
-            <div class="flex flex-col space-y-8">
-              <h4
-                class="text-lg font-medium text-black dark:text-white border-b border-stroke dark:border-strokedark pb-2">
-                Client Information
-              </h4>
+        <template v-if="isViewMode">
+          <div class="space-y-6">
+            <!-- Basic Information -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+                <h5 class="mb-3 font-medium text-black dark:text-white">Basic Information</h5>
+                <div class="space-y-3">
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Client Name:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.client_name }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Email:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.email }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone Number:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.phone_number }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Estimated Paxes:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.estimated_paxes }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Villa Types:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.villa_types }}</p>
+                  </div>
+                </div>
+              </div>
 
-              <FormKit type="text" name="client_name" label="Client Name" placeholder="Enter client name"
-                v-model="surveyForm.client_name" validation="required"  />
-
-              <FormKit type="email" name="email" label="Email" placeholder="Enter email address"
-                v-model="surveyForm.email" validation="required|email"  />
-
-              <FormKit type="tel" name="phone_number" label="Phone Number" placeholder="Enter phone number"
-                v-model="surveyForm.phone_number"  />
-
-              <FormKit type="number" name="estimated_paxes" label="Estimated Paxes"
-                placeholder="Enter estimated number of guests" v-model="surveyForm.estimated_paxes" min="0"  />
-
-              <FormKit type="text" name="villa_types" label="Villa Types" placeholder="Enter preferred villa types"
-                v-model="surveyForm.villa_types"  />
+              <!-- Survey Details -->
+              <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+                <h5 class="mb-3 font-medium text-black dark:text-white">Survey Details</h5>
+                <div class="space-y-3">
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.status }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.priority }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Assigned Salesman:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.salesman_name }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Follow-up Date:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.follow_up_date || 'N/A' }}</p>
+                  </div>
+                  <div>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Visiting Date:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.visiting_date || 'N/A' }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Survey Details -->
-            <div class="flex flex-col space-y-8">
-              <h4
-                class="text-lg font-medium text-black dark:text-white border-b border-stroke dark:border-strokedark pb-2">
-                Survey Details
-              </h4>
+            <!-- Notes -->
+            <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+              <h5 class="mb-3 font-medium text-black dark:text-white">Notes</h5>
+              <p class="text-gray-600 dark:text-gray-400">{{ surveyForm.notes || 'No notes' }}</p>
+            </div>
 
-              <FormKit type="select" name="status" label="Status" v-model="surveyForm.status" validation="required"
-                :options="[
-                  { label: 'New', value: 'new' },
-                  { label: 'Contacted', value: 'contacted' },
-                  { label: 'Scheduled', value: 'scheduled' },
-                  { label: 'Visited', value: 'visited' },
-                  { label: 'Quoted', value: 'quoted' },
-                  { label: 'Closed Won', value: 'closed_won' },
-                  { label: 'Closed Lost', value: 'closed_lost' }
-                ]"  />
-
-              <FormKit type="select" name="priority" label="Priority" v-model="surveyForm.priority"
-                validation="required" :options="[
-                  { label: 'Low', value: 'low' },
-                  { label: 'Medium', value: 'medium' },
-                  { label: 'High', value: 'high' },
-                  { label: 'Urgent', value: 'urgent' }
-                ]"  />
-
-              <FormKit type="select" name="salesman_id" label="Assigned Salesman" v-model="surveyForm.salesman_id"
-                validation="required" :options="[
-                  { label: 'Select a salesman', value: '', attrs: { disabled: true } },
-                  ...salesmen.map(salesman => ({ label: salesman.full_name, value: salesman.id }))
-                ]"  />
-
-              <FormKit type="date" name="follow_up_date" label="Follow-up Date" v-model="surveyForm.follow_up_date"
-                 />
-
-              <FormKit type="date" name="visiting_date" label="Visiting Date" v-model="surveyForm.visiting_date"
-                 />
+            <!-- Timeline -->
+            <div class="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+              <h5 class="mb-3 font-medium text-black dark:text-white">Timeline</h5>
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Created:</span>
+                  <p class="text-black dark:text-white">{{ formatDate(surveyForm.created_at) }}</p>
+                </div>
+                <div>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated:</span>
+                  <p class="text-black dark:text-white">{{ formatDate(surveyForm.updated_at) }}</p>
+                </div>
+              </div>
             </div>
           </div>
-
-          <FormKit type="textarea" name="notes" label="Notes" placeholder="Enter additional notes"
-            v-model="surveyForm.notes" rows="4"  />
 
           <div class="flex justify-end gap-4 mt-6">
-            <FormKit type="button" @click="closeModal" >
+            <button @click="closeModal" class="px-4 py-2 border border-stroke rounded text-black dark:text-white">
               Cancel
-            </FormKit>
-            <FormKit type="submit" :disabled="submitting" >
-              {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
-            </FormKit>
+            </button>
+            <button @click="sendWhatsApp" class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+              <WhatsAppIcon class="w-4 h-4" />
+              WhatsApp
+            </button>
           </div>
-        </FormKit>
+        </template>
+
+        <template v-else>
+          <FormKit type="form" :actions="false" @submit="submitSurvey" >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Client Information -->
+              <div class="flex flex-col space-y-8">
+                <h4
+                  class="text-lg font-medium text-black dark:text-white border-b border-stroke dark:border-strokedark pb-2">
+                  Client Information
+                </h4>
+
+                <FormKit type="text" name="client_name" label="Client Name" placeholder="Enter client name"
+                  v-model="surveyForm.client_name" validation="required"  />
+
+                <FormKit type="email" name="email" label="Email" placeholder="Enter email address"
+                  v-model="surveyForm.email" validation="required|email"  />
+
+                <FormKit type="tel" name="phone_number" label="Phone Number" placeholder="Enter phone number"
+                  v-model="surveyForm.phone_number"  />
+
+                <FormKit type="number" name="estimated_paxes" label="Estimated Paxes"
+                  placeholder="Enter estimated number of guests" v-model="surveyForm.estimated_paxes" min="0"  />
+
+                <FormKit type="text" name="villa_types" label="Villa Types" placeholder="Enter preferred villa types"
+                  v-model="surveyForm.villa_types"  />
+              </div>
+
+              <!-- Survey Details -->
+              <div class="flex flex-col space-y-8">
+                <h4
+                  class="text-lg font-medium text-black dark:text-white border-b border-stroke dark:border-strokedark pb-2">
+                  Survey Details
+                </h4>
+
+                <FormKit type="select" name="status" label="Status" v-model="surveyForm.status" validation="required"
+                  :options="[
+                    { label: 'New', value: 'new' },
+                    { label: 'Contacted', value: 'contacted' },
+                    { label: 'Scheduled', value: 'scheduled' },
+                    { label: 'Visited', value: 'visited' },
+                    { label: 'Quoted', value: 'quoted' },
+                    { label: 'Closed Won', value: 'closed_won' },
+                    { label: 'Closed Lost', value: 'closed_lost' }
+                  ]"  />
+
+                <FormKit type="select" name="priority" label="Priority" v-model="surveyForm.priority"
+                  validation="required" :options="[
+                    { label: 'Low', value: 'low' },
+                    { label: 'Medium', value: 'medium' },
+                    { label: 'High', value: 'high' },
+                    { label: 'Urgent', value: 'urgent' }
+                  ]"  />
+
+                <FormKit type="select" name="salesman_id" label="Assigned Salesman" v-model="surveyForm.salesman_id"
+                  validation="required" :options="[
+                    { label: 'Select a salesman', value: '', attrs: { disabled: true } },
+                    ...salesmen.map(salesman => ({ label: salesman.full_name, value: salesman.id }))
+                  ]"  />
+
+                <FormKit type="date" name="follow_up_date" label="Follow-up Date" v-model="surveyForm.follow_up_date"
+                   />
+
+                <FormKit type="date" name="visiting_date" label="Visiting Date" v-model="surveyForm.visiting_date"
+                   />
+              </div>
+            </div>
+
+            <FormKit type="textarea" name="notes" label="Notes" placeholder="Enter additional notes"
+              v-model="surveyForm.notes" rows="4"  />
+
+            <div class="flex justify-end gap-4 mt-6">
+              <FormKit type="button" @click="closeModal" >
+                Cancel
+              </FormKit>
+              <FormKit type="submit" :disabled="submitting" >
+                {{ submitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
+              </FormKit>
+            </div>
+          </FormKit>
+        </template>
       </div>
     </div>
   </admin-layout>
@@ -170,13 +262,15 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
+import WhatsAppIcon from '../icons/WhatsAppIcon.vue';
 import { surveyService, salesmanService } from '../services';
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb,
-    DataTable
+    DataTable,
+    WhatsAppIcon
   },
   data() {
     return {
@@ -189,6 +283,7 @@ export default {
       salesmen: [],
       showModal: false,
       isEditing: false,
+      isViewMode: false,
       surveyForm: {
         client_name: '',
         email: '',
@@ -200,7 +295,8 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: ''
+        salesman_id: '',
+        salesman_name: ''
       },
       columns: [
         { key: 'client_name', label: 'Client', span: 2 },
@@ -210,7 +306,8 @@ export default {
         { key: 'salesman_name', label: 'Salesman', span: 2 },
         { key: 'follow_up_date', label: 'Follow-up', span: 2, type: 'date' },
         { key: 'visiting_date', label: 'Visit Date', span: 2, type: 'date' }
-      ]
+      ],
+      waPhoneNumber: import.meta.env.VITE_WA_SALES_ADMIN || ''
     };
   },
   computed: {
@@ -247,6 +344,7 @@ export default {
     }
   },
   async created() {
+    console.log('Surveys.vue created, waPhoneNumber:', this.waPhoneNumber);
     await Promise.all([
       this.fetchSurveys(),
       this.fetchSalesmen()
@@ -287,7 +385,8 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: ''
+        salesman_id: '',
+        salesman_name: ''
       };
       this.showModal = true;
     },
@@ -305,7 +404,28 @@ export default {
         priority: survey.priority || 'medium',
         follow_up_date: survey.follow_up_date || '',
         visiting_date: survey.visiting_date || '',
-        salesman_id: survey.salesman?.id || survey.salesman_id || ''
+        salesman_id: survey.salesman?.id || survey.salesman_id || '',
+        salesman_name: survey.salesman?.full_name || 'Unassigned'
+      };
+      this.showModal = true;
+    },
+    viewSurvey(survey) {
+      this.isViewMode = true;
+      this.isEditing = false;
+      this.surveyForm = {
+        id: survey.id,
+        client_name: survey.client_name || '',
+        email: survey.email || '',
+        phone_number: survey.phone_number || '',
+        estimated_paxes: survey.estimated_paxes || 0,
+        villa_types: survey.villa_types || '',
+        notes: survey.notes || '',
+        status: survey.status || 'new',
+        priority: survey.priority || 'medium',
+        follow_up_date: survey.follow_up_date || '',
+        visiting_date: survey.visiting_date || '',
+        salesman_id: survey.salesman?.id || survey.salesman_id || '',
+        salesman_name: survey.salesman?.full_name || 'Unassigned'
       };
       this.showModal = true;
     },
@@ -347,6 +467,7 @@ export default {
     closeModal() {
       this.showModal = false;
       this.isEditing = false;
+      this.isViewMode = false;
       this.surveyForm = {
         client_name: '',
         email: '',
@@ -358,8 +479,27 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: ''
+        salesman_id: '',
+        salesman_name: ''
       };
+    },
+    sendWhatsApp() {
+      const phone = import.meta.env.VITE_WA_SALES_ADMIN;
+      const message = `Selamat Siang,\n\nBerikut data survey:\n\nClient Name: ${this.surveyForm.client_name}\nEmail: ${this.surveyForm.email}\nPhone: ${this.surveyForm.phone_number}\nEstimated Paxes: ${this.surveyForm.estimated_paxes}\nVilla Types: ${this.surveyForm.villa_types}\nNotes: ${this.surveyForm.notes}\nStatus: ${this.surveyForm.status}\nPriority: ${this.surveyForm.priority}\nFollow-up Date: ${this.surveyForm.follow_up_date}\nVisiting Date: ${this.surveyForm.visiting_date}`;
+      const encodedMessage = encodeURIComponent(message);
+      if (phone) {
+        window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+      }
+    },
+    formatDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
   }
 };

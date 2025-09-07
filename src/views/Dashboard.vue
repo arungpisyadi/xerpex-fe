@@ -1,6 +1,13 @@
 <template>
   <admin-layout>
-    <div class="grid grid-cols-12 gap-4 md:gap-6">
+    <div v-if="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <span class="ml-2">Loading dashboard data...</span>
+    </div>
+    <div v-else-if="error" class="flex justify-center items-center h-64">
+      <div class="text-red-500">{{ error }}</div>
+    </div>
+    <div v-else class="grid grid-cols-12 gap-4 md:gap-6">
       <!-- Top metrics cards -->
       <div class="col-span-12 xl:col-span-3">
         <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -71,7 +78,7 @@
           <div>
             <div id="monthlySalesChart" class="mx-auto flex justify-center">
               <!-- Chart will be rendered here -->
-              <bar-chart-one />
+              <bar-chart-one :data="monthlySalesData" />
             </div>
           </div>
         </div>
@@ -99,13 +106,13 @@
 
           <div>
             <div id="monthlyTargetChart" class="mx-auto flex justify-center">
-              <radial-chart-one :percentage="75.55" :growth="10" :earnings="3287" />
+              <radial-chart-one :percentage="monthlyTargetPercentage" :growth="monthlyTargetGrowth" :earnings="monthlyEarnings" />
             </div>
           </div>
 
           <div class="text-center mt-2">
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              You earn $3287 today, it's higher than last month.
+              You earn ${{ monthlyEarnings }} today, it's {{ monthlyTargetGrowth >= 0 ? 'higher' : 'lower' }} than last month.
             </p>
             <p class="text-sm text-gray-600 dark:text-gray-400">
               Keep up your good work!
@@ -116,22 +123,22 @@
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Target</p>
               <p class="text-base font-semibold flex items-center justify-center">
-                $20K
-                <span class="text-meta-5 ml-1">↓</span>
+                ${{ targetsOverview?.ytd_metrics?.ytd_target || 0 }}
+                <span :class="['ml-1', targetsOverview?.achievement_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.achievement_percentage >= 0 ? '↑' : '↓' }}</span>
               </p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Revenue</p>
               <p class="text-base font-semibold flex items-center justify-center">
-                $20K
-                <span class="text-meta-3 ml-1">↑</span>
+                ${{ targetsOverview?.ytd_metrics?.ytd_achievement || 0 }}
+                <span :class="['ml-1', targetsOverview?.ytd_metrics?.ytd_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.ytd_metrics?.ytd_percentage >= 0 ? '↑' : '↓' }}</span>
               </p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Today</p>
               <p class="text-base font-semibold flex items-center justify-center">
-                $20K
-                <span class="text-meta-3 ml-1">↑</span>
+                ${{ targetsOverview?.current_month_achievement || 0 }}
+                <span :class="['ml-1', targetsOverview?.achievement_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.achievement_percentage >= 0 ? '↑' : '↓' }}</span>
               </p>
             </div>
           </div>
@@ -168,7 +175,7 @@
 
           <div>
             <div id="statisticsChart" class="mx-auto flex justify-center">
-              <line-chart-one />
+              <line-chart-one :data="userPerformances?.chart_data" />
             </div>
           </div>
         </div>
@@ -183,6 +190,7 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import BarChartOne from '../components/charts/BarChart/BarChartOne.vue';
 import LineChartOne from '../components/charts/LineChart/LineChartOne.vue';
 import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue';
+import { TargetsService } from '../services/targets.service';
 import {
   UserCircleIcon,
   BoxIcon,
@@ -191,33 +199,65 @@ import {
   HorizontalDots
 } from '../icons';
 
-// Metrics
-const customerCount = ref(3782);
-const customerGrowth = ref(11.01);
-const orderCount = ref(5359);
-const orderGrowth = ref(-9.05);
+// Reactive data for API responses
+const targetsOverview = ref(null);
+const userPerformances = ref(null);
+const companyPerformance = ref(null);
+const loading = ref(true);
+const error = ref(null);
 
-// Monthly Sales Chart data
+// Metrics derived from API data
+const customerCount = ref(0);
+const customerGrowth = ref(0);
+const orderCount = ref(0);
+const orderGrowth = ref(0);
+
+// Monthly Sales Chart data (from userPerformances)
 const monthlySalesData = ref({
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  datasets: [
-    {
-      label: 'Sales',
-      backgroundColor: '#3C50E0',
-      borderColor: '#3C50E0',
-      data: [180, 390, 210, 350, 190, 200, 300, 120, 200, 390, 280, 120],
-    },
-  ],
+  labels: [],
+  datasets: [],
 });
 
-// Monthly Target data
-const monthlyTargetPercentage = ref(75.55);
-const monthlyTargetGrowth = ref(10);
-const monthlyEarnings = ref(3287);
+// Monthly Target data (from companyPerformance and targetsOverview)
+const monthlyTargetPercentage = ref(0);
+const monthlyTargetGrowth = ref(0);
+const monthlyEarnings = ref(0);
 
 // Fetch dashboard data
-onMounted(() => {
-  // Dashboard is now using static data
-  // All metrics are already initialized with default values
+onMounted(async () => {
+  try {
+    const currentYear = new Date().getFullYear();
+
+    // Fetch data from APIs
+    const [overview, performances, companyPerf] = await Promise.all([
+      TargetsService.getTargetsOverview(),
+      TargetsService.getUserPerformances(currentYear),
+      TargetsService.getCompanyPerformance(currentYear)
+    ]);
+
+    targetsOverview.value = overview;
+    userPerformances.value = performances;
+    companyPerformance.value = companyPerf;
+
+    // Update metrics
+    customerCount.value = overview.active_users_count || 0;
+    customerGrowth.value = overview.achievement_percentage || 0;
+    orderCount.value = overview.current_month_achievement || 0;
+    orderGrowth.value = overview.ytd_metrics?.ytd_percentage || 0;
+
+    // Update chart data
+    if (performances.chart_data) {
+      monthlySalesData.value = performances.chart_data;
+    }
+
+    monthlyTargetPercentage.value = companyPerf.achievement_percentage || 0;
+    monthlyTargetGrowth.value = overview.achievement_percentage || 0;
+    monthlyEarnings.value = overview.current_month_achievement || 0;
+
+    loading.value = false;
+  } catch (err) {
+    error.value = err.message || 'Failed to load dashboard data';
+    loading.value = false;
+  }
 });
 </script>

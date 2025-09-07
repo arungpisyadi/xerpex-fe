@@ -67,13 +67,6 @@
                 </div>
               </div>
               <div class="flex items-center">
-                <button
-                  @click.stop="saveAllTargets(salesUser.id)"
-                  class="mr-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 disabled:opacity-50"
-                  :disabled="saving[salesUser.id]"
-                >
-                  {{ saving[salesUser.id] ? 'Saving...' : 'Save All Targets' }}
-                </button>
                 <svg
                   :class="['h-5 w-5 transition-transform', expandedUsers[salesUser.id] ? 'rotate-180' : '']"
                   fill="none"
@@ -122,6 +115,15 @@
                       </div>
                     </FormKit>
                   </div>
+                </div>
+                <div class="flex justify-end mt-6">
+                  <button
+                    @click="saveAllTargets(salesUser.id)"
+                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+                    :disabled="saving[salesUser.id]"
+                  >
+                    {{ saving[salesUser.id] ? 'Saving...' : 'Save All Targets' }}
+                  </button>
                 </div>
               </div>
             </div>

@@ -123,15 +123,20 @@ import {
   SurveyIcon,
   SalesmanIcon,
   PackageIcon,
+  BarChartIcon,
 } from "../../icons";
 import { useSidebar } from "@/composables/useSidebar";
+import AuthService from '../../services/auth.service.ts';
 
 const route = useRoute();
 
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
+const authService = AuthService;
+const isAdmin = computed(() => authService.isAdmin());
+
 // XerpeX ERP navigation structure
-const menuGroups = [
+const menuGroups = computed(() => [
   {
     title: "Main",
     items: [
@@ -181,11 +186,14 @@ const menuGroups = [
       {
         icon: SettingsIcon,
         name: "Settings",
-        path: "/settings",
+        subItems: [
+          { name: "General", path: "/settings" },
+          ...(isAdmin.value ? [{ name: "Targets", path: "/targets" }] : []),
+        ],
       },
     ],
   }
-];
+]);
 
 const isActive = (path) => route.path === path;
 
@@ -195,7 +203,7 @@ const toggleSubmenu = (groupIndex, itemIndex) => {
 };
 
 const isAnySubmenuRouteActive = computed(() => {
-  return menuGroups.some((group) =>
+  return menuGroups.value.some((group) =>
     group.items.some(
       (item) =>
         item.subItems && item.subItems.some((subItem) => isActive(subItem.path))
@@ -208,7 +216,7 @@ const isSubmenuOpen = (groupIndex, itemIndex) => {
   return (
     openSubmenu.value === key ||
     (isAnySubmenuRouteActive.value &&
-      menuGroups[groupIndex].items[itemIndex].subItems?.some((subItem) =>
+      menuGroups.value[groupIndex].items[itemIndex].subItems?.some((subItem) =>
         isActive(subItem.path)
       ))
   );

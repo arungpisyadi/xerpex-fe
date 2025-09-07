@@ -210,6 +210,16 @@ const erpRoutes = [
       requiresAuth: true
     },
   },
+  {
+    path: '/targets',
+    name: 'Targets',
+    component: () => import('../views/Targets.vue'),
+    meta: {
+      title: 'Targets Management',
+      requiresAuth: true,
+      requiresAdmin: true
+    },
+  },
   // Authentication routes
   {
     path: '/signin',

@@ -34,7 +34,7 @@
     </div>
 
     <div class="mb-6">
-      <page-breadcrumb :items="[{ text: 'Home', link: '/' }, { text: 'Bookings' }]" />
+      <page-breadcrumb page-title="Bookings" />
     </div>
 
     <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">

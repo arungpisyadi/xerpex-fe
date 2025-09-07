@@ -141,6 +141,15 @@ class AuthService {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
+
+  /**
+   * Check if user is admin
+   * @returns {boolean} - True if user is admin
+   */
+  isAdmin() {
+    const user = this.getUser();
+    return user && user.role === 'admin';
+  }
 }
 
 export default new AuthService();

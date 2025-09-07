@@ -25,7 +25,15 @@ router.beforeEach((to, from, next) => {
         query: { redirect: to.fullPath }
       })
     } else {
-      // User is authenticated, proceed
+      // Check if route requires admin access
+      if (to.matched.some(record => record.meta.requiresAdmin)) {
+        if (!authService.isAdmin()) {
+          // User is not admin, redirect to dashboard
+          next({ path: '/' })
+          return
+        }
+      }
+      // User is authenticated and has required permissions, proceed
       next()
     }
   } else {

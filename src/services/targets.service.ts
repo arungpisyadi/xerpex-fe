@@ -149,4 +149,53 @@ export class TargetsService {
     const response = await apiClient.get('/admin/targets/overview');
     return response.data;
   }
+
+  /**
+   * Get the list of sales users (users with role 'sales')
+   * @returns Promise<any[]>
+   */
+  static async getSalesUsers(): Promise<any[]> {
+    const response = await apiClient.get('/users', { params: { role: 'sales' } });
+    // Assuming response.data is an array of users
+    return Array.isArray(response.data) ? response.data : [];
+  }
+
+  /**
+   * Get the count of sales users (users with role 'sales')
+   * @returns Promise<number>
+   */
+  static async getSalesUsersCount(): Promise<number> {
+    const users = await this.getSalesUsers();
+    return users.length;
+  }
+
+  /**
+   * Get all targets
+   * @returns Promise<any[]>
+   */
+  static async getAllTargets(): Promise<any[]> {
+    const response = await apiClient.get('/admin/targets');
+    return response.data;
+  }
+
+  /**
+   * Create a new target
+   * @param targetData - Target data to create
+   * @returns Promise<any>
+   */
+  static async createTarget(targetData: any): Promise<any> {
+    const response = await apiClient.post('/admin/targets', targetData);
+    return response.data;
+  }
+
+  /**
+   * Update an existing target
+   * @param targetId - ID of the target to update
+   * @param targetData - Updated target data
+   * @returns Promise<any>
+   */
+  static async updateTarget(targetId: number, targetData: any): Promise<any> {
+    const response = await apiClient.put(`/admin/targets/${targetId}`, targetData);
+    return response.data;
+  }
 }

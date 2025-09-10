@@ -1,7 +1,7 @@
 <template>
   <admin-layout>
     <div class="mb-6">
-      <page-breadcrumb :items="[{ text: 'Home', link: '/' }, { text: 'Users', link: '/users' }, { text: 'User Detail' }]" />
+      <page-breadcrumb page-title="User Detail" />
     </div>
 
     <div v-if="loading" class="flex justify-center items-center py-20">

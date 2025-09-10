@@ -39,32 +39,80 @@
             <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
               <BoxIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
-            <span class="text-sm text-gray-500 dark:text-gray-400">Orders</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Bookings</span>
           </div>
           <div class="flex items-end justify-between">
             <div>
               <h4 class="text-title-md font-bold text-black dark:text-white">
-                {{ orderCount }}
+                {{ bookingsCount }}
               </h4>
               <span :class="[
                 'text-sm font-medium',
-                orderGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
+                bookingsGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
               ]">
-                {{ orderGrowth >= 0 ? '+' : '' }}{{ orderGrowth }}%
+                {{ bookingsGrowth >= 0 ? '+' : '' }}{{ bookingsGrowth }}%
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Monthly Sales Chart -->
-      <div class="col-span-12 xl:col-span-8">
+      <div class="col-span-12 xl:col-span-3">
+        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+              <SurveyIcon class="fill-primary dark:fill-white w-6 h-6" />
+            </div>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Surveys</span>
+          </div>
+          <div class="flex items-end justify-between">
+            <div>
+              <h4 class="text-title-md font-bold text-black dark:text-white">
+                {{ surveysCount }}
+              </h4>
+              <span :class="[
+                'text-sm font-medium',
+                surveysGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
+              ]">
+                {{ surveysGrowth >= 0 ? '+' : '' }}{{ surveysGrowth }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-span-12 xl:col-span-3">
+        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+              <DocsIcon class="fill-primary dark:fill-white w-6 h-6" />
+            </div>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Quotes</span>
+          </div>
+          <div class="flex items-end justify-between">
+            <div>
+              <h4 class="text-title-md font-bold text-black dark:text-white">
+                {{ quotesCount }}
+              </h4>
+              <span :class="[
+                'text-sm font-medium',
+                quotesGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
+              ]">
+                {{ quotesGrowth >= 0 ? '+' : '' }}{{ quotesGrowth }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Revenue Bar Chart -->
+      <div class="col-span-12 xl:col-span-4">
         <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
               <div class="flex min-w-47.5">
                 <h4 class="text-xl font-semibold text-black dark:text-white">
-                  Monthly Sales
+                  Monthly Revenue
                 </h4>
               </div>
             </div>
@@ -76,22 +124,22 @@
           </div>
 
           <div>
-            <div id="monthlySalesChart" class="mx-auto flex justify-center">
+            <div id="monthlyRevenueChart" class="mx-auto flex justify-center">
               <!-- Chart will be rendered here -->
-              <bar-chart-one :data="monthlySalesData" />
+              <bar-chart-one :data="monthlyRevenueData" />
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Monthly Target Chart -->
+      <!-- This Month Target Chart -->
       <div class="col-span-12 xl:col-span-4">
         <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mb-3">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
               <div class="flex min-w-47.5">
                 <h4 class="text-xl font-semibold text-black dark:text-white">
-                  Monthly Target
+                  This Month Target
                 </h4>
               </div>
             </div>
@@ -102,51 +150,100 @@
             </div>
           </div>
 
-          <p class="text-sm text-gray-500 mb-5">Target you've set for each month</p>
+          <p class="text-sm text-gray-500 mb-5">Target sales bulan {{ getCurrentMonthName() }}</p>
 
           <div>
             <div id="monthlyTargetChart" class="mx-auto flex justify-center">
-              <radial-chart-one :percentage="monthlyTargetPercentage" :growth="monthlyTargetGrowth" :earnings="monthlyEarnings" />
+              <radial-chart-one :percentage="currentMonthPerformance?.performance_percentage || 0" :growth="currentMonthPerformance?.growth_percentage || 0" :earnings="currentMonthPerformance?.current_revenue || 0" />
             </div>
           </div>
 
-          <div class="text-center mt-2">
+          <!-- <div class="text-center mt-2">
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              You earn ${{ monthlyEarnings }} today, it's {{ monthlyTargetGrowth >= 0 ? 'higher' : 'lower' }} than last month.
+              You earn {{ formatCurrency(currentMonthPerformance?.current_revenue || 0) }} today, it's {{ (currentMonthPerformance?.growth || 0) > 0 ? 'higher' : 'lower' }} than last month.
             </p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Keep up your good work!
-            </p>
-          </div>
+          </div> -->
 
           <div class="grid grid-cols-3 gap-2 mt-6">
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Target</p>
-              <p class="text-base font-semibold flex items-center justify-center">
-                ${{ targetsOverview?.ytd_metrics?.ytd_target || 0 }}
-                <span :class="['ml-1', targetsOverview?.achievement_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.achievement_percentage >= 0 ? '↑' : '↓' }}</span>
+              <p class="text-base font-semibold">
+                {{ formatNumber(currentMonthPerformance?.target_amount || 0) }}
               </p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Revenue</p>
-              <p class="text-base font-semibold flex items-center justify-center">
-                ${{ targetsOverview?.ytd_metrics?.ytd_achievement || 0 }}
-                <span :class="['ml-1', targetsOverview?.ytd_metrics?.ytd_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.ytd_metrics?.ytd_percentage >= 0 ? '↑' : '↓' }}</span>
+              <p class="text-base font-semibold">
+                {{ formatNumber(currentMonthPerformance?.current_revenue || 0) }}
               </p>
             </div>
             <div class="text-center">
               <p class="text-xs text-gray-500 mb-1">Today</p>
-              <p class="text-base font-semibold flex items-center justify-center">
-                ${{ targetsOverview?.current_month_achievement || 0 }}
-                <span :class="['ml-1', targetsOverview?.achievement_percentage >= 0 ? 'text-meta-3' : 'text-meta-5']">{{ targetsOverview?.achievement_percentage >= 0 ? '↑' : '↓' }}</span>
+              <p class="text-base font-semibold">
+                {{ formatNumber(currentMonthPerformance?.today_revenue || 0) }}
               </p>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Yearly Target Chart -->
+      <div class="col-span-12 xl:col-span-4">
+        <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+          <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mb-3">
+            <div class="flex w-full flex-wrap gap-3 sm:gap-5">
+              <div class="flex min-w-47.5">
+                <h4 class="text-xl font-semibold text-black dark:text-white">
+                  Yearly Target
+                </h4>
+              </div>
+            </div>
+            <div class="flex">
+              <button class="text-gray-500">
+                <HorizontalDots class="fill-current" />
+              </button>
+            </div>
+          </div>
+
+          <p class="text-sm text-gray-500 mb-5">Target tahunan sales</p>
+
+          <div>
+            <div id="yearlyTargetChart" class="mx-auto flex justify-center">
+              <radial-chart-one :percentage="currentYearPerformance?.performance_percentage || 0" :growth="currentYearPerformance?.growth || 0" :earnings="currentYearPerformance?.current_revenue || 0" />
+            </div>
+          </div>
+
+          <!-- <div class="text-center mt-2">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              You earn {{ formatCurrency(currentYearPerformance?.current_achievement || 0) }} this year, it's {{ (currentYearPerformance?.growth || 0) > 0 ? 'higher' : 'lower' }} than last year.
+            </p>
+          </div> -->
+
+          <div class="grid grid-cols-2 gap-2 mt-6">
+            <div class="text-center">
+              <p class="text-xs text-gray-500 mb-1">Target</p>
+              <p class="text-base font-semibold">
+                {{ formatNumber(currentYearPerformance?.target_amount || 0) }}
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-gray-500 mb-1">Revenue</p>
+              <p class="text-base font-semibold">
+                {{ formatNumber(currentYearPerformance?.current_revenue || 0) }}
+              </p>
+            </div>
+            <!-- <div class="text-center">
+              <p class="text-xs text-gray-500 mb-1">Today</p>
+              <p class="text-base font-semibold">
+                {{ currentYearPerformance?.today_sales || 0 }}
+              </p>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
       <!-- Statistics Chart -->
-      <div class="col-span-12">
+      <!-- <div class="col-span-12">
         <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mb-4">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
@@ -179,7 +276,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </admin-layout>
 </template>
@@ -191,26 +288,54 @@ import BarChartOne from '../components/charts/BarChart/BarChartOne.vue';
 import LineChartOne from '../components/charts/LineChart/LineChartOne.vue';
 import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue';
 import { TargetsService } from '../services/targets.service';
+import { KpiService } from '../services/kpi.service';
+import { formatNumber, formatCurrency } from '../utils/number-formatter';
 import {
   UserCircleIcon,
   BoxIcon,
   CalenderIcon as CalendarIcon,
   DocsIcon,
+  SurveyIcon,
   HorizontalDots
 } from '../icons';
 
 // Reactive data for API responses
-const targetsOverview = ref(null);
+// const targetsOverview = ref(null);
 const userPerformances = ref(null);
 const companyPerformance = ref(null);
 const loading = ref(true);
 const error = ref(null);
 
+// New reactive variables for dashboard data
+const monthlyRevenueData = ref({
+  labels: [],
+  datasets: [],
+});
+const currentMonthPerformance = ref(null);
+const currentYearPerformance = ref(null);
+
+// Indonesian month names mapping
+const indonesianMonths = {
+  1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
+  5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
+  9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember'
+};
+
+// Current month name in Indonesian
+const getCurrentMonthName = () => {
+  const currentMonth = new Date().getMonth() + 1;
+  return indonesianMonths[currentMonth];
+};
+
 // Metrics derived from API data
 const customerCount = ref(0);
 const customerGrowth = ref(0);
-const orderCount = ref(0);
-const orderGrowth = ref(0);
+const bookingsCount = ref(0);
+const bookingsGrowth = ref(0);
+const surveysCount = ref(0);
+const surveysGrowth = ref(0);
+const quotesCount = ref(0);
+const quotesGrowth = ref(0);
 
 // Monthly Sales Chart data (from userPerformances)
 const monthlySalesData = ref({
@@ -218,41 +343,36 @@ const monthlySalesData = ref({
   datasets: [],
 });
 
-// Monthly Target data (from companyPerformance and targetsOverview)
-const monthlyTargetPercentage = ref(0);
-const monthlyTargetGrowth = ref(0);
-const monthlyEarnings = ref(0);
-
 // Fetch dashboard data
 onMounted(async () => {
   try {
     const currentYear = new Date().getFullYear();
 
-    // Fetch data from APIs
-    const [overview, performances, companyPerf] = await Promise.all([
-      TargetsService.getTargetsOverview(),
-      TargetsService.getUserPerformances(currentYear),
-      TargetsService.getCompanyPerformance(currentYear)
+    // Fetch KPI data using the new KPI service with proper authorization
+    const [customersData, bookingsData, surveysData, quotesData, monthlyRevenue, currentMonthPerf, currentYearPerf] = await Promise.all([
+      KpiService.getCustomersKpi(),
+      KpiService.getBookingsKpi(),
+      KpiService.getSurveysKpi(),
+      KpiService.getQuotesKpi(),
+      KpiService.getMonthlyRevenue(currentYear),
+      KpiService.getCurrentMonthPerformance(),
+      KpiService.getCurrentYearPerformance()
     ]);
 
-    targetsOverview.value = overview;
-    userPerformances.value = performances;
-    companyPerformance.value = companyPerf;
+    monthlyRevenueData.value = monthlyRevenue.monthly_data;
+    currentMonthPerformance.value = currentMonthPerf;
+    currentYearPerformance.value = currentYearPerf;
 
-    // Update metrics
-    customerCount.value = overview.active_users_count || 0;
-    customerGrowth.value = overview.achievement_percentage || 0;
-    orderCount.value = overview.current_month_achievement || 0;
-    orderGrowth.value = overview.ytd_metrics?.ytd_percentage || 0;
-
-    // Update chart data
-    if (performances.chart_data) {
-      monthlySalesData.value = performances.chart_data;
-    }
-
-    monthlyTargetPercentage.value = companyPerf.achievement_percentage || 0;
-    monthlyTargetGrowth.value = overview.achievement_percentage || 0;
-    monthlyEarnings.value = overview.current_month_achievement || 0;
+    // Update KPI metrics from new endpoints
+    console.log(customersData);
+    customerCount.value = customersData.previous_month_total || 0;
+    customerGrowth.value = customersData.growth_percentage || 0;
+    bookingsCount.value = bookingsData.previous_month_total || 0;
+    bookingsGrowth.value = bookingsData.growth_percentage || 0;
+    surveysCount.value = surveysData.previous_month_total || 0;
+    surveysGrowth.value = surveysData.growth_percentage || 0;
+    quotesCount.value = quotesData.previous_month_total || 0;
+    quotesGrowth.value = quotesData.growth_percentage || 0;
 
     loading.value = false;
   } catch (err) {

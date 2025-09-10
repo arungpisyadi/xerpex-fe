@@ -7,17 +7,45 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 
-const series = ref([
-  {
-    name: 'Sales',
-    data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-  },
-])
+// Props definition
+const props = defineProps({
+  data: {
+    type: Array,
+    default: () => []
+  }
+})
 
-const chartOptions = ref({
+// Fallback data
+const fallbackData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112]
+}
+
+// Computed property for series data - reactive to prop changes
+const series = computed(() => {
+  if (!props.data || !Array.isArray(props.data) || props.data.length === 0) {
+    return [{
+      name: 'Revenue',
+      data: fallbackData.data,
+    }]
+  }
+
+  return [{
+    name: 'Revenue',
+    data: props.data,
+  }]
+})
+
+// Computed property for categories - reactive to prop changes
+const categories = computed(() => {
+  return fallbackData.labels
+})
+
+// Chart options - using computed property to make it reactive
+const chartOptions = computed(() => ({
   colors: ['#465fff'],
   chart: {
     fontFamily: 'Outfit, sans-serif',
@@ -29,7 +57,7 @@ const chartOptions = ref({
   plotOptions: {
     bar: {
       horizontal: false,
-      columnWidth: '39%',
+      columnWidth: '90%',
       borderRadius: 5,
       borderRadiusApplication: 'end',
     },
@@ -43,20 +71,7 @@ const chartOptions = ref({
     colors: ['transparent'],
   },
   xaxis: {
-    categories: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ],
+    categories: categories.value,
     axisBorder: {
       show: false,
     },
@@ -92,9 +107,9 @@ const chartOptions = ref({
     },
     y: {
       formatter: function (val) {
-        return val.toString()
+        return '$' + val.toString()
       },
     },
   },
-})
+}))
 </script>

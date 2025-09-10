@@ -190,7 +190,8 @@ export function useInvoicing() {
     error.value = null;
     try {
       const response = await invoiceService.getInvoices(filters);
-      invoices.value = response.invoices;
+      // console.log(response.data.invoices);
+      invoices.value = response.data.invoices;
       return response;
     } catch (err) {
       error.value = handleError(err, 'fetchInvoices').message;
@@ -309,7 +310,7 @@ export function useInvoicing() {
   const checkForOverdueInvoices = async () => {
     try {
       const response = await invoiceService.getOverdueInvoices();
-      return response.invoices;
+      return response.data.invoices;
     } catch (err) {
       error.value = handleError(err, 'checkForOverdueInvoices').message;
       throw err;

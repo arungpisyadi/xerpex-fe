@@ -1,6 +1,6 @@
 import type { Payment } from './payment.types';
 
-export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+export type InvoiceStatus = 'draft' | 'sent' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
 
 export interface InvoiceItem {
   id: number;
@@ -41,16 +41,19 @@ export interface CreateInvoiceRequest {
   tax_total: number;
   payment_terms?: string;
   notes?: string;
+  sales_person_id: number;
   items: Omit<InvoiceItem, 'id'>[];
 }
 
 export interface UpdateInvoiceRequest extends Partial<CreateInvoiceRequest> {}
 
 export interface InvoiceListResponse {
-  invoices: Invoice[];
-  total: number;
-  skip: number;
-  limit: number;
+  data: {
+    invoices: Invoice[];
+    total: number;
+    skip: number;
+    limit: number;
+  };
 }
 
 export interface InvoiceFilters {

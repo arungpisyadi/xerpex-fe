@@ -361,7 +361,7 @@ export default {
     },
     formatCurrency(value) {
       if (value === null || value === undefined) return '';
-      return `$${parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      return parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     },
     getStatusClass(status) {
       if (status === null || status === undefined) return '';

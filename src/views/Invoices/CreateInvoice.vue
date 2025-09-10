@@ -40,7 +40,7 @@
         </div>
 
         <!-- Invoice Details -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-3">
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-4">
           <FormKit
             type="select"
             name="payment_terms"
@@ -50,6 +50,15 @@
             validation="required"
             help="Payment terms for this invoice"
             @input="calculateDueDate"
+          />
+          <FormKit
+            type="select"
+            name="status"
+            label="Status"
+            :options="statusOptions"
+            placeholder="Select status"
+            validation="required"
+            help="Payment status for this invoice"
           />
           <FormKit
             type="date"
@@ -172,6 +181,19 @@
           </div>
         </div>
 
+        <!-- Sales Person Selection -->
+        <div class="mb-[1.5rem]">
+          <FormKit
+            type="select"
+            name="sales_person_id"
+            label="Sales Person"
+            :options="salesPersonOptions"
+            placeholder="Select a sales person"
+            validation="required"
+            help="Select the sales person responsible for this invoice"
+          />
+        </div>
+
         <!-- Form Actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]">
           <FormKit
@@ -211,8 +233,10 @@ import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service'
 import packageService from '../../services/package.service'
+// @ts-ignore
+import salesmanService from '../../services/salesman.service.js'
 import type { Customer } from '../../types/customer.types'
-import type { CreateInvoiceRequest, InvoiceItem } from '../../types/invoice.types'
+import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
 import { handleError } from '../../utils/errorHandler'
 
@@ -230,6 +254,7 @@ const {
 // Reactive state
 const loading = ref(false)
 const packages = ref<Package[]>([])
+const salespeople = ref<any[]>([])
 
 // Payment terms options
 const paymentTermsOptions = [
@@ -241,12 +266,24 @@ const paymentTermsOptions = [
   { label: 'Cash on delivery', value: 'COD' }
 ]
 
+// Status options
+const statusOptions = [
+  { label: 'Draft', value: 'draft' },
+  { label: 'Sent', value: 'sent' },
+  { label: 'Partially Paid', value: 'partially_paid' },
+  { label: 'Paid', value: 'paid' },
+  { label: 'Overdue', value: 'overdue' },
+  { label: 'Cancelled', value: 'cancelled' }
+]
+
 // Form data structure
 const invoiceForm = ref({
   customer_id: '',
   payment_terms: 'Net 30',
+  status: 'draft',
   due_date: '',
   notes: '',
+  sales_person_id: '',
   items: [
     {
       package_id: '',
@@ -282,6 +319,18 @@ const packageOptions = computed(() => {
   }))
 })
 
+const salesPersonOptions = computed(() => {
+  console.log('Sales people for options:', salespeople.value)
+  if (!salespeople.value || !Array.isArray(salespeople.value)) {
+    return []
+  }
+
+  return salespeople.value.map((person: any) => ({
+    label: `${person.name} - ${person.email || 'No email'}`,
+    value: person.id
+  }))
+})
+
 const calculations = computed(() => {
   const items = invoiceForm.value.items || []
 
@@ -304,8 +353,11 @@ const isFormValid = computed(() => {
   // Check if customer is selected
   if (!form.customer_id) return false
 
-  // Check if payment terms and due date are set
-  if (!form.payment_terms || !form.due_date) return false
+  // Check if payment terms, status and due date are set
+  if (!form.payment_terms || !form.status || !form.due_date) return false
+
+  // Check if sales person is selected
+  if (!form.sales_person_id) return false
 
   // Check if at least one item exists and is valid
   if (!form.items || form.items.length === 0) return false
@@ -385,11 +437,12 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
       customer_id: Number(invoiceForm.value.customer_id),
       issue_date: new Date().toISOString().split('T')[0],
       due_date: invoiceForm.value.due_date,
-      status: status,
+      status: invoiceForm.value.status as InvoiceStatus,
       total: calculations.value.total,
       tax_total: 0, // No tax calculation as per requirements
       payment_terms: invoiceForm.value.payment_terms,
       notes: invoiceForm.value.notes || undefined,
+      sales_person_id: Number(invoiceForm.value.sales_person_id),
       items: invoiceForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
@@ -433,10 +486,11 @@ watch(() => invoiceForm.value.payment_terms, () => {
 // Lifecycle
 onMounted(async () => {
   try {
-    // Load customers and packages for the dropdowns
+    // Load customers, packages, and salespeople for the dropdowns
     await Promise.all([
       fetchCustomers({ active_only: true }),
-      loadPackages()
+      loadPackages(),
+      loadSalespeople()
     ])
 
     // Set default due date
@@ -469,6 +523,32 @@ const loadPackages = async () => {
       console.error('Packages endpoint not found')
     }
     packages.value = []
+  }
+}
+
+const loadSalespeople = async () => {
+  try {
+    // Ensure we have authentication token before making the request
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No authentication token found')
+      salespeople.value = []
+      return
+    }
+
+    const response = await salesmanService.getSalesmenDropdown()
+    console.log('Salespeople service response:', response)
+    salespeople.value = Array.isArray(response) ? response : (response.salespeople || response.salesmen || [])
+    console.log('Salespeople loaded successfully:', salespeople.value.length, 'salespeople')
+  } catch (error: any) {
+    console.error('Error loading salespeople:', error)
+    // Show user-friendly error message
+    if (error.response?.status === 401) {
+      console.error('Authentication failed - please log in again')
+    } else if (error.response?.status === 404) {
+      console.error('Salespeople endpoint not found')
+    }
+    salespeople.value = []
   }
 }
 </script>

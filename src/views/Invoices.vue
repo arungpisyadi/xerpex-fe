@@ -75,12 +75,14 @@
 </template>
 
 <script>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import invoiceService from '../services/invoice.service';
 import authService from '../services/auth.service';
-import { useInvoicing } from '../composables/useInvoicing';
+import { useInvoicing } from '../composables/useInvoicing.ts';
 import { handleError } from '../utils/errorHandler';
 
 export default {
@@ -90,6 +92,7 @@ export default {
     DataTable
   },
   setup() {
+    const router = useRouter();
     const {
       invoices,
       loading,
@@ -100,49 +103,36 @@ export default {
       markInvoiceAsPaid
     } = useInvoicing();
 
-    return {
-      invoices,
-      loading,
-      error,
-      overdueInvoices,
-      fetchInvoices,
-      sendInvoice,
-      markInvoiceAsPaid,
-      authService,
-      handleError
-    };
-  },
-  data() {
-    return {
-      searchQuery: '',
-      statusFilter: '',
-      dateFilter: '',
-      currentPage: 1,
-      itemsPerPage: 10,
-      totalItems: 0,
-      columns: [
-        { key: 'invoice_number', label: 'Invoice #', span: 1 },
-        { key: 'customer_name', label: 'Customer', span: 2 },
-        { key: 'total', label: 'Amount', span: 1, type: 'currency' },
-        { key: 'tax_total', label: 'Tax', span: 1, type: 'currency' },
-        { key: 'status', label: 'Status', span: 1, type: 'status' },
-        { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
-        { key: 'due_date', label: 'Due Date', span: 1, type: 'date' }
-      ]
-    };
-  },
-  computed: {
-    filteredInvoices() {
+    // Reactive data
+    const searchQuery = ref('');
+    const statusFilter = ref('');
+    const dateFilter = ref('');
+    const currentPage = ref(1);
+    const itemsPerPage = ref(10);
+    const totalItems = ref(0);
+
+    const columns = ref([
+      { key: 'invoice_number', label: 'Invoice #', span: 1 },
+      { key: 'customer_name', label: 'Customer', span: 2 },
+      { key: 'total', label: 'Amount', span: 1, type: 'currency' },
+      { key: 'tax_total', label: 'Tax', span: 1, type: 'currency' },
+      { key: 'status', label: 'Status', span: 1, type: 'status' },
+      { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
+      { key: 'due_date', label: 'Due Date', span: 1, type: 'date' }
+    ]);
+
+    // Computed properties
+    const filteredInvoices = computed(() => {
       // Ensure invoices is an array before filtering
-      if (!this.invoices || !Array.isArray(this.invoices)) {
+      if (!invoices.value || !Array.isArray(invoices.value)) {
         return [];
       }
 
-      let filtered = [...this.invoices];
+      let filtered = [...invoices.value];
 
       // Apply search filter
-      if (this.searchQuery) {
-        const query = this.searchQuery.toLowerCase();
+      if (searchQuery.value) {
+        const query = searchQuery.value.toLowerCase();
         filtered = filtered.filter(invoice =>
           invoice.invoice_number?.toLowerCase().includes(query) ||
           invoice.customer_name?.toLowerCase().includes(query) ||
@@ -151,12 +141,12 @@ export default {
       }
 
       // Apply status filter
-      if (this.statusFilter) {
-        filtered = filtered.filter(invoice => invoice.status === this.statusFilter);
+      if (statusFilter.value) {
+        filtered = filtered.filter(invoice => invoice.status === statusFilter.value);
       }
 
       // Apply date filter
-      if (this.dateFilter) {
+      if (dateFilter.value) {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const startOfWeek = new Date(today);
@@ -167,7 +157,7 @@ export default {
         filtered = filtered.filter(invoice => {
           const dueDate = new Date(invoice.due_date);
 
-          switch (this.dateFilter) {
+          switch (dateFilter.value) {
             case 'today':
               return dueDate >= today && dueDate < new Date(today.getTime() + 86400000);
             case 'week':
@@ -183,100 +173,99 @@ export default {
       }
 
       return filtered;
-    },
+    });
 
-    // Show user context for admin/finance users
-    showUserContext() {
-      return this.authService.canAccessAllData();
-    }
-  },
-  async created() {
-    await this.loadData();
-  },
-  methods: {
-    async loadData() {
+    const showUserContext = computed(() => {
+      return authService.canAccessAllData();
+    });
+
+    // Methods
+    const loadData = async () => {
       try {
-        await this.fetchInvoices({
-          skip: (this.currentPage - 1) * this.itemsPerPage,
-          limit: this.itemsPerPage
+        await fetchInvoices({
+          skip: (currentPage.value - 1) * itemsPerPage.value,
+          limit: itemsPerPage.value
         });
-        this.totalItems = this.invoices?.length || 0;
-      } catch (error) {
-        this.handleError(error, 'loadData');
+        console.log('Invoices loaded:', invoices.value);
+        totalItems.value = invoices.value?.length || 0;
+      } catch (err) {
+        handleError(err, 'loadData');
       }
-    },
+    };
 
-    async handlePageChange(page) {
-      this.currentPage = page;
-      await this.loadData();
-    },
+    const handlePageChange = async (page) => {
+      currentPage.value = page;
+      await loadData();
+    };
 
-    viewInvoiceDetails(invoice) {
-      // Navigate to invoice details view (can be implemented later)
+    const viewInvoiceDetails = (invoice) => {
       console.log('View invoice details:', invoice.invoice_number);
-    },
+    };
 
-    navigateToCreateInvoice() {
-      this.$router.push('/invoices/create');
-    },
+    const navigateToCreateInvoice = () => {
+      router.push('/invoices/create');
+    };
 
-    async markAsPaid(invoice) {
+    const markAsPaid = async (invoice) => {
       try {
-        await this.markInvoiceAsPaid(invoice.id, {
+        await markInvoiceAsPaid(invoice.id, {
           payment_date: new Date().toISOString().split('T')[0]
         });
 
-        await this.loadData();
+        await loadData();
         console.log('Invoice marked as paid successfully');
-      } catch (error) {
-        this.handleError(error, 'markAsPaid');
+      } catch (err) {
+        handleError(err, 'markAsPaid');
       }
-    },
+    };
 
-    async sendInvoiceEmail(invoice) {
+    const sendInvoiceEmail = async (invoice) => {
       try {
-        await this.sendInvoice(invoice.id, {
+        await sendInvoice(invoice.id, {
           recipient_email: invoice.customer_email,
           subject: `Invoice ${invoice.invoice_number}`,
           message: 'Please find your invoice attached.'
         });
 
         console.log('Invoice sent successfully');
-      } catch (error) {
-        this.handleError(error, 'sendInvoiceEmail');
+      } catch (err) {
+        handleError(err, 'sendInvoiceEmail');
       }
-    },
+    };
 
-    editInvoice(invoice) {
-      this.$router.push(`/invoices/edit/${invoice.id}`);
-    },
+    const editInvoice = (invoice) => {
+      router.push(`/invoices/edit/${invoice.id}`);
+    };
 
-    deleteInvoice(invoice) {
-      // For now, just log - could implement delete functionality later
+    const deleteInvoice = (invoice) => {
       console.log('Delete invoice:', invoice.invoice_number);
-    },
+    };
 
-    async downloadInvoice(invoice) {
+    const downloadInvoice = async (invoice) => {
       try {
         await invoiceService.downloadInvoice(invoice.id, `invoice-${invoice.invoice_number}.pdf`);
         console.log('Invoice downloaded successfully');
-      } catch (error) {
-        this.handleError(error, 'downloadInvoice');
+      } catch (err) {
+        handleError(err, 'downloadInvoice');
       }
-    },
-    formatDate(dateString) {
+    };
+
+    const formatDate = (dateString) => {
       if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    },
-    formatPrice(price) {
+    };
+
+    const formatPrice = (price) => {
       return parseFloat(price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    },
-    capitalizeFirstLetter(string) {
+    };
+
+    const capitalizeFirstLetter = (string) => {
       if (!string) return '';
       return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-    getStatusClass(status) {
+    };
+
+    const getStatusClass = (status) => {
       switch (status) {
         case 'paid':
           return 'bg-success bg-opacity-10 text-success';
@@ -289,7 +278,48 @@ export default {
         default:
           return 'bg-gray-500 bg-opacity-10 text-gray-500';
       }
-    }
+    };
+
+    // Lifecycle
+    onMounted(async () => {
+      await loadData();
+    });
+
+    return {
+      // Reactive data
+      searchQuery,
+      statusFilter,
+      dateFilter,
+      currentPage,
+      itemsPerPage,
+      totalItems,
+      columns,
+
+      // From composable
+      invoices,
+      loading,
+      error,
+      overdueInvoices,
+
+      // Computed
+      filteredInvoices,
+      showUserContext,
+
+      // Methods
+      loadData,
+      handlePageChange,
+      viewInvoiceDetails,
+      navigateToCreateInvoice,
+      markAsPaid,
+      sendInvoiceEmail,
+      editInvoice,
+      deleteInvoice,
+      downloadInvoice,
+      formatDate,
+      formatPrice,
+      capitalizeFirstLetter,
+      getStatusClass
+    };
   }
 };
 </script>

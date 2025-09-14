@@ -5,7 +5,7 @@ export { default as customerService } from './customer.service';
 export { default as taxService } from './tax.service';
 export { default as packageService } from './package.service';
 export { default as quoteService } from './quote.service';
-export { default as invoiceService } from './invoice.service';
+export { default as invoiceService } from './invoice.service.ts';
 export { default as paymentService } from './payment.service';
 
 // Keep existing JS services for backward compatibility

@@ -71,6 +71,79 @@
       </div>
     </div>
 
+    <!-- Notification -->
+    <div v-if="notification.show" class="fixed top-4 right-4 z-999999 max-w-sm">
+      <div
+        :class="[
+          'rounded-lg border p-4 shadow-lg',
+          notification.type === 'success'
+            ? 'border-success bg-success/10 text-success'
+            : 'border-danger bg-red-500/10 text-danger'
+        ]"
+      >
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg v-if="notification.type === 'success'" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <svg v-else class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium">{{ notification.message }}</p>
+          </div>
+          <div class="ml-auto pl-3">
+            <button @click="notification.show = false" class="inline-flex rounded-md p-1.5 hover:bg-black/5">
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteModal" class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70">
+      <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white p-5 shadow-default sm:p-7.5">
+        <div class="mb-5 flex items-center justify-between">
+          <h4 class="text-xl font-semibold text-black dark:text-white">
+            Confirm Delete
+          </h4>
+          <button @click="showDeleteModal = false" class="text-gray-500 hover:text-gray-700">
+            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.37993C19.1133 -0.12665 18.2943 -0.12665 17.7877 0.37993L9.99988 8.16793L2.21228 0.37993C1.7057 -0.12665 0.886644 -0.12665 0.380059 0.37993C-0.126686 0.88651 -0.126686 1.70557 0.380059 2.21215L8.16766 10.0001L0.380059 17.7881C-0.126686 18.2947 -0.126686 19.1138 0.380059 19.6204C0.632556 19.8729 0.964511 20 1.29647 20C1.62842 20 1.96055 19.8729 2.21287 19.6204L9.99988 11.8324L17.7877 19.6204C18.04 19.8729 18.3721 20 18.7041 20C19.036 20 19.3674 19.8729 19.6205 19.6204C20.1271 19.1138 20.1271 18.2947 19.6205 17.7881L11.8323 10.0001Z" fill=""></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="mb-6">
+          <p class="text-gray-600 dark:text-gray-400">
+            Are you sure you want to delete invoice <strong>{{ selectedInvoiceNumber }}</strong>? This action cannot be undone.
+          </p>
+        </div>
+
+        <div class="flex justify-end gap-4">
+          <button
+            type="button"
+            @click="showDeleteModal = false"
+            class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            @click="confirmDelete"
+            :disabled="loading"
+            class="flex justify-center rounded bg-red-500 py-2 px-6 font-medium text-white hover:bg-opacity-90 disabled:opacity-50"
+          >
+            {{ loading ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
   </admin-layout>
 </template>
 
@@ -80,7 +153,7 @@ import { useRouter } from 'vue-router';
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
-import invoiceService from '../services/invoice.service';
+import invoiceService from '../services/invoice.service.ts';
 import authService from '../services/auth.service';
 import { useInvoicing } from '../composables/useInvoicing.ts';
 import { handleError } from '../utils/errorHandler';
@@ -110,6 +183,14 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const totalItems = ref(0);
+    const showDeleteModal = ref(false);
+    const selectedInvoiceId = ref(null);
+    const selectedInvoiceNumber = ref('');
+    const notification = ref({
+      show: false,
+      type: '',
+      message: ''
+    });
 
     const columns = ref([
       { key: 'invoice_number', label: 'Invoice #', span: 1 },
@@ -199,7 +280,7 @@ export default {
     };
 
     const viewInvoiceDetails = (invoice) => {
-      console.log('View invoice details:', invoice.invoice_number);
+      router.push(`/invoices/${invoice.id}`);
     };
 
     const navigateToCreateInvoice = () => {
@@ -237,8 +318,30 @@ export default {
       router.push(`/invoices/edit/${invoice.id}`);
     };
 
+    const confirmDeleteInvoice = (invoice) => {
+      selectedInvoiceId.value = invoice.id;
+      selectedInvoiceNumber.value = invoice.invoice_number;
+      showDeleteModal.value = true;
+    };
+
+    const confirmDelete = async () => {
+      try {
+        loading.value = true;
+        await invoiceService.deleteInvoice(selectedInvoiceId.value);
+        showDeleteModal.value = false;
+        await loadData();
+        showNotification('success', `Invoice ${selectedInvoiceNumber.value} deleted successfully`);
+      } catch (err) {
+        console.error('Error deleting invoice:', err);
+        const errorMessage = err.response?.data?.message || err.message || 'Failed to delete invoice';
+        showNotification('error', errorMessage);
+      } finally {
+        loading.value = false;
+      }
+    };
+
     const deleteInvoice = (invoice) => {
-      console.log('Delete invoice:', invoice.invoice_number);
+      confirmDeleteInvoice(invoice);
     };
 
     const downloadInvoice = async (invoice) => {
@@ -280,6 +383,19 @@ export default {
       }
     };
 
+    const showNotification = (type, message) => {
+      notification.value = {
+        show: true,
+        type,
+        message
+      };
+
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        notification.value.show = false;
+      }, 5000);
+    };
+
     // Lifecycle
     onMounted(async () => {
       await loadData();
@@ -314,11 +430,20 @@ export default {
       sendInvoiceEmail,
       editInvoice,
       deleteInvoice,
+      confirmDeleteInvoice,
+      confirmDelete,
       downloadInvoice,
+      showNotification,
       formatDate,
       formatPrice,
       capitalizeFirstLetter,
-      getStatusClass
+      getStatusClass,
+
+      // Modal and notification state
+      showDeleteModal,
+      selectedInvoiceId,
+      selectedInvoiceNumber,
+      notification
     };
   }
 };

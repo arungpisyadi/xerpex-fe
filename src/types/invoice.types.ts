@@ -23,12 +23,17 @@ export interface Invoice {
   total: number;
   tax_total: number;
   customer_name?: string;
+  billing_address?: string;
   items: InvoiceItem[];
   payments: Payment[];
   payment_terms?: string;
   notes?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface InvoiceResponse {
+  data: Invoice;
 }
 
 export interface CreateInvoiceRequest {
@@ -78,3 +83,4 @@ export interface SendInvoiceRequest {
   subject?: string;
   message?: string;
 }
+

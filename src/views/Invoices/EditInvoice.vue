@@ -271,8 +271,8 @@ import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
-import invoiceService from '../../services/invoice.service'
-import packageService from '../../services/package.service'
+import invoiceService from '../../services/invoice.service.ts'
+import packageService from '../../services/package.service.ts'
 import type { Customer } from '../../types/customer.types'
 import type { Invoice, UpdateInvoiceRequest, InvoiceItem } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
@@ -442,7 +442,7 @@ const loadInvoiceData = async () => {
 
     // Fetch invoice data
     const response = await invoiceService.getInvoice(Number(invoiceId.value))
-    invoice.value = response
+    invoice.value = response.data
 
     // Pre-populate form with invoice data
     invoiceForm.value = {

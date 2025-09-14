@@ -184,7 +184,7 @@ const erpRoutes = [
     },
   },
   {
-    path: '/invoices/edit/:id',
+    path: '/invoices/edit/:invoiceId',
     name: 'EditInvoice',
     component: () => import('../views/Invoices/EditInvoice.vue'),
     meta: {
@@ -193,12 +193,22 @@ const erpRoutes = [
     },
   },
   {
-    path: '/invoices/:id',
-    name: 'InvoiceView',
-    component: () => import('../views/Invoices/InvoiceView.vue'),
+    path: '/invoices/:invoiceId',
+    name: 'InvoiceDetail',
+    component: () => import('../views/InvoiceDetail.vue'),
     meta: {
-      title: 'Invoice View',
+      title: 'Invoice Detail',
       requiresAuth: true
+    },
+  },
+  {
+    path: '/invoices/:invoiceId/preview',
+    name: 'InvoicePreview',
+    component: () => import('../views/Invoices/InvoicePreview.vue'),
+    meta: {
+      title: 'Invoice Preview',
+      requiresAuth: true,
+      fullScreen: true
     },
   },
   {

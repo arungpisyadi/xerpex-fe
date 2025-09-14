@@ -2,8 +2,8 @@
   <theme-provider>
     <div class="dark:bg-boxdark-2 dark:text-bodydark">
       <div class="flex h-screen overflow-hidden">
-        <!-- Only show sidebar when user is logged in -->
-        <XerpexSidebar v-if="isAuthenticated" />
+        <!-- Only show sidebar when user is logged in and not on a fullscreen page -->
+        <XerpexSidebar v-if="isAuthenticated && !isFullScreen" />
         <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           <router-view />
         </div>
@@ -31,6 +31,14 @@ export default {
 
     // Authentication state
     const isAuthenticated = ref(false);
+
+    // Route state
+    const route = useRoute();
+
+    // Check if current route requires fullscreen layout
+    const isFullScreen = computed(() => {
+      return route.meta?.fullScreen === true;
+    });
 
     // Check authentication status
     const checkAuth = async () => {
@@ -65,7 +73,8 @@ export default {
     });
 
     return {
-      isAuthenticated
+      isAuthenticated,
+      isFullScreen
     };
   }
 };

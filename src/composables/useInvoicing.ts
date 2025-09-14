@@ -205,7 +205,8 @@ export function useInvoicing() {
     loading.value = true;
     error.value = null;
     try {
-      const invoice = await invoiceService.createInvoice(invoiceData);
+      const response = await invoiceService.createInvoice(invoiceData);
+      const invoice = response.data;
       invoices.value.push(invoice);
       return invoice;
     } catch (err) {
@@ -233,7 +234,8 @@ export function useInvoicing() {
 
   const markInvoiceAsPaid = async (invoiceId: number, paymentData = {}) => {
     try {
-      const invoice = await invoiceService.markAsPaid(invoiceId, paymentData);
+      const response = await invoiceService.markAsPaid(invoiceId, paymentData);
+      const invoice = response.data;
       // Update local invoice
       const index = invoices.value.findIndex(i => i.id === invoiceId);
       if (index !== -1) {

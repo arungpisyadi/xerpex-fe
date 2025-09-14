@@ -6,3 +6,4 @@ export * from './quote.types';
 export * from './invoice.types';
 export * from './payment.types';
 export * from './api.types';
+export * from './settings.types';

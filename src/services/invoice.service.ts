@@ -1,6 +1,7 @@
-import apiClient from './api.service';
+import apiClient, { pdfApiClient } from './api.service';
 import type {
   Invoice,
+  InvoiceResponse,
   CreateInvoiceRequest,
   UpdateInvoiceRequest,
   InvoiceListResponse,
@@ -31,7 +32,7 @@ class InvoiceService {
    * @param id - Invoice ID
    * @returns Promise with invoice data
    */
-  async getInvoice(id: number): Promise<Invoice> {
+  async getInvoice(id: number): Promise<InvoiceResponse> {
     try {
       const response = await apiClient.get(`/invoices/${id}`);
       return response.data;
@@ -45,7 +46,7 @@ class InvoiceService {
    * @param data - Invoice data
    * @returns Promise with created invoice
    */
-  async createInvoice(data: CreateInvoiceRequest): Promise<Invoice> {
+  async createInvoice(data: CreateInvoiceRequest): Promise<InvoiceResponse> {
     try {
       const response = await apiClient.post('/invoices', data);
       return response.data;
@@ -60,7 +61,7 @@ class InvoiceService {
    * @param data - Invoice data to update
    * @returns Promise with updated invoice
    */
-  async updateInvoice(id: number, data: UpdateInvoiceRequest): Promise<Invoice> {
+  async updateInvoice(id: number, data: UpdateInvoiceRequest): Promise<InvoiceResponse> {
     try {
       const response = await apiClient.put(`/invoices/${id}`, data);
       return response.data;
@@ -103,7 +104,7 @@ class InvoiceService {
    * @param data - Payment details (optional)
    * @returns Promise with updated invoice
    */
-  async markAsPaid(id: number, data: any = {}): Promise<Invoice> {
+  async markAsPaid(id: number, data: any = {}): Promise<InvoiceResponse> {
     try {
       const response = await apiClient.post(`/invoices/${id}/mark-paid`, data);
       return response.data;
@@ -140,38 +141,161 @@ class InvoiceService {
     }
   }
 
+
   /**
-   * Generate PDF for an invoice
+   * Generate PDF using client-side html2pdf.js
    * @param id - Invoice ID
-   * @returns Promise with PDF blob
+   * @param filename - Optional filename
+   * @returns Promise with generated PDF blob
    */
-  async generatePdf(id: number): Promise<Blob> {
+  async generateClientSidePdf(id: number, filename?: string): Promise<Blob> {
     try {
-      const response = await apiClient.get(`/invoices/${id}/pdf`, { responseType: 'blob' });
-      return response.data;
+      console.log(`[DEBUG] Starting client-side PDF generation for invoice ${id}`);
+
+      // Dynamic import to avoid bundle bloat
+      const html2pdf = await import('html2pdf.js');
+
+      // Get invoice data
+      const response = await apiClient.get(`/invoices/${id}`);
+      const invoiceData = response.data?.data || response.data?.invoice || response.data;
+
+      if (!invoiceData) {
+        throw new Error('Invoice data not found for client-side generation');
+      }
+
+      // Import and use the composables properly
+      const { useInvoiceTemplate } = await import('../composables/useInvoiceTemplate');
+      const { useGlobalCompanySettings } = await import('../composables/useCompanySettings');
+
+      // Get the composable functions
+      const { generatePrintHTML } = useInvoiceTemplate();
+      const { getInvoiceDisplaySettings } = useGlobalCompanySettings();
+
+      // Get company settings
+      let companySettings;
+      try {
+        companySettings = await getInvoiceDisplaySettings();
+      } catch (settingsError) {
+        console.warn('[DEBUG] Could not load company settings, using defaults:', settingsError);
+        companySettings = {
+          companyName: 'Company Name Not Set',
+          companyAddress: 'Address Not Set',
+          companyPhone: 'Phone Not Set',
+          companyEmail: 'Email Not Set',
+          bankName: 'Bank Name Not Set',
+          bankAccountNumber: 'Account Number Not Set',
+          bankAccountHolderName: 'Account Holder Name Not Set'
+        };
+      }
+
+      // Generate HTML content
+      const htmlContent = generatePrintHTML(invoiceData, companySettings);
+
+      // Create temporary container
+      const tempContainer = document.createElement('div');
+      tempContainer.innerHTML = htmlContent;
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.style.top = '-9999px';
+      document.body.appendChild(tempContainer);
+
+      // Configure html2pdf options
+      const options = {
+        margin: 0.5,
+        filename: filename || `invoice-${invoiceData.invoice_number || id}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          letterRendering: true
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'a4',
+          orientation: 'portrait'
+        }
+      };
+
+      console.log('[DEBUG] Generating PDF with options:', options);
+
+      // Generate PDF and get blob
+      const pdfBlob = await html2pdf.default()
+        .set(options)
+        .from(tempContainer)
+        .outputPdf('blob');
+
+      // Clean up
+      document.body.removeChild(tempContainer);
+
+      console.log('[DEBUG] Client-side PDF generation completed:', {
+        size: pdfBlob.size,
+        type: pdfBlob.type
+      });
+
+      return pdfBlob;
+
     } catch (error) {
-      throw error;
+      console.error('[DEBUG] Client-side PDF generation failed:', error);
+      throw new Error(`Client-side PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   /**
-   * Download invoice PDF
+   * Download invoice PDF using client-side html2pdf.js generation
    * @param id - Invoice ID
    * @param filename - Optional filename
    */
   async downloadInvoice(id: number, filename?: string): Promise<void> {
     try {
-      const blob = await this.generatePdf(id);
-      const url = window.URL.createObjectURL(blob);
+      console.log(`[DEBUG] Starting client-side PDF download for invoice ${id}`);
+
+      // Generate PDF using client-side html2pdf.js
+      const clientBlob = await this.generateClientSidePdf(id, filename);
+
+      console.log('[DEBUG] Client-side PDF blob generated:', {
+        size: clientBlob.size,
+        type: clientBlob.type
+      });
+
+      // Create download link
+      const url = window.URL.createObjectURL(clientBlob);
       const link = document.createElement('a');
+      link.style.display = 'none';
       link.href = url;
       link.download = filename || `invoice-${id}.pdf`;
+      link.setAttribute('download', filename || `invoice-${id}.pdf`);
+
+      console.log('[DEBUG] Created download link:', {
+        download: link.download,
+        href: url.substring(0, 50) + '...'
+      });
+
+      // Add to DOM, trigger download, then clean up
       document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+
+      const clickEvent = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: false
+      });
+
+      link.dispatchEvent(clickEvent);
+      console.log('[DEBUG] PDF download initiated');
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        console.log('[DEBUG] PDF download cleanup completed');
+      }, 100);
+
+      console.log('[DEBUG] ✅ Client-side PDF download successful');
+
     } catch (error) {
-      throw error;
+      console.error('[DEBUG] Client-side PDF download failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      throw new Error(`PDF download failed: ${errorMessage}`);
     }
   }
 
@@ -235,12 +359,43 @@ class InvoiceService {
    * @param status - New status
    * @returns Promise with updated invoice
    */
-  async updateInvoiceStatus(id: number, status: string): Promise<Invoice> {
+  async updateInvoiceStatus(id: number, status: string): Promise<InvoiceResponse> {
     try {
       const response = await apiClient.patch(`/invoices/${id}/status`, { status });
       return response.data;
     } catch (error) {
       throw error;
+    }
+  }
+
+  /**
+   * Update invoice notes
+   * @param id - Invoice ID
+   * @param notes - Notes to update
+   * @returns Promise with updated invoice
+   */
+  async updateInvoiceNotes(id: number, notes: string): Promise<InvoiceResponse> {
+    try {
+      const response = await apiClient.patch(`/invoices/${id}/notes`, { notes });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get invoice history/activity log
+   * @param id - Invoice ID
+   * @returns Promise with invoice history data
+   */
+  async getInvoiceHistory(id: number): Promise<{ items: any[] }> {
+    try {
+      const response = await apiClient.get(`/invoices/${id}/history`);
+      return response.data;
+    } catch (error) {
+      // If endpoint doesn't exist, return empty history
+      console.warn('Invoice history endpoint not available:', error);
+      return { items: [] };
     }
   }
 }

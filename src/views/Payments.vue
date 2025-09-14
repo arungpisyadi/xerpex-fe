@@ -282,7 +282,7 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import { useInvoicing } from '../composables/useInvoicing';
-import invoiceService from '../services/invoice.service';
+import invoiceService from '../services/invoice.service.ts';
 import paymentService from '../services/payment.service';
 import authService from '../services/auth.service';
 import { handleError } from '../utils/errorHandler';

@@ -762,8 +762,23 @@ export default {
         alert('Invoice sent successfully');
       } catch (error) {
         console.error('Error sending invoice:', error);
-        // Show error notification
-        alert('Failed to send invoice');
+
+        // Extract error message from backend response
+        let errorMessage = 'Failed to send invoice';
+
+        // Try to get the detail message from various possible error response structures
+        if (error.response && error.response.data && error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        } else if (error.data && error.data.detail) {
+          errorMessage = error.data.detail;
+        } else if (error.detail) {
+          errorMessage = error.detail;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+
+        // Show specific error notification
+        alert(errorMessage);
       } finally {
         this.loading = false;
       }

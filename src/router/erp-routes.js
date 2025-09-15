@@ -103,6 +103,16 @@ const erpRoutes = [
     },
   },
   {
+    path: '/quotes/:id/preview',
+    name: 'QuotePreview',
+    component: () => import('../views/Quotes/QuotePreview.vue'),
+    meta: {
+      title: 'Quote Preview',
+      requiresAuth: true,
+      fullScreen: true
+    },
+  },
+  {
     path: '/packages',
     name: 'Packages',
     component: () => import('../views/Packages.vue'),

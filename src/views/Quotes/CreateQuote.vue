@@ -22,7 +22,7 @@
       <FormKit
         type="form"
         :actions="false"
-        @submit="submitQuote"
+        @submit="handleFormSubmit"
         v-model="quoteForm"
         :disabled="loading"
       >
@@ -201,7 +201,7 @@ import { useInvoicing } from '../../composables/useInvoicing'
 import quoteService from '../../services/quote.service'
 import packageService from '../../services/package.service'
 import type { Customer } from '../../types/customer.types'
-import type { CreateQuoteRequest, QuoteItem } from '../../types/quote.types'
+import type { CreateQuoteRequest, QuoteItem, QuoteStatus } from '../../types/quote.types'
 import type { Package } from '../../types/package.types'
 import { handleError } from '../../utils/errorHandler'
 
@@ -223,7 +223,11 @@ const packages = ref<Package[]>([])
 // Form data structure
 const quoteForm = ref({
   customer_id: '',
-  expiry_date: '',
+  expiry_date: (() => {
+    const today = new Date()
+    const expiryDate = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000)
+    return expiryDate.toISOString().split('T')[0]
+  })(),
   notes: '',
   items: [
     {
@@ -324,6 +328,10 @@ const formatDate = (date: Date): string => {
   })
 }
 
+const handleFormSubmit = (data: any, node: any) => {
+  submitQuote('draft')
+}
+
 const saveDraft = async () => {
   await submitQuote('draft')
 }
@@ -337,12 +345,13 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
   loading.value = true
 
   try {
-    // Prepare quote data
+    // Use the current form data from quoteForm.value (FormKit v-model)
+    // formData parameter is passed by FormKit but we don't need it since we have v-model
     const quoteData: CreateQuoteRequest = {
       customer_id: Number(quoteForm.value.customer_id),
       issue_date: new Date().toISOString().split('T')[0],
       expiry_date: quoteForm.value.expiry_date || undefined,
-      status: status,
+      status: String(status) as QuoteStatus, // Now correctly uses the status parameter
       total: calculations.value.total,
       items: quoteForm.value.items.map(item => ({
         package_id: Number(item.package_id),
@@ -351,6 +360,10 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
         line_total: Number(item.line_total)
       }))
     }
+
+    // Debug logging to verify status serialization
+    console.log('Quote payload before API call:', JSON.stringify(quoteData, null, 2))
+    console.log('Status type:', typeof quoteData.status, 'Value:', quoteData.status)
 
     // Create the quote
     await createQuote(quoteData)

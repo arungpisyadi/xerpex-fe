@@ -7,7 +7,6 @@ import bookingService from './booking.service';
 import paymentService from './payment.service';
 import settingsService from './settings.service';
 import invoiceService from './invoice.service';
-import salesmanService from './salesman.service';
 import surveyService from './survey.service';
 
 export {
@@ -20,6 +19,5 @@ export {
   paymentService,
   settingsService,
   invoiceService,
-  salesmanService,
   surveyService
 };

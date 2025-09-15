@@ -127,6 +127,8 @@ export default {
 
       let filtered = [...this.quotes];
 
+
+
       // Apply search filter
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase();
@@ -135,12 +137,16 @@ export default {
           quote.customer_name?.toLowerCase().includes(query) ||
           quote.total?.toString().includes(query)
         );
+
       }
 
       // Apply status filter
       if (this.statusFilter) {
         filtered = filtered.filter(quote => quote.status === this.statusFilter);
+
       }
+
+
 
       return filtered;
     },
@@ -172,8 +178,7 @@ export default {
     },
 
     viewQuoteDetails(quote) {
-      // Navigate to quote details view (can be implemented later)
-      console.log('View quote details:', quote.quote_number);
+      this.$router.push(`/quotes/${quote.id}`);
     },
 
     navigateToCreateQuote() {

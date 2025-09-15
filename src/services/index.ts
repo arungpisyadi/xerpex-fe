@@ -16,8 +16,6 @@ export { default as userService } from './user.service';
 // @ts-ignore
 export { default as villaService } from './villa.service';
 // @ts-ignore
-export { default as salesmanService } from './salesman.service';
-// @ts-ignore
 export { default as surveyService } from './survey.service';
 // @ts-ignore
 export { default as settingsService } from './settings.service';

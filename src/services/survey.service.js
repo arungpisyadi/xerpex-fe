@@ -89,27 +89,6 @@ const surveyService = {
     }
   },
 
-  // Get surveys by salesman
-  async getSurveysBySalesman(salesmanId, params = {}) {
-    try {
-      const response = await apiClient.get(`/surveys/by-salesman/${salesmanId}`, { params });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching surveys by salesman:', error);
-      throw error;
-    }
-  },
-
-  // Get salesman stats
-  async getSalesmanStats(salesmanId, params = {}) {
-    try {
-      const response = await apiClient.get(`/surveys/stats/salesman/${salesmanId}`, { params });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching salesman stats:', error);
-      throw error;
-    }
-  }
 };
 
 export default surveyService;

@@ -234,7 +234,7 @@ import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
 // @ts-ignore
-import salesmanService from '../../services/salesman.service.js'
+import userService from '../../services/user.service.js'
 import type { Customer } from '../../types/customer.types'
 import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
@@ -326,7 +326,7 @@ const salesPersonOptions = computed(() => {
   }
 
   return salespeople.value.map((person: any) => ({
-    label: `${person.name} - ${person.email || 'No email'}`,
+    label: `${person.name || person.first_name + ' ' + person.last_name} - ${person.email || 'No email'}`,
     value: person.id
   }))
 })
@@ -536,17 +536,21 @@ const loadSalespeople = async () => {
       return
     }
 
-    const response = await salesmanService.getSalesmenDropdown()
-    console.log('Salespeople service response:', response)
-    salespeople.value = Array.isArray(response) ? response : (response.salespeople || response.salesmen || [])
-    console.log('Salespeople loaded successfully:', salespeople.value.length, 'salespeople')
+    const response = await userService.getUsers({ active_only: true })
+    console.log('Users service response:', response)
+    // Filter for sales users if there's a role field, otherwise use all users
+    const users = Array.isArray(response) ? response : (response.users || [])
+    salespeople.value = users.filter((user: any) =>
+      user.role === 'sales' || user.role === 'admin' || !user.role // Include admin and users without role as fallback
+    )
+    console.log('Sales users loaded successfully:', salespeople.value.length, 'users')
   } catch (error: any) {
-    console.error('Error loading salespeople:', error)
+    console.error('Error loading users:', error)
     // Show user-friendly error message
     if (error.response?.status === 401) {
       console.error('Authentication failed - please log in again')
     } else if (error.response?.status === 404) {
-      console.error('Salespeople endpoint not found')
+      console.error('Users endpoint not found')
     }
     salespeople.value = []
   }

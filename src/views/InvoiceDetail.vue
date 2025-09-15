@@ -190,7 +190,7 @@
               </p>
             </div>
 
-            <!-- <div>
+            <div>
               <h5 class="mb-2 text-base font-medium text-black dark:text-white">Add Notes:</h5>
               <textarea v-model="invoiceNotes"
                 class="w-full rounded border-stroke bg-gray-100 py-3 px-4 text-sm text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
@@ -208,7 +208,7 @@
                   Save Notes
                 </button>
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
 

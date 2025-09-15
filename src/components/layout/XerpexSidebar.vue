@@ -121,7 +121,6 @@ import {
   HomeIcon,
   SettingsIcon,
   SurveyIcon,
-  SalesmanIcon,
   PackageIcon,
   BarChartIcon,
 } from "../../icons";
@@ -161,17 +160,14 @@ const menuGroups = computed(() => [
         path: "/packages",
       },
       {
-        icon: SurveyIcon,
-        name: "Surveys",
-        subItems: [
-          { name: "Survey Requests", path: "/surveys" },
-          { name: "Sales Teams", path: "/salesmen" },
-        ],
-      },
-      {
         icon: CalenderIcon,
         name: "Bookings",
         path: "/bookings",
+      },
+      {
+        icon: SurveyIcon,
+        name: "Surveys",
+        path: "/surveys",
       },
       {
         icon: DocsIcon,

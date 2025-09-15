@@ -126,8 +126,8 @@
                     <p class="text-black dark:text-white">{{ surveyForm.priority }}</p>
                   </div>
                   <div>
-                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Assigned Salesman:</span>
-                    <p class="text-black dark:text-white">{{ surveyForm.salesman_name }}</p>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Sales Account:</span>
+                    <p class="text-black dark:text-white">{{ surveyForm.sales_account_name }}</p>
                   </div>
                   <div>
                     <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Follow-up Date:</span>
@@ -226,10 +226,10 @@
                     { label: 'Urgent', value: 'urgent' }
                   ]"  />
 
-                <FormKit type="select" name="salesman_id" label="Assigned Salesman" v-model="surveyForm.salesman_id"
+                <FormKit type="select" name="sales_account_id" label="Sales Account" v-model="surveyForm.sales_account_id"
                   validation="required" :options="[
-                    { label: 'Select a salesman', value: '', attrs: { disabled: true } },
-                    ...salesmen.map(salesman => ({ label: salesman.full_name, value: salesman.id }))
+                    { label: 'Select a sales account', value: '', attrs: { disabled: true } },
+                    ...salesAccounts.map(account => ({ label: account.full_name, value: account.id }))
                   ]"  />
 
                 <FormKit type="date" name="follow_up_date" label="Follow-up Date" v-model="surveyForm.follow_up_date"
@@ -263,7 +263,7 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import WhatsAppIcon from '../icons/WhatsAppIcon.vue';
-import { surveyService, salesmanService } from '../services';
+import { surveyService, userService } from '../services';
 
 export default {
   components: {
@@ -280,7 +280,7 @@ export default {
       statusFilter: '',
       priorityFilter: '',
       surveys: [],
-      salesmen: [],
+      salesAccounts: [],
       showModal: false,
       isEditing: false,
       isViewMode: false,
@@ -295,15 +295,15 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: '',
-        salesman_name: ''
+        sales_account_id: '',
+        sales_account_name: ''
       },
       columns: [
         { key: 'client_name', label: 'Client', span: 2 },
         { key: 'email', label: 'Email', span: 2 },
         { key: 'status', label: 'Status', span: 1, type: 'status' },
         { key: 'priority', label: 'Priority', span: 1, type: 'status' },
-        { key: 'salesman_name', label: 'Salesman', span: 2 },
+        { key: 'sales_account_name', label: 'Sales Account', span: 2 },
         { key: 'follow_up_date', label: 'Follow-up', span: 2, type: 'date' },
         { key: 'visiting_date', label: 'Visit Date', span: 2, type: 'date' }
       ],
@@ -322,7 +322,7 @@ export default {
           survey.email?.toLowerCase().includes(query) ||
           survey.phone_number?.toLowerCase().includes(query) ||
           survey.villa_types?.toLowerCase().includes(query) ||
-          survey.salesman?.full_name?.toLowerCase().includes(query)
+          survey.sales_account_name?.toLowerCase().includes(query)
         );
       }
 
@@ -336,10 +336,10 @@ export default {
         filtered = filtered.filter(survey => survey.priority === this.priorityFilter);
       }
 
-      // Add salesman name for display
+      // Add sales account name for display
       return filtered.map(survey => ({
         ...survey,
-        salesman_name: survey.salesman?.full_name || 'Unassigned'
+        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
       }));
     }
   },
@@ -347,7 +347,7 @@ export default {
     console.log('Surveys.vue created, waPhoneNumber:', this.waPhoneNumber);
     await Promise.all([
       this.fetchSurveys(),
-      this.fetchSalesmen()
+      this.fetchSalesAccounts()
     ]);
   },
   methods: {
@@ -363,12 +363,15 @@ export default {
         this.loading = false;
       }
     },
-    async fetchSalesmen() {
+    async fetchSalesAccounts() {
       try {
-        const response = await salesmanService.getSalesmen();
-        this.salesmen = response || [];
+        // Fetch users and filter for those with sales role
+        const response = await userService.getUsers();
+        this.salesAccounts = (response || []).filter(user =>
+          user.role === 'sales' || user.roles?.includes('sales')
+        );
       } catch (error) {
-        console.error('Error fetching salesmen:', error);
+        console.error('Error fetching sales accounts:', error);
         // Show error notification
       }
     },
@@ -385,8 +388,8 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: '',
-        salesman_name: ''
+        sales_account_id: '',
+        sales_account_name: ''
       };
       this.showModal = true;
     },
@@ -404,8 +407,8 @@ export default {
         priority: survey.priority || 'medium',
         follow_up_date: survey.follow_up_date || '',
         visiting_date: survey.visiting_date || '',
-        salesman_id: survey.salesman?.id || survey.salesman_id || '',
-        salesman_name: survey.salesman?.full_name || 'Unassigned'
+        sales_account_id: survey.sales_account_id || survey.salesman?.id || survey.salesman_id || '',
+        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
       };
       this.showModal = true;
     },
@@ -424,8 +427,8 @@ export default {
         priority: survey.priority || 'medium',
         follow_up_date: survey.follow_up_date || '',
         visiting_date: survey.visiting_date || '',
-        salesman_id: survey.salesman?.id || survey.salesman_id || '',
-        salesman_name: survey.salesman?.full_name || 'Unassigned'
+        sales_account_id: survey.sales_account_id || survey.salesman?.id || survey.salesman_id || '',
+        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
       };
       this.showModal = true;
     },
@@ -479,8 +482,8 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        salesman_id: '',
-        salesman_name: ''
+        sales_account_id: '',
+        sales_account_name: ''
       };
     },
     sendWhatsApp() {

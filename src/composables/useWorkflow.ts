@@ -201,6 +201,11 @@ export function useQuoteWorkflow() {
       const quoteData: CreateQuoteRequest = {
         customer_id: workflowData.customer.id,
         issue_date: new Date().toISOString().split('T')[0],
+        expiry_date: (() => {
+          const today = new Date()
+          const expiryDate = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000)
+          return expiryDate.toISOString().split('T')[0]
+        })(),
         status: 'draft',
         total: workflowData.total,
         items: workflowData.selectedPackages.map(item => ({

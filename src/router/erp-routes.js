@@ -95,10 +95,10 @@ const erpRoutes = [
   },
   {
     path: '/quotes/:id',
-    name: 'QuoteView',
-    component: () => import('../views/Quotes/QuoteView.vue'),
+    name: 'QuoteDetail',
+    component: () => import('../views/Quotes/QuoteDetail.vue'),
     meta: {
-      title: 'Quote View',
+      title: 'Quote Detail',
       requiresAuth: true
     },
   },
@@ -117,15 +117,6 @@ const erpRoutes = [
     component: () => import('../views/Surveys.vue'),
     meta: {
       title: 'Surveys Management',
-      requiresAuth: true
-    },
-  },
-  {
-    path: '/salesmen',
-    name: 'Salesmen',
-    component: () => import('../views/Salesmen.vue'),
-    meta: {
-      title: 'Salesmen Management',
       requiresAuth: true
     },
   },

@@ -107,6 +107,7 @@
                       />
                       <div class="flex justify-end mt-4">
                         <FormKit
+                          v-if="canUpdateTargets"
                           type="submit"
                           :disabled="saving[salesUser.id]"
                         >
@@ -118,6 +119,7 @@
                 </div>
                 <div class="flex justify-end mt-6">
                   <button
+                    v-if="canUpdateTargets"
                     @click="saveAllTargets(salesUser.id)"
                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-opacity-90 disabled:opacity-50"
                     :disabled="saving[salesUser.id]"
@@ -142,11 +144,20 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import { TargetsService } from '../services/targets.service';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb
+  },
+  setup() {
+    const permissions = usePermissions();
+
+    return {
+      permissions
+    };
   },
   data() {
     return {
@@ -232,6 +243,11 @@ export default {
       this.expandedUsers[userId] = !this.expandedUsers[userId];
     },
     async saveTarget(userId, month) {
+      if (!this.canUpdateTargets) {
+        this.showNotification('error', 'You do not have permission to update targets');
+        return;
+      }
+
       try {
         // Validate month value
         if (month < 1 || month > 12) {
@@ -269,6 +285,11 @@ export default {
       }
     },
     async saveAllTargets(userId) {
+      if (!this.canUpdateTargets) {
+        this.showNotification('error', 'You do not have permission to update targets');
+        return;
+      }
+
       try {
         this.saving[userId] = true;
         const submitPromises = [];

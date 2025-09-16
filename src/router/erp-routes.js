@@ -1,4 +1,6 @@
 // ERP system routes
+import { SystemModule, PermissionAction } from '../types/permissions.types'
+
 const erpRoutes = [
   {
     path: '/',
@@ -16,7 +18,9 @@ const erpRoutes = [
     component: () => import('../views/Customers.vue'),
     meta: {
       title: 'Customer Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.CUSTOMERS,
+      action: PermissionAction.VIEW
     },
   },
   // Tax Management
@@ -35,7 +39,9 @@ const erpRoutes = [
     component: () => import('../views/Users.vue'),
     meta: {
       title: 'Users Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.USER,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -44,7 +50,9 @@ const erpRoutes = [
     component: () => import('../views/UserDetail.vue'),
     meta: {
       title: 'User Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.USER,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -53,7 +61,9 @@ const erpRoutes = [
     component: () => import('../views/Villas.vue'),
     meta: {
       title: 'Villas Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.VILLAS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -62,7 +72,9 @@ const erpRoutes = [
     component: () => import('../views/VillaDetail.vue'),
     meta: {
       title: 'Villa Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.VILLAS,
+      action: PermissionAction.VIEW
     },
   },
   // Quote Management
@@ -72,7 +84,9 @@ const erpRoutes = [
     component: () => import('../views/Quotes.vue'),
     meta: {
       title: 'Quote Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -81,7 +95,9 @@ const erpRoutes = [
     component: () => import('../views/Quotes/CreateQuote.vue'),
     meta: {
       title: 'Create Quote',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.CREATE
     },
   },
   {
@@ -90,7 +106,9 @@ const erpRoutes = [
     component: () => import('../views/Quotes/EditQuote.vue'),
     meta: {
       title: 'Edit Quote',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.UPDATE
     },
   },
   {
@@ -99,7 +117,9 @@ const erpRoutes = [
     component: () => import('../views/Quotes/QuoteDetail.vue'),
     meta: {
       title: 'Quote Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -109,7 +129,9 @@ const erpRoutes = [
     meta: {
       title: 'Quote Preview',
       requiresAuth: true,
-      fullScreen: true
+      fullScreen: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -118,7 +140,9 @@ const erpRoutes = [
     component: () => import('../views/Packages.vue'),
     meta: {
       title: 'Packages Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.PACKAGES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -127,7 +151,9 @@ const erpRoutes = [
     component: () => import('../views/Surveys.vue'),
     meta: {
       title: 'Surveys Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.SURVEYS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -136,7 +162,9 @@ const erpRoutes = [
     component: () => import('../views/Bookings.vue'),
     meta: {
       title: 'Bookings Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.BOOKINGS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -145,7 +173,9 @@ const erpRoutes = [
     component: () => import('../views/BookingDetail.vue'),
     meta: {
       title: 'Booking Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.BOOKINGS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -154,7 +184,9 @@ const erpRoutes = [
     component: () => import('../views/Payments.vue'),
     meta: {
       title: 'Payments Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.PAYMENTS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -163,7 +195,9 @@ const erpRoutes = [
     component: () => import('../views/PaymentDetail.vue'),
     meta: {
       title: 'Payment Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.PAYMENTS,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -172,7 +206,9 @@ const erpRoutes = [
     component: () => import('../views/Invoices.vue'),
     meta: {
       title: 'Invoices Management',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -181,7 +217,9 @@ const erpRoutes = [
     component: () => import('../views/Invoices/CreateInvoice.vue'),
     meta: {
       title: 'Create Invoice',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.CREATE
     },
   },
   {
@@ -190,7 +228,9 @@ const erpRoutes = [
     component: () => import('../views/Invoices/EditInvoice.vue'),
     meta: {
       title: 'Edit Invoice',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.UPDATE
     },
   },
   {
@@ -199,7 +239,9 @@ const erpRoutes = [
     component: () => import('../views/InvoiceDetail.vue'),
     meta: {
       title: 'Invoice Detail',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -209,7 +251,9 @@ const erpRoutes = [
     meta: {
       title: 'Invoice Preview',
       requiresAuth: true,
-      fullScreen: true
+      fullScreen: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -218,7 +262,9 @@ const erpRoutes = [
     component: () => import('../views/Settings.vue'),
     meta: {
       title: 'Settings',
-      requiresAuth: true
+      requiresAuth: true,
+      module: SystemModule.SETTINGS_GENERAL,
+      action: PermissionAction.VIEW
     },
   },
   {
@@ -228,7 +274,9 @@ const erpRoutes = [
     meta: {
       title: 'Targets Management',
       requiresAuth: true,
-      requiresAdmin: true
+      requiresAdmin: true,
+      module: SystemModule.SETTINGS_TARGETS,
+      action: PermissionAction.VIEW
     },
   },
   // Authentication routes

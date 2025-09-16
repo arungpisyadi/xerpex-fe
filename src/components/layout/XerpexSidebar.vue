@@ -1,4 +1,4 @@
-n<template>
+<template>
   <aside :class="[
       'fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200',
       {
@@ -125,71 +125,131 @@ import {
   BarChartIcon,
 } from "../../icons";
 import { useSidebar } from "@/composables/useSidebar";
-import AuthService from '../../services/auth.service.ts';
+import { usePermissions } from "@/composables/usePermissions";
+import { SystemModule, PermissionAction } from "@/types/permissions.types";
 
 const route = useRoute();
 
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
-const authService = AuthService;
+import authService from '@/services/auth.service';
 const isAdmin = computed(() => authService.isAdmin());
 
-// XerpeX ERP navigation structure
-const menuGroups = computed(() => [
-  {
-    title: "Main",
-    items: [
-      {
-        icon: GridIcon,
-        name: "Dashboard",
-        path: "/",
-      },
-      {
-        icon: UserCircleIcon,
-        name: "Users",
-        path: "/users",
-      },
-      {
-        icon: HomeIcon,
-        name: "Villas",
-        path: "/villas",
-      },
-      {
-        icon: PackageIcon,
-        name: "Packages",
-        path: "/packages",
-      },
-      {
-        icon: CalenderIcon,
-        name: "Bookings",
-        path: "/bookings",
-      },
-      {
-        icon: SurveyIcon,
-        name: "Surveys",
-        path: "/surveys",
-      },
-      {
-        icon: DocsIcon,
-        name: "Revenues",
-        subItems: [
-          { name: "Customers", path: "/customers" },
-          { name: "Quotes", path: "/quotes" },
-          { name: "Invoices", path: "/invoices" },
-          { name: "Payments", path: "/payments" },
-        ],
-      },
-      {
-        icon: SettingsIcon,
-        name: "Settings",
-        subItems: [
-          { name: "General", path: "/settings" },
-          ...(isAdmin.value ? [{ name: "Targets", path: "/targets" }] : []),
-        ],
-      },
-    ],
-  }
-]);
+// Use permissions composable
+const { canPerform } = usePermissions();
+
+// Menu item to SystemModule mapping
+const menuModuleMap = {
+  "Users": SystemModule.USER,
+  "Villas": SystemModule.VILLAS,
+  "Packages": SystemModule.PACKAGES,
+  "Bookings": SystemModule.BOOKINGS,
+  "Surveys": SystemModule.SURVEYS,
+  "Customers": SystemModule.CUSTOMERS,
+  "Quotes": SystemModule.QUOTES,
+  "Invoices": SystemModule.INVOICES,
+  "Payments": SystemModule.PAYMENTS,
+  "General": SystemModule.SETTINGS_GENERAL,
+  "Targets": SystemModule.SETTINGS_TARGETS,
+};
+
+// XerpeX ERP navigation structure with permission-based filtering
+const menuGroups = computed(() => {
+  const allItems = [
+    {
+      icon: GridIcon,
+      name: "Dashboard",
+      path: "/",
+    },
+    {
+      icon: UserCircleIcon,
+      name: "Users",
+      path: "/users",
+      module: SystemModule.USER,
+    },
+    {
+      icon: HomeIcon,
+      name: "Villas",
+      path: "/villas",
+      module: SystemModule.VILLAS,
+    },
+    {
+      icon: PackageIcon,
+      name: "Packages",
+      path: "/packages",
+      module: SystemModule.PACKAGES,
+    },
+    {
+      icon: CalenderIcon,
+      name: "Bookings",
+      path: "/bookings",
+      module: SystemModule.BOOKINGS,
+    },
+    {
+      icon: SurveyIcon,
+      name: "Surveys",
+      path: "/surveys",
+      module: SystemModule.SURVEYS,
+    },
+    {
+      icon: DocsIcon,
+      name: "Revenues",
+      subItems: [
+        { name: "Customers", path: "/customers", module: SystemModule.CUSTOMERS },
+        { name: "Quotes", path: "/quotes", module: SystemModule.QUOTES },
+        { name: "Invoices", path: "/invoices", module: SystemModule.INVOICES },
+        { name: "Payments", path: "/payments", module: SystemModule.PAYMENTS },
+      ],
+    },
+    {
+      icon: SettingsIcon,
+      name: "Settings",
+      subItems: [
+        { name: "General", path: "/settings", module: SystemModule.SETTINGS_GENERAL },
+        { name: "Targets", path: "/targets", module: SystemModule.SETTINGS_TARGETS },
+      ],
+    },
+  ];
+
+  // Filter items based on permissions
+  const filteredItems = allItems.filter(item => {
+    // Dashboard is always visible
+    if (item.name === "Dashboard") {
+      return true;
+    }
+
+    // For items with subItems (like Revenues and Settings)
+    if (item.subItems) {
+      // Filter subItems based on permissions
+      const visibleSubItems = item.subItems.filter(subItem =>
+        subItem.module ? canPerform(subItem.module, PermissionAction.VIEW) : true
+      );
+
+      // If no subItems are visible, hide the parent item
+      if (visibleSubItems.length === 0) {
+        return false;
+      }
+
+      // Update subItems to only show visible ones
+      item.subItems = visibleSubItems;
+      return true;
+    }
+
+    // For regular items, check VIEW permission
+    if (item.module) {
+      return canPerform(item.module, PermissionAction.VIEW);
+    }
+
+    return true;
+  });
+
+  return [
+    {
+      title: "Main",
+      items: filteredItems,
+    }
+  ];
+});
 
 const isActive = (path) => route.path === path;
 

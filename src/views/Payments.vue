@@ -50,7 +50,11 @@
               <option value="other">Other</option>
             </select>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="createNewPayment">
+          <button
+            v-if="canCreate"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+            @click="createNewPayment"
+          >
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -68,8 +72,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewPaymentDetails"
-          @edit="editPayment"
-          @delete="deletePayment"
+          @edit="canUpdate ? editPayment : null"
+          @delete="canDelete ? deletePayment : null"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
         />
       </div>
     </div>
@@ -286,6 +292,8 @@ import invoiceService from '../services/invoice.service.ts';
 import paymentService from '../services/payment.service';
 import authService from '../services/auth.service';
 import { handleError } from '../utils/errorHandler';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
@@ -306,6 +314,8 @@ export default {
       confirmPayment
     } = useInvoicing();
 
+    const permissions = usePermissions();
+
     return {
       payments,
       invoices,
@@ -317,7 +327,8 @@ export default {
       createPayment,
       confirmPayment,
       authService,
-      handleError
+      handleError,
+      permissions
     };
   },
   data() {
@@ -351,6 +362,15 @@ export default {
     };
   },
   computed: {
+    canCreate() {
+      return this.permissions.canPerform(SystemModule.PAYMENTS, PermissionAction.CREATE);
+    },
+    canUpdate() {
+      return this.permissions.canPerform(SystemModule.PAYMENTS, PermissionAction.UPDATE);
+    },
+    canDelete() {
+      return this.permissions.canPerform(SystemModule.PAYMENTS, PermissionAction.DELETE);
+    },
     filteredPayments() {
       // Ensure payments is an array before filtering
       if (!this.payments || !Array.isArray(this.payments)) {
@@ -422,6 +442,11 @@ export default {
     },
 
     createNewPayment() {
+      if (!this.canCreate) {
+        console.error('You do not have permission to create payments');
+        return;
+      }
+
       this.paymentForm = {
         invoice_id: '',
         amount: '',
@@ -477,11 +502,21 @@ export default {
     },
 
     editPayment(payment) {
+      if (!this.canUpdate) {
+        console.error('You do not have permission to edit payments');
+        return;
+      }
+
       // For now, just view the payment details
       this.viewPaymentDetails(payment);
     },
 
     deletePayment(payment) {
+      if (!this.canDelete) {
+        console.error('You do not have permission to delete payments');
+        return;
+      }
+
       // For now, just log - could implement delete functionality later
       console.log('Delete payment:', payment.id);
     },

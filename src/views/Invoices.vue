@@ -47,7 +47,11 @@
               <option value="year">This Year</option>
             </select>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="navigateToCreateInvoice">
+          <button
+            v-if="canCreate"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+            @click="navigateToCreateInvoice"
+          >
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -65,8 +69,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewInvoiceDetails"
-          @edit="editInvoice"
-          @delete="deleteInvoice"
+          @edit="canUpdate ? editInvoice : null"
+          @delete="canDelete ? deleteInvoice : null"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
         />
       </div>
     </div>
@@ -157,6 +163,8 @@ import invoiceService from '../services/invoice.service.ts';
 import authService from '../services/auth.service';
 import { useInvoicing } from '../composables/useInvoicing.ts';
 import { handleError } from '../utils/errorHandler';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
@@ -175,6 +183,8 @@ export default {
       sendInvoice,
       markInvoiceAsPaid
     } = useInvoicing();
+
+    const permissions = usePermissions();
 
     // Reactive data
     const searchQuery = ref('');
@@ -260,6 +270,18 @@ export default {
       return authService.canAccessAllData();
     });
 
+    const canCreate = computed(() => {
+      return permissions.canPerform(SystemModule.INVOICES, PermissionAction.CREATE);
+    });
+
+    const canUpdate = computed(() => {
+      return permissions.canPerform(SystemModule.INVOICES, PermissionAction.UPDATE);
+    });
+
+    const canDelete = computed(() => {
+      return permissions.canPerform(SystemModule.INVOICES, PermissionAction.DELETE);
+    });
+
     // Methods
     const loadData = async () => {
       try {
@@ -284,6 +306,10 @@ export default {
     };
 
     const navigateToCreateInvoice = () => {
+      if (!canCreate.value) {
+        showNotification('error', 'You do not have permission to create invoices');
+        return;
+      }
       router.push('/invoices/create');
     };
 
@@ -315,16 +341,29 @@ export default {
     };
 
     const editInvoice = (invoice) => {
+      if (!canUpdate.value) {
+        showNotification('error', 'You do not have permission to edit invoices');
+        return;
+      }
       router.push(`/invoices/edit/${invoice.id}`);
     };
 
     const confirmDeleteInvoice = (invoice) => {
+      if (!canDelete.value) {
+        showNotification('error', 'You do not have permission to delete invoices');
+        return;
+      }
       selectedInvoiceId.value = invoice.id;
       selectedInvoiceNumber.value = invoice.invoice_number;
       showDeleteModal.value = true;
     };
 
     const confirmDelete = async () => {
+      if (!canDelete.value) {
+        showNotification('error', 'You do not have permission to delete invoices');
+        return;
+      }
+
       try {
         loading.value = true;
         await invoiceService.deleteInvoice(selectedInvoiceId.value);
@@ -341,6 +380,10 @@ export default {
     };
 
     const deleteInvoice = (invoice) => {
+      if (!canDelete.value) {
+        showNotification('error', 'You do not have permission to delete invoices');
+        return;
+      }
       confirmDeleteInvoice(invoice);
     };
 
@@ -420,6 +463,9 @@ export default {
       // Computed
       filteredInvoices,
       showUserContext,
+      canCreate,
+      canUpdate,
+      canDelete,
 
       // Methods
       loadData,

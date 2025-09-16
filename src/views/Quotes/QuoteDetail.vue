@@ -1,13 +1,10 @@
 <template>
   <admin-layout>
     <div class="mb-6">
-      <page-breadcrumb
-        page-title="Quote Detail"
-        :breadcrumbs="[
+      <page-breadcrumb page-title="Quote Detail" :breadcrumbs="[
           { text: 'Quotes', href: '/quotes' },
           { text: `Quote ${quote?.quote_number || quoteId}` }
-        ]"
-      />
+        ]" />
     </div>
 
     <div v-if="loading" class="flex justify-center items-center py-20">
@@ -93,9 +90,7 @@
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg shadow-theme-xs transition-colors duration-200"
               :class="[
                 sendingQuote || quote?.status === 'sent' ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-500 hover:bg-brand-600'
-              ]"
-              :disabled="sendingQuote || quote?.status === 'sent'"
-              @click="sendQuote">
+              ]" :disabled="sendingQuote || quote?.status === 'sent'" @click="sendQuote">
               <svg v-if="!sendingQuote" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -114,7 +109,8 @@
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3 mb-6">
         <!-- Quote Summary -->
         <div class="md:col-span-1">
-          <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
+          <div
+            class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
             <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
               Quote Summary
             </h4>
@@ -133,7 +129,8 @@
               </div>
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Expiry Date:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ quote.expiry_date ? formatDate(quote.expiry_date) : 'Not set' }}</span>
+                <span
+                  class="text-sm font-medium text-black dark:text-white">{{ quote.expiry_date ? formatDate(quote.expiry_date) : 'Not set' }}</span>
               </div>
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Status:</span>
@@ -150,23 +147,27 @@
           </div>
 
           <!-- Customer Information -->
-          <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
+          <div
+            class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
             <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
               Customer Information
             </h4>
             <div class="customer-info-section">
-              <div v-if="quote.customer_name" class="mb-3">
+              <div v-if="quote.customer.name" class="mb-3">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Customer:</span>
-                <div class="customer-name text-sm font-medium text-black dark:text-white mt-1">{{ quote.customer_name }}</div>
+                <div class="customer-name text-sm font-medium text-black dark:text-white mt-1">{{ quote.customer.name }}
+                </div>
+                <div class="customer-name text-xs font-medium text-black dark:text-white mt-1">{{ quote.customer.billing_address }}
+                </div>
               </div>
-              <div v-if="!quote.customer_name" class="text-center py-4">
+              <div v-if="!quote.customer.name" class="text-center py-4">
                 <p class="text-gray-500 dark:text-gray-400 text-sm italic">No customer information available.</p>
               </div>
             </div>
           </div>
 
           <!-- Quote Notes -->
-          <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <!-- <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h4 class="mb-4 text-xl font-semibold text-black dark:text-white">
               Quote Notes
             </h4>
@@ -197,7 +198,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Quote Items -->
@@ -590,13 +591,13 @@ export default {
     async sendQuote() {
       try {
         // Validation: Check if customer email is available
-        if (!this.quote?.customer_email && !this.quote?.customer_name) {
+        if (!this.quote?.customer.email && !this.quote?.customer.name) {
           alert('Customer email is required to send quote. Please add customer information first.');
           return;
         }
 
         // Show confirmation dialog
-        const customerInfo = this.quote.customer_email || this.quote.customer_name || 'the customer';
+        const customerInfo = this.quote.customer.email || this.quote.customer.name || 'the customer';
         const confirmed = confirm(
           `Are you sure you want to send Quote ${this.quote.quote_number} to ${customerInfo}?`
         );

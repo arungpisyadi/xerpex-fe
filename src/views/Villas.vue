@@ -56,7 +56,11 @@
               </svg>
             </span>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="openAddVillaModal">
+          <button
+            v-if="canCreate"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+            @click="openAddVillaModal"
+          >
             <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
             </svg>
@@ -72,8 +76,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewVilla"
-          @edit="editVilla"
-          @delete="confirmDeleteVilla"
+          @edit="canUpdate ? editVilla : null"
+          @delete="canDelete ? confirmDeleteVilla : null"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
         />
       </div>
     </div>
@@ -382,12 +388,21 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import { villaService } from '../services';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb,
     DataTable
+  },
+  setup() {
+    const permissions = usePermissions();
+
+    return {
+      permissions
+    };
   },
   data() {
     return {
@@ -425,6 +440,15 @@ export default {
     };
   },
   computed: {
+    canCreate() {
+      return this.permissions.canPerform(SystemModule.VILLAS, PermissionAction.CREATE);
+    },
+    canUpdate() {
+      return this.permissions.canPerform(SystemModule.VILLAS, PermissionAction.UPDATE);
+    },
+    canDelete() {
+      return this.permissions.canPerform(SystemModule.VILLAS, PermissionAction.DELETE);
+    },
     filteredVillas() {
       if (!this.searchQuery) {
         return this.villas;
@@ -460,6 +484,11 @@ export default {
       }
     },
     openAddVillaModal() {
+      if (!this.canCreate) {
+        this.showNotification('error', 'You do not have permission to create villas');
+        return;
+      }
+
       this.isEditing = false;
       this.villaForm = {
         name: '',
@@ -486,6 +515,11 @@ export default {
       }
     },
     async editVilla(villa) {
+      if (!this.canUpdate) {
+        this.showNotification('error', 'You do not have permission to edit villas');
+        return;
+      }
+
       this.isEditing = true;
       this.selectedVillaId = villa.id;
       this.villaForm = {
@@ -499,6 +533,11 @@ export default {
       this.showModal = true;
     },
     confirmDeleteVilla(villa) {
+      if (!this.canDelete) {
+        this.showNotification('error', 'You do not have permission to delete villas');
+        return;
+      }
+
       this.selectedVillaId = villa.id;
       this.showDeleteModal = true;
     },
@@ -610,6 +649,11 @@ export default {
       }
     },
     async deleteVilla() {
+      if (!this.canDelete) {
+        this.showNotification('error', 'You do not have permission to delete villas');
+        return;
+      }
+
       try {
         this.loading = true;
         await villaService.deleteVilla(this.selectedVillaId);

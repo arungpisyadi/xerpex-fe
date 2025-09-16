@@ -33,7 +33,11 @@
               <option value="inactive">Inactive Only</option>
             </select>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="createNewCustomer">
+          <button
+            v-if="canCreate"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+            @click="createNewCustomer"
+          >
             <span class="mr-2">
               <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
@@ -51,8 +55,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewCustomerDetails"
-          @edit="editCustomer"
-          @delete="confirmDeactivateCustomer"
+          @edit="canUpdate ? editCustomer : null"
+          @delete="canDelete ? confirmDeactivateCustomer : null"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
         />
       </div>
     </div>
@@ -162,7 +168,7 @@
             Activate Customer
           </button>
           <button
-            v-if="getCustomerStatus(selectedCustomer.status)"
+            v-if="getCustomerStatus(selectedCustomer.status) && canDelete"
             class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-500 hover:bg-red-600"
             @click="confirmDeactivateCustomer(selectedCustomer)"
           >
@@ -319,6 +325,8 @@ import { useInvoicing } from '../composables/useInvoicing';
 import customerService from '../services/customer.service';
 import authService from '../services/auth.service';
 import { handleError } from '../utils/errorHandler';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
@@ -336,6 +344,8 @@ export default {
       activateCustomer
     } = useInvoicing();
 
+    const permissions = usePermissions();
+
     return {
       customers,
       loading,
@@ -344,7 +354,8 @@ export default {
       createCustomer,
       activateCustomer,
       authService,
-      handleError
+      handleError,
+      permissions
     };
   },
   data() {
@@ -378,6 +389,15 @@ export default {
     };
   },
   computed: {
+    canCreate() {
+      return this.permissions.canPerform(SystemModule.CUSTOMERS, PermissionAction.CREATE);
+    },
+    canUpdate() {
+      return this.permissions.canPerform(SystemModule.CUSTOMERS, PermissionAction.UPDATE);
+    },
+    canDelete() {
+      return this.permissions.canPerform(SystemModule.CUSTOMERS, PermissionAction.DELETE);
+    },
     filteredCustomers() {
       // Ensure customers is an array before filtering
       if (!this.customers || !Array.isArray(this.customers)) {
@@ -440,6 +460,11 @@ export default {
     },
 
     createNewCustomer() {
+      if (!this.canCreate) {
+        console.error('You do not have permission to create customers');
+        return;
+      }
+
       this.editingCustomer = null;
       this.customerForm = {
         name: '',
@@ -452,6 +477,11 @@ export default {
     },
 
     editCustomer(customer) {
+      if (!this.canUpdate) {
+        console.error('You do not have permission to edit customers');
+        return;
+      }
+
       this.editingCustomer = customer;
       this.customerForm = {
         name: customer.name || '',
@@ -520,11 +550,21 @@ export default {
     },
 
     confirmDeactivateCustomer(customer) {
+      if (!this.canDelete) {
+        console.error('You do not have permission to deactivate customers');
+        return;
+      }
+
       this.customerToDeactivate = customer;
       this.showDeleteModal = true;
     },
 
     async executeDeactivateCustomer() {
+      if (!this.canDelete) {
+        console.error('You do not have permission to deactivate customers');
+        return;
+      }
+
       try {
         await customerService.deactivateCustomer(this.customerToDeactivate.id);
 

@@ -47,6 +47,7 @@
             </select>
           </div>
           <button
+            v-if="canCreate"
             class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
             @click="createNewSurvey">
             <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -61,7 +62,19 @@
       </div>
 
       <div class="max-w-full overflow-x-auto">
-        <data-table :show-whatsapp-button="true" :data="filteredSurveys" :columns="columns" :loading="loading" :show-add-button="false" :wa-phone-number="waPhoneNumber" @edit="editSurvey" @delete="deleteSurveyConfirm" @view="viewSurvey" />
+        <data-table
+          :show-whatsapp-button="true"
+          :data="filteredSurveys"
+          :columns="columns"
+          :loading="loading"
+          :show-add-button="false"
+          :wa-phone-number="waPhoneNumber"
+          @edit="canUpdate ? editSurvey : null"
+          @delete="canDelete ? deleteSurveyConfirm : null"
+          @view="viewSurvey"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
+        />
       </div>
     </div>
 
@@ -264,6 +277,8 @@ import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import WhatsAppIcon from '../icons/WhatsAppIcon.vue';
 import { surveyService, userService } from '../services';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
@@ -271,6 +286,13 @@ export default {
     PageBreadcrumb,
     DataTable,
     WhatsAppIcon
+  },
+  setup() {
+    const permissions = usePermissions();
+
+    return {
+      permissions
+    };
   },
   data() {
     return {
@@ -311,6 +333,15 @@ export default {
     };
   },
   computed: {
+    canCreate() {
+      return this.permissions.canPerform(SystemModule.SURVEYS, PermissionAction.CREATE);
+    },
+    canUpdate() {
+      return this.permissions.canPerform(SystemModule.SURVEYS, PermissionAction.UPDATE);
+    },
+    canDelete() {
+      return this.permissions.canPerform(SystemModule.SURVEYS, PermissionAction.DELETE);
+    },
     filteredSurveys() {
       let filtered = [...this.surveys];
 
@@ -376,6 +407,11 @@ export default {
       }
     },
     createNewSurvey() {
+      if (!this.canCreate) {
+        console.error('You do not have permission to create surveys');
+        return;
+      }
+
       this.isEditing = false;
       this.surveyForm = {
         client_name: '',
@@ -394,6 +430,11 @@ export default {
       this.showModal = true;
     },
     editSurvey(survey) {
+      if (!this.canUpdate) {
+        console.error('You do not have permission to edit surveys');
+        return;
+      }
+
       this.isEditing = true;
       this.surveyForm = {
         id: survey.id,
@@ -453,11 +494,21 @@ export default {
       }
     },
     deleteSurveyConfirm(survey) {
+      if (!this.canDelete) {
+        console.error('You do not have permission to delete surveys');
+        return;
+      }
+
       if (confirm(`Are you sure you want to delete the survey for ${survey.client_name}?`)) {
         this.deleteSurvey(survey.id);
       }
     },
     async deleteSurvey(id) {
+      if (!this.canDelete) {
+        console.error('You do not have permission to delete surveys');
+        return;
+      }
+
       try {
         await surveyService.deleteSurvey(id);
         await this.fetchSurveys();

@@ -155,6 +155,7 @@
               </div>
 
               <FormKit
+                v-if="canUpdateGeneral"
                 type="submit"
                 :disabled="loading"
 
@@ -269,6 +270,7 @@
               />
 
               <FormKit
+                v-if="canUpdateGeneral"
                 type="submit"
                 :disabled="loading"
 
@@ -372,6 +374,7 @@
               </div>
 
               <FormKit
+                v-if="canUpdateGeneral"
                 type="submit"
                 :disabled="loading"
 
@@ -475,6 +478,7 @@
               </div>
 
               <FormKit
+                v-if="canUpdateGeneral"
                 type="submit"
                 :disabled="loading"
 
@@ -499,11 +503,20 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import { settingsService } from '../services';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb
+  },
+  setup() {
+    const permissions = usePermissions();
+
+    return {
+      permissions
+    };
   },
   data() {
     return {
@@ -570,6 +583,11 @@ export default {
       }
     },
     async saveGeneralSettings() {
+      if (!this.canUpdateGeneral) {
+        this.$toast?.error('You do not have permission to update general settings') || alert('You do not have permission to update general settings');
+        return;
+      }
+
       try {
         this.loading = true;
         await settingsService.updateGeneralSettings(this.settings.general);
@@ -582,6 +600,11 @@ export default {
       }
     },
     async saveBookingSettings() {
+      if (!this.canUpdateGeneral) {
+        this.$toast?.error('You do not have permission to update booking settings') || alert('You do not have permission to update booking settings');
+        return;
+      }
+
       try {
         this.loading = true;
         // For now, we'll use a placeholder since booking settings API might not be implemented yet
@@ -595,6 +618,11 @@ export default {
       }
     },
     async savePaymentSettings() {
+      if (!this.canUpdateGeneral) {
+        this.$toast?.error('You do not have permission to update payment settings') || alert('You do not have permission to update payment settings');
+        return;
+      }
+
       try {
         this.loading = true;
         // For now, we'll use a placeholder since payment settings API might not be implemented yet
@@ -608,6 +636,11 @@ export default {
       }
     },
     async saveNotificationSettings() {
+      if (!this.canUpdateGeneral) {
+        this.$toast?.error('You do not have permission to update notification settings') || alert('You do not have permission to update notification settings');
+        return;
+      }
+
       try {
         this.loading = true;
         // For now, we'll use a placeholder since notification settings API might not be implemented yet

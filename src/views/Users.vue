@@ -56,7 +56,11 @@
               </svg>
             </span>
           </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600" @click="openAddUserModal">
+          <button
+            v-if="canCreate"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
+            @click="openAddUserModal"
+          >
             <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
             </svg>
@@ -72,8 +76,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewUser"
-          @edit="editUser"
-          @delete="confirmDeleteUser"
+          @edit="canUpdate ? editUser : null"
+          @delete="canDelete ? confirmDeleteUser : null"
+          :show-edit="canUpdate"
+          :show-delete="canDelete"
         />
       </div>
     </div>
@@ -318,12 +324,21 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import { userService } from '../services';
+import { usePermissions } from '../composables/usePermissions';
+import { SystemModule, PermissionAction } from '../types/permissions.types';
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb,
     DataTable
+  },
+  setup() {
+    const permissions = usePermissions();
+
+    return {
+      permissions
+    };
   },
   data() {
     return {
@@ -358,6 +373,15 @@ export default {
     };
   },
   computed: {
+    canCreate() {
+      return this.permissions.canPerform(SystemModule.USER, PermissionAction.CREATE);
+    },
+    canUpdate() {
+      return this.permissions.canPerform(SystemModule.USER, PermissionAction.UPDATE);
+    },
+    canDelete() {
+      return this.permissions.canPerform(SystemModule.USER, PermissionAction.DELETE);
+    },
     filteredUsers() {
       if (!this.searchQuery) {
         return this.users;
@@ -392,6 +416,11 @@ export default {
       }
     },
     openAddUserModal() {
+      if (!this.canCreate) {
+        this.showNotification('error', 'You do not have permission to create users');
+        return;
+      }
+
       this.isEditing = false;
       this.userForm = {
         username: '',
@@ -418,6 +447,11 @@ export default {
       }
     },
     async editUser(user) {
+      if (!this.canUpdate) {
+        this.showNotification('error', 'You do not have permission to edit users');
+        return;
+      }
+
       this.isEditing = true;
       this.selectedUserId = user.id;
       this.userForm = {
@@ -430,6 +464,11 @@ export default {
       this.showModal = true;
     },
     confirmDeleteUser(user) {
+      if (!this.canDelete) {
+        this.showNotification('error', 'You do not have permission to delete users');
+        return;
+      }
+
       this.selectedUserId = user.id;
       this.showDeleteModal = true;
     },
@@ -562,6 +601,11 @@ export default {
       }
     },
     async deleteUser() {
+      if (!this.canDelete) {
+        this.showNotification('error', 'You do not have permission to delete users');
+        return;
+      }
+
       try {
         this.loading = true;
         await userService.deleteUser(this.selectedUserId);

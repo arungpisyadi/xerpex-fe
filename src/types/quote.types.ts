@@ -20,6 +20,13 @@ export interface Quote {
   total: number;
   customer_name?: string;
   items: QuoteItem[];
+  notes?: string;  // Added notes field
+  customer?: {
+    id?: number;
+    name?: string;
+    email?: string;
+    billing_address?: string;
+  };
   created_at: string;
   updated_at: string;
 }
@@ -62,4 +69,14 @@ export interface QuoteActionResponse {
   success: boolean;
   message: string;
   quote?: Quote;
+}
+
+export interface UpdateQuoteNotesRequest {
+  notes: string;
+}
+
+export interface UpdateQuoteNotesResponse {
+  success: boolean;
+  message: string;
+  quote: Quote;
 }

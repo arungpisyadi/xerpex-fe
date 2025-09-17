@@ -6,7 +6,9 @@ import type {
   QuoteListResponse,
   QuoteFilters,
   ConvertToInvoiceRequest,
-  QuoteActionResponse
+  QuoteActionResponse,
+  UpdateQuoteNotesRequest,
+  UpdateQuoteNotesResponse
 } from '../types/quote.types';
 
 class QuoteService {
@@ -132,6 +134,22 @@ class QuoteService {
   async reopenQuote(id: number): Promise<QuoteActionResponse> {
     try {
       const response = await apiClient.post(`/quotes/${id}/reopen`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update quote notes
+   * @param id - Quote ID
+   * @param notes - Notes content
+   * @returns Promise with updated quote
+   */
+  async updateQuoteNotes(id: number, notes: string): Promise<UpdateQuoteNotesResponse> {
+    try {
+      const requestData: UpdateQuoteNotesRequest = { notes };
+      const response = await apiClient.patch(`/quotes/${id}/notes`, requestData);
       return response.data;
     } catch (error) {
       throw error;

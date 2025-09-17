@@ -167,7 +167,7 @@
           </div>
 
           <!-- Quote Notes -->
-          <!-- <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h4 class="mb-4 text-xl font-semibold text-black dark:text-white">
               Quote Notes
             </h4>
@@ -198,7 +198,7 @@
                 </button>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
 
         <!-- Quote Items -->
@@ -556,27 +556,82 @@ export default {
     },
     async saveNotes() {
       try {
+        // DEBUGGING: Add comprehensive logging
+        console.log('\======= DEBUGGING SAVE NOTES =======');
+        console.log('1. Quote data check:', {
+          hasQuote: !!this.quote,
+          quoteId: this.quote?.id,
+          currentNotes: this.quote?.notes,
+          newNotes: this.quoteNotes,
+          quoteData: this.quote
+        });
+
         // Check if quote ID is available
         if (!this.quote || !this.quote.id) {
+          console.error('2. VALIDATION FAILED: Quote data not available');
           alert('Quote data not available');
+          return;
+        }
+
+        console.log('2. VALIDATION PASSED: Quote ID exists:', this.quote.id);
+
+        // Validate that notes content is not empty
+        if (!this.quoteNotes || this.quoteNotes.trim() === '') {
+          alert('Please enter some notes before saving');
           return;
         }
 
         this.loading = true;
 
-        // For now, just update locally since we don't have updateQuoteNotes method yet
-        console.warn('Quote notes update not yet implemented in service');
+        // DEBUGGING: Check if quoteService has updateQuoteNotes method
+        console.log('3. Service method check:', {
+          hasQuoteService: typeof quoteService !== 'undefined',
+          hasUpdateNotesMethod: typeof quoteService?.updateQuoteNotes === 'function',
+          availableMethods: Object.getOwnPropertyNames(quoteService).filter(name => typeof quoteService[name] === 'function')
+        });
 
-        // Update local state
-        this.quote.notes = this.quoteNotes;
+        // Call the backend API to update notes
+        console.log('4. CALLING API: Updating notes via service method');
+        const response = await quoteService.updateQuoteNotes(this.quote.id, this.quoteNotes.trim());
 
-        // Show success notification
-        alert('Notes saved successfully (local update only - service method needed)');
+        console.log('5. API RESPONSE:', response);
+
+        // Handle successful response
+        if (response) {
+          // Update local state with the response data
+          console.log(response);
+          this.quote = response;
+
+          console.log('6. BACKEND UPDATE SUCCESSFUL: Notes saved to backend');
+          alert('Notes saved successfully!');
+
+          // Clear the input field after successful save
+          this.quoteNotes = this.quote.notes || '';
+        } else {
+          throw new Error(response?.message || 'Failed to save notes');
+        }
+
       } catch (error) {
-        console.error('Error saving notes:', error);
-        alert(`Failed to save notes: ${error.message}`);
+        console.error('7. ERROR OCCURRED:', error);
+
+        // Extract meaningful error message
+        let errorMessage = 'Failed to save notes. Please try again.';
+
+        if (error.response && error.response.data && error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        } else if (error.data && error.data.detail) {
+          errorMessage = error.data.detail;
+        } else if (error.detail) {
+          errorMessage = error.detail;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+
+        alert(errorMessage);
       } finally {
         this.loading = false;
+        console.log('8. CLEANUP: Loading state reset');
+        console.log('\======= END DEBUGGING =======');
       }
     },
     previewQuote() {

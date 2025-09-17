@@ -9,7 +9,6 @@ import {
 import type {
   SystemModule,
   PermissionAction,
-  MatrixRole,
   SystemRole,
   PermissionCheckResult,
   RolePermissions,
@@ -17,6 +16,8 @@ import type {
   PermissionSummary,
   IPermissionService
 } from '../types/permissions.types';
+
+import { MatrixRole } from '../types/permissions.types';
 
 import { PermissionState } from '../types/permissions.types';
 
@@ -283,7 +284,7 @@ export function usePermissions() {
    * Check if user is admin (has all permissions)
    */
   const isAdmin = (): boolean => {
-    return getCurrentUserMatrixRole() === 'Admin';
+    return getCurrentUserMatrixRole() === MatrixRole.ADMIN;
   };
 
   /**
@@ -291,7 +292,15 @@ export function usePermissions() {
    */
   const hasElevatedPermissions = (): boolean => {
     const role = getCurrentUserMatrixRole();
-    return role === 'Admin' || role === 'Manager';
+    return role === MatrixRole.ADMIN || role === MatrixRole.MANAGER;
+  };
+
+  /**
+   * Force refresh of permissions context
+   * Should be called after authentication state changes
+   */
+  const forceRefreshPermissions = (): void => {
+    refreshPermissions();
   };
 
   // Initialize permissions on composable creation
@@ -311,6 +320,7 @@ export function usePermissions() {
     // Additional utility methods
     permissionContext,
     refreshPermissions,
+    forceRefreshPermissions,
     getPermissionSummary,
     checkMultiplePermissions,
     canAccessModule,

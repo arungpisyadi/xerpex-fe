@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import {
@@ -136,7 +136,22 @@ import authService from '@/services/auth.service';
 const isAdmin = computed(() => authService.isAdmin());
 
 // Use permissions composable
-const { canPerform } = usePermissions();
+const {
+  canPerform,
+  forceRefreshPermissions,
+  permissionContext
+} = usePermissions();
+
+// Ensure permissions are refreshed on mount and auth state changes
+onMounted(() => {
+  forceRefreshPermissions();
+});
+
+watch(() => permissionContext.isAuthenticated, (newAuth, oldAuth) => {
+  if (newAuth !== oldAuth) {
+    forceRefreshPermissions();
+  }
+});
 
 // Menu item to SystemModule mapping
 const menuModuleMap = {

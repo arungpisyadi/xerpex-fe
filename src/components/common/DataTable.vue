@@ -430,7 +430,8 @@ Ket: ${item.notes}`;
     },
     handleEdit(item) {
       console.log('DataTable handleEdit called with item:', item);
-      console.log('showEditButton:', this.showEditButton);
+      console.log('showEditButton prop:', this.showEditButton);
+      console.log('Emitting edit event with item:', item);
       this.$emit('edit', item);
     }
   }

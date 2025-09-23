@@ -69,10 +69,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewInvoiceDetails"
-          @edit="canUpdate ? editInvoice : null"
+          @edit="handleEditEvent"
           @delete="canDelete ? deleteInvoice : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>
@@ -340,6 +340,20 @@ export default {
       }
     };
 
+    const handleEditEvent = (invoice) => {
+      console.log('handleEditEvent called with invoice:', invoice);
+      console.log('canUpdate permission:', canUpdate.value);
+
+      if (!canUpdate.value) {
+        console.log('Edit permission denied, showing notification');
+        showNotification('error', 'You do not have permission to edit invoices');
+        return;
+      }
+
+      console.log('Calling editInvoice function');
+      editInvoice(invoice);
+    };
+
     const editInvoice = (invoice) => {
       if (!canUpdate.value) {
         showNotification('error', 'You do not have permission to edit invoices');
@@ -474,6 +488,7 @@ export default {
       navigateToCreateInvoice,
       markAsPaid,
       sendInvoiceEmail,
+      handleEditEvent,
       editInvoice,
       deleteInvoice,
       confirmDeleteInvoice,

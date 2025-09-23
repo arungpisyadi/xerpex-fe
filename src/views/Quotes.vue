@@ -58,10 +58,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewQuoteDetails"
-          @edit="canUpdate ? editQuote : null"
+          @edit="handleEditEvent"
           @delete="canDelete ? deleteQuote : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>
@@ -177,6 +177,10 @@ export default {
     }
   },
   async created() {
+    console.log('Quotes component created, refreshing permissions...');
+    this.permissions.forceRefreshPermissions();
+    console.log('Permissions after refresh:', this.permissions.getUserPermissions());
+    console.log('Current user matrix role:', this.permissions.getCurrentUserMatrixRole());
     await this.loadData();
   },
   methods: {
@@ -202,10 +206,16 @@ export default {
     },
 
     navigateToCreateQuote() {
+      console.log('navigateToCreateQuote called');
+      console.log('canCreate permission:', this.canCreate);
+
       if (!this.canCreate) {
         console.error('You do not have permission to create quotes');
+        this.showPermissionDeniedAlert('create quotes');
         return;
       }
+
+      console.log('Navigating to create quote...');
       this.$router.push('/quotes/create');
     },
 
@@ -249,20 +259,82 @@ export default {
     },
 
     editQuote(quote) {
+      console.log('editQuote called with:', quote);
+      console.log('canUpdate permission:', this.canUpdate);
+      console.log('current user permissions:', this.permissions.getUserPermissions());
+      console.log('current user matrix role:', this.permissions.getCurrentUserMatrixRole());
+      console.log('authService.getCurrentUser():', this.authService.getCurrentUser());
+      console.log('authService.isAuthenticated():', this.authService.isAuthenticated());
+
       if (!this.canUpdate) {
         console.error('You do not have permission to edit quotes');
+        this.showPermissionDeniedAlert('edit quotes');
         return;
       }
+
+      console.log('Navigating to edit quote:', `/quotes/edit/${quote.id}`);
       this.$router.push(`/quotes/edit/${quote.id}`);
     },
 
-    deleteQuote(quote) {
-      if (!this.canDelete) {
-        console.error('You do not have permission to delete quotes');
+    handleEditEvent(quote) {
+      console.log('handleEditEvent called with quote:', quote);
+      console.log('canUpdate permission:', this.canUpdate);
+
+      if (!this.canUpdate) {
+        console.log('Edit permission denied, showing alert');
+        this.showPermissionDeniedAlert('edit quotes');
         return;
       }
+
+      console.log('Calling editQuote function');
+      this.editQuote(quote);
+    },
+
+    showPermissionDeniedAlert(action) {
+      // Create and show a user-friendly alert for permission denied
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'fixed top-4 right-4 z-50 p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300 dark:bg-gray-800 dark:text-red-400 dark:border-red-800';
+      alertDiv.innerHTML = `
+        <div class="flex items-center">
+          <svg class="flex-shrink-0 w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+          <span class="font-medium">Permission Denied!</span>
+        </div>
+        <div class="mt-2 text-sm">
+          You don't have permission to ${action}. Please contact your administrator if you believe this is an error.
+        </div>
+        <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" onclick="this.parentElement.remove()">
+          <span class="sr-only">Close</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      `;
+
+      document.body.appendChild(alertDiv);
+
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (alertDiv.parentElement) {
+          alertDiv.remove();
+        }
+      }, 5000);
+    },
+
+    deleteQuote(quote) {
+      console.log('deleteQuote called with:', quote);
+      console.log('canDelete permission:', this.canDelete);
+
+      if (!this.canDelete) {
+        console.error('You do not have permission to delete quotes');
+        this.showPermissionDeniedAlert('delete quotes');
+        return;
+      }
+
       // For now, just log - could implement delete functionality later
       console.log('Delete quote:', quote.quote_number);
+      // TODO: Implement actual delete functionality with confirmation dialog
     },
 
     async downloadQuote(quote) {

@@ -253,12 +253,12 @@
 
         <!-- Read-only actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-else>
-          <FormKit
+          <!-- <FormKit
             type="button"
             @click="$router.push('/invoices')"
           >
-            Back to Invoices
-          </FormKit>
+            Back to Invoices!
+          </FormKit> -->
         </div>
       </FormKit>
     </div>
@@ -283,7 +283,9 @@ const router = useRouter()
 const route = useRoute()
 
 // Get invoice ID from route params
-const invoiceId = computed(() => route.params.id as string)
+console.log(route.params);
+
+const invoiceId = computed(() => route.params.invoiceId as string)
 
 // Composables
 const {
@@ -430,6 +432,8 @@ const formatDate = (date: Date | string): string => {
 }
 
 const loadInvoiceData = async () => {
+  console.log(invoiceId);
+
   if (!invoiceId.value) {
     error.value = 'Invoice ID is required'
     loadingInvoice.value = false
@@ -442,27 +446,31 @@ const loadInvoiceData = async () => {
 
     // Fetch invoice data
     const response = await invoiceService.getInvoice(Number(invoiceId.value))
-    invoice.value = response.data
+    console.log(response);
+
+    invoice.value = response as unknown as Invoice
 
     // Pre-populate form with invoice data
-    invoiceForm.value = {
-      customer_id: invoice.value.customer_id?.toString() || '',
-      due_date: invoice.value.due_date || '',
-      payment_terms: invoice.value.payment_terms || '',
-      notes: invoice.value.notes || '',
-      items: invoice.value.items?.map(item => ({
-        package_id: item.package_id?.toString() || '',
-        unit_price: item.unit_price || 0,
-        discount: item.discount || 0,
-        line_total: item.line_total || 0
-      })) || [
-        {
-          package_id: '',
-          unit_price: 0,
-          discount: 0,
-          line_total: 0
-        }
-      ]
+    if (invoice.value) {
+      invoiceForm.value = {
+        customer_id: invoice.value.customer_id?.toString() || '',
+        due_date: invoice.value.due_date || '',
+        payment_terms: invoice.value.payment_terms || '',
+        notes: invoice.value.notes || '',
+        items: invoice.value.items?.map(item => ({
+          package_id: item.package_id?.toString() || '',
+          unit_price: item.unit_price || 0,
+          discount: item.discount || 0,
+          line_total: item.line_total || 0
+        })) || [
+          {
+            package_id: '',
+            unit_price: 0,
+            discount: 0,
+            line_total: 0
+          }
+        ]
+      }
     }
 
   } catch (err: any) {

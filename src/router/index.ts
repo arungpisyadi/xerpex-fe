@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+// @ts-ignore
+import erpRoutes from './erp-routes.js'
+import authService from '../services/auth.service'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,8 +9,12 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 }
   },
   routes: [
+    // Include ERP routes first
+    ...erpRoutes,
+
+    // Legacy routes for backward compatibility
     {
-      path: '/',
+      path: '/ecommerce',
       name: 'Ecommerce',
       component: () => import('../views/Ecommerce.vue'),
       meta: {
@@ -146,6 +153,17 @@ const router = createRouter({
 export default router
 
 router.beforeEach((to, from, next) => {
+  // Set document title
   document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
-  next()
+
+  // Check if route requires authentication
+  if (to.meta.requiresAuth && !authService.isAuthenticated()) {
+    // Redirect to signin with return URL
+    next({
+      path: '/signin',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
 })

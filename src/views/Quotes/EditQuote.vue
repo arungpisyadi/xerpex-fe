@@ -241,12 +241,12 @@
 
         <!-- Read-only actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-else>
-          <FormKit
+          <!-- <FormKit
             type="button"
             @click="$router.push('/quotes')"
           >
             Back to Quotes
-          </FormKit>
+          </FormKit> -->
         </div>
       </FormKit>
     </div>

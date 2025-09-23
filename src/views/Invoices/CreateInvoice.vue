@@ -233,8 +233,7 @@ import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
-// @ts-ignore
-import userService from '../services/user.service.js'
+import userService from '../../services/user.service'
 import type { Customer } from '../../types/customer.types'
 import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
@@ -536,7 +535,7 @@ const loadSalespeople = async () => {
       return
     }
 
-    const response = await userService.getUsers({ active_only: true })
+    const response = await userService.getUsers({ is_active: true })
     console.log('Users service response:', response)
     // Filter for sales users if there's a role field, otherwise use all users
     const users = Array.isArray(response) ? response : (response.users || [])

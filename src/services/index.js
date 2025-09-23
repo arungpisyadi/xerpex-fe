@@ -1,6 +1,6 @@
 import apiClient from './api.service';
 import authService from './auth.service';
-import userService from './user.service';
+import userService from './user.service.ts';
 import villaService from './villa.service';
 import packageService from './package.service';
 import bookingService from './booking.service';

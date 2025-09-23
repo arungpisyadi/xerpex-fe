@@ -4,7 +4,7 @@ import { handleError } from '../utils/errorHandler';
 export interface User {
   id: number;
   email: string;
-  name: string;
+  full_name: string;
   role: 'admin' | 'finance' | 'manager' | 'survey-admin' | 'staff' | 'sales';
   is_active: boolean;
   created_at: string;

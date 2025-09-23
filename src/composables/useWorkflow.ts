@@ -200,6 +200,7 @@ export function useQuoteWorkflow() {
 
       const quoteData: CreateQuoteRequest = {
         customer_id: workflowData.customer.id,
+        sales_person_id: additionalData.sales_person_id || 1, // Default fallback if not provided
         issue_date: new Date().toISOString().split('T')[0],
         expiry_date: (() => {
           const today = new Date()

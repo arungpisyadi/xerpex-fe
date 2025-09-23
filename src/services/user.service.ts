@@ -1,14 +1,35 @@
 import apiClient from './api.service';
+import type { User } from './auth.service';
+
+export interface UserFilters {
+  page?: number;
+  limit?: number;
+  role?: string;
+  is_active?: boolean;
+}
+
+export interface CreateUserRequest {
+  name: string;
+  email: string;
+  password: string;
+  role: 'admin' | 'finance' | 'manager' | 'survey-admin' | 'staff' | 'sales';
+  is_active?: boolean;
+}
+
+export interface UpdateUserRequest extends Partial<CreateUserRequest> {}
+
+export interface UserListResponse {
+  users: User[];
+  total: number;
+  skip: number;
+  limit: number;
+}
 
 class UserService {
   /**
    * Get all users with optional pagination
-   * @param {Object} params - Query parameters
-   * @param {number} params.page - Page number
-   * @param {number} params.limit - Items per page
-   * @returns {Promise} - Response from API
    */
-  async getUsers(params = {}) {
+  async getUsers(params: UserFilters = {}): Promise<User[] | UserListResponse> {
     try {
       const response = await apiClient.get('/users', { params });
       return response.data;
@@ -19,10 +40,8 @@ class UserService {
 
   /**
    * Get user by ID
-   * @param {string} id - User ID
-   * @returns {Promise} - Response from API
    */
-  async getUserById(id) {
+  async getUserById(id: string | number): Promise<User> {
     try {
       const response = await apiClient.get(`/users/${id}`);
       return response.data;
@@ -33,10 +52,8 @@ class UserService {
 
   /**
    * Create a new user
-   * @param {Object} userData - User data
-   * @returns {Promise} - Response from API
    */
-  async createUser(userData) {
+  async createUser(userData: CreateUserRequest): Promise<User> {
     try {
       const response = await apiClient.post('/users', userData);
       return response.data;
@@ -47,11 +64,8 @@ class UserService {
 
   /**
    * Update user
-   * @param {string} id - User ID
-   * @param {Object} userData - Updated user data
-   * @returns {Promise} - Response from API
    */
-  async updateUser(id, userData) {
+  async updateUser(id: string | number, userData: UpdateUserRequest): Promise<User> {
     try {
       const response = await apiClient.put(`/users/${id}`, userData);
       return response.data;
@@ -62,10 +76,8 @@ class UserService {
 
   /**
    * Delete user
-   * @param {string} id - User ID
-   * @returns {Promise} - Response from API
    */
-  async deleteUser(id) {
+  async deleteUser(id: string | number): Promise<void> {
     try {
       const response = await apiClient.delete(`/users/${id}`);
       return response.data;
@@ -76,11 +88,8 @@ class UserService {
 
   /**
    * Get user activities
-   * @param {string} id - User ID
-   * @param {Object} params - Query parameters
-   * @returns {Promise} - Response from API
    */
-  async getUserActivities(id, params = {}) {
+  async getUserActivities(id: string | number, params: Record<string, any> = {}): Promise<any> {
     try {
       const response = await apiClient.get(`/users/${id}/activities`, { params });
       return response.data;

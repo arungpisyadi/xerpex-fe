@@ -26,17 +26,30 @@
         v-model="quoteForm"
         :disabled="loading"
       >
-        <!-- Customer Selection -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="select"
-            name="customer_id"
-            label="Select Customer"
-            :options="customerOptions"
-            placeholder="Choose a customer"
-            validation="required"
-            help="Select the customer for this quote"
-          />
+        <!-- Customer Selection and Sales In Charge -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
+              :options="customerOptions"
+              placeholder="Choose a customer"
+              validation="required"
+              help="Select the customer for this quote"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="select"
+              name="sales_person_id"
+              label="Sales In Charge"
+              :options="salesUserOptions"
+              placeholder="Choose sales person"
+              validation="required"
+              help="Select the sales person responsible for this quote"
+            />
+          </div>
         </div>
 
         <!-- Quote Details -->
@@ -200,9 +213,11 @@ import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import quoteService from '../../services/quote.service'
 import packageService from '../../services/package.service'
+import userService from '../../services/user.service'
 import type { Customer } from '../../types/customer.types'
 import type { CreateQuoteRequest, QuoteItem, QuoteStatus } from '../../types/quote.types'
 import type { Package } from '../../types/package.types'
+import type { User } from '../../services/auth.service'
 import { handleError } from '../../utils/errorHandler'
 
 // Router
@@ -219,10 +234,12 @@ const {
 // Reactive state
 const loading = ref(false)
 const packages = ref<Package[]>([])
+const salesUsers = ref<User[]>([])
 
 // Form data structure
 const quoteForm = ref({
   customer_id: '',
+  sales_person_id: null,
   expiry_date: (() => {
     const today = new Date()
     const expiryDate = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000)
@@ -264,6 +281,18 @@ const packageOptions = computed(() => {
   }))
 })
 
+const salesUserOptions = computed(() => {
+  if (!salesUsers.value || !Array.isArray(salesUsers.value)) {
+    return []
+  }
+  console.log(salesUsers.value);
+
+  return salesUsers.value.map((user: User) => ({
+    label: user.full_name,
+    value: user.id
+  }))
+})
+
 const calculations = computed(() => {
   const items = quoteForm.value.items || []
 
@@ -285,6 +314,9 @@ const isFormValid = computed(() => {
 
   // Check if customer is selected
   if (!form.customer_id) return false
+
+  // Check if sales person is selected
+  if (!form.sales_person_id) return false
 
   // Check if at least one item exists and is valid
   if (!form.items || form.items.length === 0) return false
@@ -349,6 +381,7 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
     // formData parameter is passed by FormKit but we don't need it since we have v-model
     const quoteData: CreateQuoteRequest = {
       customer_id: Number(quoteForm.value.customer_id),
+      sales_person_id: Number(quoteForm.value.sales_person_id),
       issue_date: new Date().toISOString().split('T')[0],
       expiry_date: quoteForm.value.expiry_date || undefined,
       status: String(status) as QuoteStatus, // Now correctly uses the status parameter
@@ -390,13 +423,45 @@ watch(() => quoteForm.value.items, (newItems) => {
   })
 }, { deep: true })
 
+// Fetch sales users function
+const fetchSalesUsers = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No authentication token found')
+      salesUsers.value = []
+      return
+    }
+
+    const response = await userService.getUsers()
+    console.log('Users service response:', response)
+
+    // Filter users by sales role and active status
+    const allUsers = Array.isArray(response) ? response : response.users
+    salesUsers.value = allUsers.filter((user: User) =>
+      user.role === 'sales' && user.is_active !== false
+    )
+
+    console.log('Sales users loaded successfully:', salesUsers.value.length, 'sales users')
+  } catch (error: any) {
+    console.error('Error loading sales users:', error)
+    if (error.response?.status === 401) {
+      console.error('Authentication failed - please log in again')
+    } else if (error.response?.status === 404) {
+      console.error('Users endpoint not found')
+    }
+    salesUsers.value = []
+  }
+}
+
 // Lifecycle
 onMounted(async () => {
   try {
-    // Load customers and packages for the dropdowns
+    // Load customers, packages, and sales users for the dropdowns
     await Promise.all([
       fetchCustomers({ active_only: true }),
-      loadPackages()
+      loadPackages(),
+      fetchSalesUsers()
     ])
   } catch (error) {
     handleError(error, 'loadData')

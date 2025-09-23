@@ -234,7 +234,7 @@ import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
 // @ts-ignore
-import userService from '../../services/user.service.js'
+import userService from '../services/user.service.js'
 import type { Customer } from '../../types/customer.types'
 import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'

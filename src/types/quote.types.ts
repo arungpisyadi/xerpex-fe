@@ -13,6 +13,7 @@ export interface Quote {
   id: number;
   user_id: number;  // Added for role-based access control
   customer_id: number;
+  sales_person_id?: number;  // Sales person in charge of the quote
   quote_number: string;
   issue_date: string;
   expiry_date?: string;
@@ -33,6 +34,7 @@ export interface Quote {
 
 export interface CreateQuoteRequest {
   customer_id: number;
+  sales_person_id: number;
   issue_date: string;
   expiry_date?: string;
   status: QuoteStatus;

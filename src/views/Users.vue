@@ -76,10 +76,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewUser"
-          @edit="canUpdate ? editUser : null"
-          @delete="canDelete ? confirmDeleteUser : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          @edit="editUser"
+          @delete="confirmDeleteUser"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>
@@ -399,28 +399,100 @@ export default {
     }
   },
   async created() {
+    console.log('Users.vue created - checking permissions and auth state');
+    console.log('Current user:', this.permissions.permissionContext);
+    console.log('Can create:', this.canCreate);
+    console.log('Can update:', this.canUpdate);
+    console.log('Can delete:', this.canDelete);
     await this.fetchUsers();
   },
   methods: {
     async fetchUsers() {
       this.loading = true;
+      console.log('=== FETCHING USERS ===');
+      console.log('Current user permissions:', {
+        canCreate: this.canCreate,
+        canUpdate: this.canUpdate,
+        canDelete: this.canDelete,
+        permissionContext: this.permissions.permissionContext
+      });
+
       try {
         const response = await userService.getUsers();
-        this.users = response.items || response || [];
+        console.log('=== USERS API RESPONSE ===');
+        console.log('Raw response:', response);
+
+        // Handle different response formats
+        let users = [];
+        if (Array.isArray(response)) {
+          users = response;
+        } else if (response && response.items && Array.isArray(response.items)) {
+          users = response.items;
+        } else if (response && response.data && Array.isArray(response.data)) {
+          users = response.data;
+        } else {
+          console.warn('Unexpected response format:', response);
+          users = [];
+        }
+
+        this.users = users;
+        console.log('=== USERS LOADED SUCCESSFULLY ===');
+        console.log('Total users loaded:', this.users.length);
+        console.log('Users summary:', this.users.map(u => ({
+          id: u.id,
+          username: u.username,
+          role: u.role,
+          is_active: u.is_active
+        })));
+
       } catch (error) {
-        console.error('Error fetching users:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch users';
+        console.error('=== ERROR FETCHING USERS ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+
+        // Enhanced error handling for fetch operations
+        let errorMessage = 'Failed to fetch users';
+
+        if (error.response?.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response?.status === 403) {
+          errorMessage = 'You do not have permission to view users.';
+        } else if (error.response?.status === 404) {
+          errorMessage = 'Users endpoint not found.';
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = error.response?.data?.message || error.message || errorMessage;
+        }
+
+        this.users = []; // Clear users on error
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
+        console.log('=== FETCH USERS COMPLETED ===');
       }
     },
     openAddUserModal() {
+      console.log('=== CREATE USER REQUEST ===');
+      console.log('Current user permissions:', {
+        canCreate: this.canCreate,
+        canUpdate: this.canUpdate,
+        canDelete: this.canDelete,
+        permissionContext: this.permissions.permissionContext
+      });
+
       if (!this.canCreate) {
-        this.showNotification('error', 'You do not have permission to create users');
+        console.error('=== CREATE PERMISSION DENIED ===');
+        console.error('User lacks CREATE permission for USER module');
+        console.error('Required permission:', `${SystemModule.USER}:${PermissionAction.CREATE}`);
+        console.error('Current user context:', this.permissions.permissionContext);
+
+        this.showNotification('error', 'You do not have permission to create users. Please contact your administrator if you believe this is an error.');
         return;
       }
 
+      console.log('=== PREPARING CREATE MODAL ===');
       this.isEditing = false;
       this.userForm = {
         username: '',
@@ -431,46 +503,174 @@ export default {
       };
       this.formErrors = {};
       this.showModal = true;
+      console.log('Create modal opened successfully');
     },
     async viewUser(user) {
+      console.log('=== VIEW USER REQUEST ===');
+      console.log('User to view:', {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      });
+
+      // Validate user data
+      if (!user || !user.id) {
+        console.error('=== VIEW VALIDATION ERROR ===');
+        console.error('Invalid user object provided:', user);
+        this.showNotification('error', 'Invalid user data. Cannot view user details.');
+        return;
+      }
+
       try {
         this.loading = true;
+        console.log('=== FETCHING USER DETAILS ===');
+
         const response = await userService.getUserById(user.id);
+        console.log('=== USER DETAILS RESPONSE ===');
+        console.log('User details:', response);
+
         this.selectedUser = response;
         this.showViewModal = true;
+
+        console.log('=== VIEW USER COMPLETED ===');
+
       } catch (error) {
-        console.error('Error fetching user details:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch user details';
+        console.error('=== ERROR FETCHING USER DETAILS ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+
+        // Enhanced error handling for view operations
+        let errorMessage = 'Failed to fetch user details';
+
+        if (error.response?.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response?.status === 403) {
+          errorMessage = 'You do not have permission to view user details.';
+        } else if (error.response?.status === 404) {
+          errorMessage = 'User not found.';
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = error.response?.data?.message || error.message || errorMessage;
+        }
+
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
     },
     async editUser(user) {
-      if (!this.canUpdate) {
-        this.showNotification('error', 'You do not have permission to edit users');
-        return;
-      }
-
-      this.isEditing = true;
-      this.selectedUserId = user.id;
-      this.userForm = {
+      console.log('=== EDIT USER REQUEST ===');
+      console.log('User to edit:', {
+        id: user.id,
         username: user.username,
         email: user.email,
-        full_name: user.full_name,
-        role: user.role
-      };
-      this.formErrors = {};
-      this.showModal = true;
-    },
-    confirmDeleteUser(user) {
-      if (!this.canDelete) {
-        this.showNotification('error', 'You do not have permission to delete users');
+        role: user.role,
+        is_active: user.is_active
+      });
+      console.log('Current user permissions:', {
+        canUpdate: this.canUpdate,
+        canCreate: this.canCreate,
+        canDelete: this.canDelete,
+        permissionContext: this.permissions.permissionContext
+      });
+
+      // Enhanced permission checking with detailed logging
+      if (!this.canUpdate) {
+        console.error('=== EDIT PERMISSION DENIED ===');
+        console.error('User lacks UPDATE permission for USER module');
+        console.error('Required permission:', `${SystemModule.USER}:${PermissionAction.UPDATE}`);
+        console.error('Current user context:', this.permissions.permissionContext);
+
+        this.showNotification('error', 'You do not have permission to edit users. Please contact your administrator if you believe this is an error.');
         return;
       }
 
+      // Additional validation checks
+      if (!user || !user.id) {
+        console.error('=== EDIT VALIDATION ERROR ===');
+        console.error('Invalid user object provided:', user);
+        this.showNotification('error', 'Invalid user data. Cannot proceed with edit operation.');
+        return;
+      }
+
+      try {
+        console.log('=== PREPARING EDIT MODAL ===');
+        console.log('Setting edit mode for user ID:', user.id);
+
+        this.isEditing = true;
+        this.selectedUserId = user.id;
+
+        // Populate form with user data and validate
+        this.userForm = {
+          username: user.username || '',
+          email: user.email || '',
+          full_name: user.full_name || '',
+          role: user.role || 'user'
+        };
+
+        // Validate form data immediately
+        this.validateForm();
+
+        // Clear any existing errors
+        this.formErrors = {};
+
+        // Show modal
+        this.showModal = true;
+
+        console.log('=== EDIT MODAL PREPARED SUCCESSFULLY ===');
+        console.log('Form data populated:', this.userForm);
+        console.log('Modal state:', {
+          showModal: this.showModal,
+          isEditing: this.isEditing,
+          selectedUserId: this.selectedUserId
+        });
+
+      } catch (error) {
+        console.error('=== ERROR PREPARING EDIT MODAL ===');
+        console.error('Error details:', error);
+        this.showNotification('error', 'An unexpected error occurred while preparing the edit form. Please try again.');
+      }
+    },
+    confirmDeleteUser(user) {
+      console.log('=== DELETE USER REQUEST ===');
+      console.log('User to delete:', {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      });
+      console.log('Current user permissions:', {
+        canDelete: this.canDelete,
+        canCreate: this.canCreate,
+        canUpdate: this.canUpdate,
+        permissionContext: this.permissions.permissionContext
+      });
+
+      if (!this.canDelete) {
+        console.error('=== DELETE PERMISSION DENIED ===');
+        console.error('User lacks DELETE permission for USER module');
+        console.error('Required permission:', `${SystemModule.USER}:${PermissionAction.DELETE}`);
+        console.error('Current user context:', this.permissions.permissionContext);
+
+        this.showNotification('error', 'You do not have permission to delete users. Please contact your administrator if you believe this is an error.');
+        return;
+      }
+
+      // Additional validation
+      if (!user || !user.id) {
+        console.error('=== DELETE VALIDATION ERROR ===');
+        console.error('Invalid user object provided:', user);
+        this.showNotification('error', 'Invalid user data. Cannot proceed with delete operation.');
+        return;
+      }
+
+      console.log('=== PREPARING DELETE CONFIRMATION ===');
       this.selectedUserId = user.id;
       this.showDeleteModal = true;
+      console.log('Delete confirmation modal opened for user ID:', user.id);
     },
     closeModal() {
       this.showModal = false;
@@ -517,42 +717,91 @@ export default {
       }
     },
     validateField(fieldName) {
+      console.log('=== VALIDATING FIELD ===');
+      console.log('Field:', fieldName);
+      console.log('Field value:', this.userForm[fieldName]);
+
       this.formErrors = { ...this.formErrors };
       delete this.formErrors[fieldName];
 
       switch (fieldName) {
         case 'username':
-          if (!this.userForm.username || this.userForm.username.trim().length < 3) {
+          const username = this.userForm.username?.trim();
+          if (!username) {
+            this.formErrors.username = 'Username is required';
+          } else if (username.length < 3) {
             this.formErrors.username = 'Username must be at least 3 characters long';
+          } else if (username.length > 50) {
+            this.formErrors.username = 'Username must not exceed 50 characters';
+          } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+            this.formErrors.username = 'Username can only contain letters, numbers, underscores, and hyphens';
           }
           break;
+
         case 'email':
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!this.userForm.email || !emailRegex.test(this.userForm.email)) {
-            this.formErrors.email = 'Please enter a valid email address';
+          const email = this.userForm.email?.trim();
+          if (!email) {
+            this.formErrors.email = 'Email is required';
+          } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+              this.formErrors.email = 'Please enter a valid email address';
+            } else if (email.length > 100) {
+              this.formErrors.email = 'Email must not exceed 100 characters';
+            }
           }
           break;
+
         case 'full_name':
-          if (!this.userForm.full_name || this.userForm.full_name.trim().length < 2) {
+          const fullName = this.userForm.full_name?.trim();
+          if (!fullName) {
+            this.formErrors.full_name = 'Full name is required';
+          } else if (fullName.length < 2) {
             this.formErrors.full_name = 'Full name must be at least 2 characters long';
+          } else if (fullName.length > 100) {
+            this.formErrors.full_name = 'Full name must not exceed 100 characters';
+          } else if (!/^[a-zA-Z\s'-]+$/.test(fullName)) {
+            this.formErrors.full_name = 'Full name can only contain letters, spaces, hyphens, and apostrophes';
           }
           break;
+
         case 'password':
-          if (!this.isEditing && (!this.userForm.password || this.userForm.password.length < 6)) {
-            this.formErrors.password = 'Password must be at least 6 characters long';
+          if (!this.isEditing) {
+            const password = this.userForm.password;
+            if (!password) {
+              this.formErrors.password = 'Password is required';
+            } else if (password.length < 6) {
+              this.formErrors.password = 'Password must be at least 6 characters long';
+            } else if (password.length > 128) {
+              this.formErrors.password = 'Password must not exceed 128 characters';
+            } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+              this.formErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+            }
           }
           break;
+
         case 'role':
           if (!this.userForm.role) {
             this.formErrors.role = 'Please select a role';
+          } else if (!['admin', 'manager', 'finance', 'sales', 'survey', 'staff'].includes(this.userForm.role)) {
+            this.formErrors.role = 'Please select a valid role';
           }
           break;
       }
+
+      console.log('Validation result for', fieldName, ':', this.formErrors[fieldName] || 'VALID');
     },
     validateForm() {
+      console.log('=== VALIDATING ENTIRE FORM ===');
+      console.log('Edit mode:', this.isEditing);
+      console.log('Form data:', {
+        ...this.userForm,
+        password: this.userForm.password ? '[REDACTED]' : ''
+      });
+
       this.formErrors = {};
 
-      // Validate all fields
+      // Validate all required fields
       this.validateField('username');
       this.validateField('email');
       this.validateField('full_name');
@@ -561,7 +810,23 @@ export default {
       }
       this.validateField('role');
 
-      return Object.keys(this.formErrors).length === 0;
+      const isValid = Object.keys(this.formErrors).length === 0;
+
+      console.log('=== FORM VALIDATION RESULT ===');
+      console.log('Is valid:', isValid);
+      console.log('Validation errors:', this.formErrors);
+
+      if (!isValid) {
+        console.error('Form validation failed with errors:', this.formErrors);
+        // Show summary of errors to user
+        const errorCount = Object.keys(this.formErrors).length;
+        const errorFields = Object.keys(this.formErrors).join(', ');
+        console.log(`Validation failed for ${errorCount} field(s): ${errorFields}`);
+      } else {
+        console.log('Form validation passed successfully');
+      }
+
+      return isValid;
     },
     showNotification(type, message) {
       this.notification = {
@@ -576,45 +841,128 @@ export default {
       }, 5000);
     },
     async saveUser() {
+      console.log('=== SAVE USER REQUEST ===');
+      console.log('Save mode:', this.isEditing ? 'UPDATE' : 'CREATE');
+      console.log('Form data:', {
+        ...this.userForm,
+        password: this.userForm.password ? '[REDACTED]' : ''
+      });
+
+      // Enhanced form validation with detailed feedback
       if (!this.validateForm()) {
-        this.showNotification('error', 'Please fix the validation errors before submitting');
+        console.error('=== FORM VALIDATION FAILED ===');
+        console.error('Validation errors:', this.formErrors);
+        const errorCount = Object.keys(this.formErrors).length;
+        this.showNotification('error', `Please fix the ${errorCount} validation error${errorCount > 1 ? 's' : ''} before submitting`);
         return;
       }
 
       try {
         this.loading = true;
+        console.log('=== SAVING USER ===');
+
         if (this.isEditing) {
-          await userService.updateUser(this.selectedUserId, this.userForm);
+          console.log('Updating user ID:', this.selectedUserId);
+          const updateData = { ...this.userForm };
+          delete updateData.password; // Don't send password if not changed
+
+          await userService.updateUser(this.selectedUserId, updateData);
+          console.log('User updated successfully');
           this.showNotification('success', 'User updated successfully');
         } else {
+          console.log('Creating new user');
           await userService.createUser(this.userForm);
+          console.log('User created successfully');
           this.showNotification('success', 'User created successfully');
         }
+
         this.closeModal();
         await this.fetchUsers();
+        console.log('=== SAVE USER COMPLETED ===');
+
       } catch (error) {
-        console.error('Error saving user:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to save user';
+        console.error('=== ERROR SAVING USER ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+
+        // Enhanced error handling with specific messages
+        let errorMessage = 'Failed to save user';
+
+        if (error.response?.status === 400) {
+          const validationErrors = error.response.data?.errors;
+          if (validationErrors) {
+            console.error('Server validation errors:', validationErrors);
+            errorMessage = 'Please check your input data and try again';
+            // You could also populate formErrors with server validation errors here
+          } else {
+            errorMessage = error.response.data?.message || 'Invalid data provided';
+          }
+        } else if (error.response?.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response?.status === 403) {
+          errorMessage = 'You do not have permission to perform this action.';
+        } else if (error.response?.status === 409) {
+          errorMessage = 'A user with this information already exists.';
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = error.response?.data?.message || error.message || errorMessage;
+        }
+
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;
       }
     },
     async deleteUser() {
+      console.log('=== DELETE USER CONFIRMED ===');
+      console.log('User ID to delete:', this.selectedUserId);
+
+      // Double-check permission before deletion
       if (!this.canDelete) {
-        this.showNotification('error', 'You do not have permission to delete users');
+        console.error('=== DELETE PERMISSION DENIED ===');
+        console.error('User lacks DELETE permission for USER module');
+        this.showNotification('error', 'You do not have permission to delete users. Please contact your administrator if you believe this is an error.');
         return;
       }
 
       try {
         this.loading = true;
+        console.log('=== DELETING USER ===');
+
         await userService.deleteUser(this.selectedUserId);
+        console.log('User deleted successfully');
+
         this.showDeleteModal = false;
         await this.fetchUsers();
         this.showNotification('success', 'User deleted successfully');
+
+        console.log('=== DELETE USER COMPLETED ===');
+
       } catch (error) {
-        console.error('Error deleting user:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to delete user';
+        console.error('=== ERROR DELETING USER ===');
+        console.error('Error details:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+
+        // Enhanced error handling for delete operations
+        let errorMessage = 'Failed to delete user';
+
+        if (error.response?.status === 400) {
+          errorMessage = error.response.data?.message || 'Cannot delete this user due to data constraints';
+        } else if (error.response?.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response?.status === 403) {
+          errorMessage = 'You do not have permission to delete this user.';
+        } else if (error.response?.status === 404) {
+          errorMessage = 'User not found or already deleted.';
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = error.response?.data?.message || error.message || errorMessage;
+        }
+
         this.showNotification('error', errorMessage);
       } finally {
         this.loading = false;

@@ -139,7 +139,7 @@
                   <!-- Edit Button -->
                   <button
                     v-if="showEditButton"
-                    @click="$emit('edit', item)"
+                    @click="handleEdit(item)"
                     class="hover:text-primary transition-colors"
                     title="Edit"
                   >
@@ -427,6 +427,11 @@ Ket: ${item.notes}`;
       const url = `https://wa.me/${this.waPhoneNumber}?text=${encodedMessage}`;
       console.log('Generated WhatsApp URL:', url);
       return url;
+    },
+    handleEdit(item) {
+      console.log('DataTable handleEdit called with item:', item);
+      console.log('showEditButton:', this.showEditButton);
+      this.$emit('edit', item);
     }
   }
 };

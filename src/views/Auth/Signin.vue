@@ -33,7 +33,8 @@
                   type="form"
                   @submit="loginUser"
                   :actions="false"
-
+                  :disabled="isLoading"
+                  submit-behavior="live"
                 >
                   <!-- Email -->
                   <FormKit
@@ -113,12 +114,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import CommonGridShape from '@/components/common/CommonGridShape.vue'
 import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
 // @ts-ignore - Import auth service without type checking
 import authService from '@/services/auth.service'
+import { usePermissions } from '@/composables/usePermissions'
 
 // Simple flag to prevent navigation during login process
 const isLoggingIn = ref(false);
@@ -158,6 +160,9 @@ const password = ref('')
 const showPassword = ref(false)
 const keepLoggedIn = ref(false)
 
+// Initialize permissions composable
+const { refreshPermissions } = usePermissions()
+
 // Validation state
 const authError = ref('')
 const authDetails = ref('') // Added for detailed error messages
@@ -169,8 +174,15 @@ const togglePasswordVisibility = () => {
 
 // Login method that works with FormKit form submission
 const loginUser = async (formData: any) => {
+  // Add guard at function start
+  if (isLoading.value || isLoggingIn.value) {
+    console.log('Login already in progress, ignoring duplicate submission');
+    return;
+  }
+
   console.log('loginUser called with FormKit data:', formData);
 
+  // Set flags immediately
   isLoading.value = true;
   isLoggingIn.value = true; // Set flag to prevent navigation/reloads
   authError.value = '';
@@ -182,13 +194,64 @@ const loginUser = async (formData: any) => {
       password: formData.password
     });
 
-    // Successful login - LoginResponse contains access_token, token_type, and user
+    console.log('Auth service login called with:', { username: formData.email, password: '***' });
+    console.log('Making API request to /auth/login/json');
+    console.log('Login API response:', result);
     console.log('Login successful:', result);
+
+    // ADD DIAGNOSTIC LOGGING FOR SURVEY USER
+    if (result && result.user) {
+      console.log('User data:', result.user);
+      console.log('User role from API:', result.user.role);
+      console.log('Is user authenticated:', authService.isAuthenticated());
+
+      // Check if role exists in mapping
+      const ROLE_MAPPING = {
+        'admin': 'ADMIN',
+        'manager': 'MANAGER',
+        'finance': 'FINANCE',
+        'sales': 'SALES',
+        'survey-admin': 'SURVEY',
+        'staff': 'STAFF'
+      };
+      console.log('Role mapping exists for', result.user.role, ':', result.user.role in ROLE_MAPPING);
+    }
 
     // Successful login - redirect to dashboard
     console.log('Login successful, redirecting...');
-    const redirectPath = route.query.redirect ? String(route.query.redirect) : '/';
-    router.push(redirectPath);
+    // Get redirect from query OR localStorage as fallback
+    const redirectPath = route.query.redirect
+      ? String(route.query.redirect)
+      : localStorage.getItem('pendingRedirect') || '/';
+
+    // Clear stored redirect after use
+    localStorage.removeItem('pendingRedirect');
+
+    console.log('REDIRECT DEBUG: extracted redirectPath:', redirectPath);
+    console.log('REDIRECT DEBUG: route.query.redirect:', route.query.redirect);
+    console.log('REDIRECT DEBUG: authService.isAuthenticated() before refresh:', authService.isAuthenticated());
+
+    // Ensure permission system is updated with new auth state
+    try {
+      await refreshPermissions();
+      await nextTick();
+
+      console.log('REDIRECT DEBUG: authService.isAuthenticated() after refresh:', authService.isAuthenticated());
+
+      // Add navigation with error handling
+      console.log('Attempting navigation to:', redirectPath);
+
+      // Add a small delay to ensure auth state is fully propagated
+      await new Promise(resolve => setTimeout(resolve, 100));
+      console.log('REDIRECT DEBUG: authService.isAuthenticated() after delay:', authService.isAuthenticated());
+
+      await router.push(redirectPath);
+      console.log('Navigation completed successfully');
+    } catch (error) {
+      console.error('Permission refresh failed, navigating anyway:', error);
+      // Navigate anyway if permissions fail
+      await router.push(redirectPath);
+    }
 
   } catch (error) {
     // Handle unexpected errors

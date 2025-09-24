@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import erpRoutes from './erp-routes'
-import authService from '../services/auth.service.ts'
+import authService from '../services/auth.service'
 import { permissionService } from '../composables/usePermissions'
 import { SystemModule, PermissionAction } from '../types/permissions.types'
 
@@ -21,7 +21,8 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // Check if user is authenticated
     if (!authService.isAuthenticated()) {
-      // Redirect to login page
+      // Store redirect in localStorage as backup
+      localStorage.setItem('pendingRedirect', to.fullPath);
       next({
         path: '/signin',
         query: { redirect: to.fullPath }

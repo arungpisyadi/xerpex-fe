@@ -89,6 +89,17 @@ const surveyService = {
     }
   },
 
+  // Get sales accounts
+  async getSales() {
+    try {
+      const response = await apiClient.get('/get-sales');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sales accounts:', error);
+      throw error;
+    }
+  },
+
 };
 
 export default surveyService;

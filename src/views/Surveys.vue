@@ -201,7 +201,7 @@
                   v-model="surveyForm.client_name" validation="required"  />
 
                 <FormKit type="email" name="email" label="Email" placeholder="Enter email address"
-                  v-model="surveyForm.email" validation="required|email"  />
+                  v-model="surveyForm.email" validation="email"  />
 
                 <FormKit type="tel" name="phone_number" label="Phone Number" placeholder="Enter phone number"
                   v-model="surveyForm.phone_number"  />
@@ -276,7 +276,7 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import WhatsAppIcon from '../icons/WhatsAppIcon.vue';
-import { surveyService, userService } from '../services';
+import { surveyService } from '../services';
 import { usePermissions } from '../composables/usePermissions';
 import { SystemModule, PermissionAction } from '../types/permissions.types';
 
@@ -396,11 +396,9 @@ export default {
     },
     async fetchSalesAccounts() {
       try {
-        // Fetch users and filter for those with sales role
-        const response = await userService.getUsers();
-        this.salesAccounts = (response || []).filter(user =>
-          user.role === 'sales' || user.roles?.includes('sales')
-        );
+        // Use the new get-sales endpoint
+        const response = await surveyService.getSales();
+        this.salesAccounts = response || [];
       } catch (error) {
         console.error('Error fetching sales accounts:', error);
         // Show error notification
@@ -477,10 +475,16 @@ export default {
       try {
         this.submitting = true;
 
+        // Prepare form data, convert empty email to null
+        const formData = {
+          ...this.surveyForm,
+          email: this.surveyForm.email?.trim() || null
+        };
+
         if (this.isEditing) {
-          await surveyService.updateSurvey(this.surveyForm.id, this.surveyForm);
+          await surveyService.updateSurvey(formData.id, formData);
         } else {
-          await surveyService.createSurvey(this.surveyForm);
+          await surveyService.createSurvey(formData);
         }
 
         this.closeModal();

@@ -44,7 +44,7 @@ export enum MatrixRole {
  * System Roles
  * Current roles used in the auth system
  */
-export type SystemRole = 'admin' | 'finance' | 'manager' | 'survey-admin' | 'staff' | 'sales';
+export type SystemRole = 'admin' | 'finance' | 'manager' | 'survey-admin' | 'survey' | 'staff' | 'sales';
 
 /**
  * Permission State

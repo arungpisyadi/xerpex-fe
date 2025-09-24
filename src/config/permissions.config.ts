@@ -314,20 +314,20 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
     },
     [SystemModule.BOOKINGS]: {
       [PermissionAction.VIEW]: PermissionState.ENABLED,
-      [PermissionAction.CREATE]: PermissionState.DISABLED,
-      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.ENABLED,
+      [PermissionAction.UPDATE]: PermissionState.ENABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
     [SystemModule.SURVEYS]: {
       [PermissionAction.VIEW]: PermissionState.ENABLED,
-      [PermissionAction.CREATE]: PermissionState.DISABLED,
-      [PermissionAction.UPDATE]: PermissionState.DISABLED,
-      [PermissionAction.DELETE]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.ENABLED,
+      [PermissionAction.UPDATE]: PermissionState.ENABLED,
+      [PermissionAction.DELETE]: PermissionState.ENABLED,
     },
     [SystemModule.CUSTOMERS]: {
-      [PermissionAction.VIEW]: PermissionState.DISABLED,
-      [PermissionAction.CREATE]: PermissionState.DISABLED,
-      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.ENABLED,
+      [PermissionAction.UPDATE]: PermissionState.ENABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
     [SystemModule.QUOTES]: {
@@ -444,6 +444,7 @@ export const ROLE_MAPPING: RoleMapping = {
   'finance': MatrixRole.FINANCE,
   'sales': MatrixRole.SALES,
   'survey-admin': MatrixRole.SURVEY,
+  'survey': MatrixRole.SURVEY,  // Add mapping for 'survey' role
   'staff': MatrixRole.STAFF,
 };
 
@@ -472,7 +473,7 @@ export const getMatrixRoles = (): MatrixRole[] => {
  * Get all system roles
  */
 export const getSystemRoles = (): SystemRole[] => {
-  return ['admin', 'finance', 'manager', 'sales', 'survey-admin', 'staff'];
+  return ['admin', 'finance', 'manager', 'sales', 'survey-admin', 'survey', 'staff'];
 };
 
 /**

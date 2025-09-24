@@ -126,6 +126,16 @@
 
           <FormKit
             type="text"
+            name="phone"
+            label="Phone Number"
+            placeholder="Enter phone number (optional)"
+            v-model="userForm.phone"
+            help="Phone number is optional and accepts any format"
+
+          />
+
+          <FormKit
+            type="text"
             name="full_name"
             label="Full Name"
             placeholder="Enter full name"
@@ -135,13 +145,13 @@
           />
 
           <FormKit
-            v-if="!isEditing"
             type="password"
             name="password"
-            label="Password"
-            placeholder="Enter password"
+            :label="isEditing ? 'New Password (Optional)' : 'Password'"
+            :placeholder="isEditing ? 'Leave blank to keep current password' : 'Enter password'"
             v-model="userForm.password"
-            validation="required|length:6"
+            :validation="isEditing ? 'length:6' : 'required|length:6'"
+            :help="isEditing ? 'Only enter a new password if you want to change it' : ''"
 
           />
 
@@ -211,6 +221,10 @@
                 <div>
                   <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Email:</span>
                   <p class="text-black dark:text-white">{{ selectedUser.email }}</p>
+                </div>
+                <div v-if="selectedUser.phone">
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone:</span>
+                  <p class="text-black dark:text-white">{{ selectedUser.phone }}</p>
                 </div>
               </div>
             </div>
@@ -347,7 +361,8 @@ export default {
       searchQuery: '',
       columns: [
         { key: 'username', label: 'Username', span: 2 },
-        { key: 'email', label: 'Email', span: 3 },
+        { key: 'email', label: 'Email', span: 2 },
+        { key: 'phone', label: 'Phone', span: 2 },
         { key: 'full_name', label: 'Full Name', span: 3 },
         { key: 'role', label: 'Role', span: 2, type: 'status' }
       ],
@@ -392,6 +407,7 @@ export default {
         return (
           user.username?.toLowerCase().includes(query) ||
           user.email?.toLowerCase().includes(query) ||
+          user.phone?.toLowerCase().includes(query) ||
           user.full_name?.toLowerCase().includes(query) ||
           user.role?.toLowerCase().includes(query)
         );
@@ -497,6 +513,7 @@ export default {
       this.userForm = {
         username: '',
         email: '',
+        phone: '',
         full_name: '',
         password: '',
         role: 'user'
@@ -607,7 +624,9 @@ export default {
         this.userForm = {
           username: user.username || '',
           email: user.email || '',
+          phone: user.phone || '',
           full_name: user.full_name || '',
+          password: '',
           role: user.role || 'user'
         };
 
@@ -678,6 +697,7 @@ export default {
       this.userForm = {
         username: '',
         email: '',
+        phone: '',
         full_name: '',
         password: '',
         role: 'user'
@@ -780,6 +800,10 @@ export default {
           }
           break;
 
+        case 'phone':
+          // Phone is optional and accepts any format
+          break;
+
         case 'role':
           if (!this.userForm.role) {
             this.formErrors.role = 'Please select a role';
@@ -804,6 +828,7 @@ export default {
       // Validate all required fields
       this.validateField('username');
       this.validateField('email');
+      this.validateField('phone');
       this.validateField('full_name');
       if (!this.isEditing) {
         this.validateField('password');
@@ -864,7 +889,11 @@ export default {
         if (this.isEditing) {
           console.log('Updating user ID:', this.selectedUserId);
           const updateData = { ...this.userForm };
-          delete updateData.password; // Don't send password if not changed
+
+          // Don't send password if it's empty (keeping current password)
+          if (!updateData.password) {
+            delete updateData.password;
+          }
 
           await userService.updateUser(this.selectedUserId, updateData);
           console.log('User updated successfully');

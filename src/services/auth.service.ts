@@ -66,6 +66,9 @@ class AuthService {
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(user));
 
+      // Dispatch auth event for App.vue to listen
+      window.dispatchEvent(new CustomEvent('auth:login'));
+
       return response.data;
     } catch (error) {
       throw handleError(error, 'login');
@@ -98,6 +101,9 @@ class AuthService {
       console.error('Logout error:', error);
     } finally {
       this.clearAuth();
+
+      // Dispatch auth event for App.vue to listen
+      window.dispatchEvent(new CustomEvent('auth:logout'));
     }
   }
 

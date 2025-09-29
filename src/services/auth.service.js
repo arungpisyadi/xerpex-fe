@@ -29,6 +29,9 @@ class AuthService {
           console.error('Error fetching user data, but login succeeded:', userError);
         }
 
+        // Dispatch auth event for App.vue to listen
+        window.dispatchEvent(new CustomEvent('auth:login'));
+
         // Return success result
         return {
           success: true,
@@ -102,11 +105,19 @@ class AuthService {
       const response = await apiClient.post('/auth/logout');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+
+      // Dispatch auth event for App.vue to listen
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+
       return response.data;
     } catch (error) {
       // Clear storage even if API call fails
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+
+      // Dispatch auth event even if API call fails
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+
       throw error;
     }
   }

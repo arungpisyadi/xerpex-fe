@@ -217,8 +217,13 @@ const loginUser = async (formData: any) => {
       console.log('Role mapping exists for', result.user.role, ':', result.user.role in ROLE_MAPPING);
     }
 
-    // Successful login - redirect to dashboard
-    console.log('Login successful, redirecting...');
+    // Successful login - force complete refresh to clear cached state
+    console.log('Login successful, forcing permission refresh and page reload...');
+
+    // Clear any potentially cached permission state
+    localStorage.removeItem('cached_permissions');
+    localStorage.removeItem('cached_user_role');
+
     // Get redirect from query OR localStorage as fallback
     const redirectPath = route.query.redirect
       ? String(route.query.redirect)
@@ -231,26 +236,31 @@ const loginUser = async (formData: any) => {
     console.log('REDIRECT DEBUG: route.query.redirect:', route.query.redirect);
     console.log('REDIRECT DEBUG: authService.isAuthenticated() before refresh:', authService.isAuthenticated());
 
-    // Ensure permission system is updated with new auth state
+    // Force complete permission refresh
     try {
-      await refreshPermissions();
+      refreshPermissions();
       await nextTick();
 
       console.log('REDIRECT DEBUG: authService.isAuthenticated() after refresh:', authService.isAuthenticated());
 
-      // Add navigation with error handling
-      console.log('Attempting navigation to:', redirectPath);
+      // Clear all potential cached data that could interfere with role-based UI
+      sessionStorage.clear();
 
-      // Add a small delay to ensure auth state is fully propagated
-      await new Promise(resolve => setTimeout(resolve, 100));
-      console.log('REDIRECT DEBUG: authService.isAuthenticated() after delay:', authService.isAuthenticated());
+      // Force a page reload to ensure completely clean state
+      // This guarantees that all components re-initialize with the new user's data
+      console.log('Forcing page reload to ensure clean state...');
 
-      await router.push(redirectPath);
-      console.log('Navigation completed successfully');
+      // Store the redirect path for after reload
+      localStorage.setItem('post_login_redirect', redirectPath);
+
+      // Force reload the entire page
+      window.location.href = redirectPath;
+
     } catch (error) {
-      console.error('Permission refresh failed, navigating anyway:', error);
-      // Navigate anyway if permissions fail
-      await router.push(redirectPath);
+      console.error('Permission refresh failed, forcing page reload anyway:', error);
+      // Store redirect and reload anyway
+      localStorage.setItem('post_login_redirect', redirectPath);
+      window.location.href = redirectPath;
     }
 
   } catch (error) {

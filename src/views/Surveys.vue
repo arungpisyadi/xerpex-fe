@@ -69,7 +69,7 @@
           :loading="loading"
           :show-add-button="false"
           :wa-phone-number="waPhoneNumber"
-          @edit="canUpdate ? editSurvey : null"
+          @edit="editSurvey"
           @delete="canDelete ? deleteSurveyConfirm : null"
           @view="viewSurvey"
           :show-edit="canUpdate"
@@ -209,8 +209,12 @@
                 <FormKit type="number" name="estimated_paxes" label="Estimated Paxes"
                   placeholder="Enter estimated number of guests" v-model="surveyForm.estimated_paxes" min="0"  />
 
-                <FormKit type="text" name="villa_types" label="Villa Types" placeholder="Enter preferred villa types"
-                  v-model="surveyForm.villa_types"  />
+                <FormKit type="select" name="villa_types" label="Villa Types" v-model="surveyForm.villa_types"
+                  :options="[
+                    { label: 'Select villa type', value: '', attrs: { disabled: true } },
+                    { label: 'Villa', value: 'villa' },
+                    { label: 'Aula', value: 'aula' }
+                  ]"  />
               </div>
 
               <!-- Survey Details -->
@@ -239,17 +243,37 @@
                     { label: 'Urgent', value: 'urgent' }
                   ]"  />
 
-                <FormKit type="select" name="sales_account_id" label="Sales Account" v-model="surveyForm.sales_account_id"
+                <FormKit type="select" name="salesmen_id" label="Sales Account" v-model="surveyForm.salesmen_id"
                   validation="required" :options="[
                     { label: 'Select a sales account', value: '', attrs: { disabled: true } },
                     ...salesAccounts.map(account => ({ label: account.full_name, value: account.id }))
                   ]"  />
 
-                <FormKit type="date" name="follow_up_date" label="Follow-up Date" v-model="surveyForm.follow_up_date"
-                   />
+                <FormKit
+                  type="date"
+                  name="follow_up_date"
+                  label="Follow-up Date"
+                  v-model="surveyForm.follow_up_date"
+                >
+                  <template #suffixIcon>
+                    <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                      <CalenderIcon />
+                    </div>
+                  </template>
+                </FormKit>
 
-                <FormKit type="date" name="visiting_date" label="Visiting Date" v-model="surveyForm.visiting_date"
-                   />
+                <FormKit
+                  type="date"
+                  name="visiting_date"
+                  label="Visiting Date"
+                  v-model="surveyForm.visiting_date"
+                >
+                  <template #suffixIcon>
+                    <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                      <CalenderIcon />
+                    </div>
+                  </template>
+                </FormKit>
               </div>
             </div>
 
@@ -276,6 +300,7 @@ import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
 import WhatsAppIcon from '../icons/WhatsAppIcon.vue';
+import CalenderIcon from '../icons/CalenderIcon.vue';
 import { surveyService } from '../services';
 import { usePermissions } from '../composables/usePermissions';
 import { SystemModule, PermissionAction } from '../types/permissions.types';
@@ -285,7 +310,8 @@ export default {
     AdminLayout,
     PageBreadcrumb,
     DataTable,
-    WhatsAppIcon
+    WhatsAppIcon,
+    CalenderIcon
   },
   setup() {
     const permissions = usePermissions();
@@ -317,7 +343,7 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        sales_account_id: '',
+        salesmen_id: '',
         sales_account_name: ''
       },
       columns: [
@@ -367,11 +393,14 @@ export default {
         filtered = filtered.filter(survey => survey.priority === this.priorityFilter);
       }
 
-      // Add sales account name for display
-      return filtered.map(survey => ({
-        ...survey,
-        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
-      }));
+      // Add sales account name for display by matching salesmen_id with sales accounts
+      return filtered.map(survey => {
+        const salesAccount = this.salesAccounts.find(account => account.id === survey.salesmen_id);
+        return {
+          ...survey,
+          sales_account_name: salesAccount?.full_name || 'Unassigned'
+        };
+      });
     }
   },
   async created() {
@@ -422,7 +451,7 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        sales_account_id: '',
+        salesmen_id: '',
         sales_account_name: ''
       };
       this.showModal = true;
@@ -434,6 +463,7 @@ export default {
       }
 
       this.isEditing = true;
+      const salesAccount = this.salesAccounts.find(account => account.id === survey.salesmen_id);
       this.surveyForm = {
         id: survey.id,
         client_name: survey.client_name || '',
@@ -446,14 +476,15 @@ export default {
         priority: survey.priority || 'medium',
         follow_up_date: survey.follow_up_date || '',
         visiting_date: survey.visiting_date || '',
-        sales_account_id: survey.sales_account_id || survey.salesman?.id || survey.salesman_id || '',
-        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
+        salesmen_id: survey.salesmen_id || '',
+        sales_account_name: salesAccount?.full_name || 'Unassigned'
       };
       this.showModal = true;
     },
     viewSurvey(survey) {
       this.isViewMode = true;
       this.isEditing = false;
+      const salesAccount = this.salesAccounts.find(account => account.id === survey.salesmen_id);
       this.surveyForm = {
         id: survey.id,
         client_name: survey.client_name || '',
@@ -466,8 +497,8 @@ export default {
         priority: survey.priority || 'medium',
         follow_up_date: survey.follow_up_date || '',
         visiting_date: survey.visiting_date || '',
-        sales_account_id: survey.sales_account_id || survey.salesman?.id || survey.salesman_id || '',
-        sales_account_name: survey.sales_account_name || survey.salesman?.full_name || 'Unassigned'
+        salesmen_id: survey.salesmen_id || '',
+        sales_account_name: salesAccount?.full_name || 'Unassigned'
       };
       this.showModal = true;
     },
@@ -537,13 +568,13 @@ export default {
         priority: 'medium',
         follow_up_date: '',
         visiting_date: '',
-        sales_account_id: '',
+        salesmen_id: '',
         sales_account_name: ''
       };
     },
     sendWhatsApp() {
       const phone = import.meta.env.VITE_WA_SALES_ADMIN;
-      const message = `Selamat Siang,\n\nBerikut data survey:\n\nClient Name: ${this.surveyForm.client_name}\nEmail: ${this.surveyForm.email}\nPhone: ${this.surveyForm.phone_number}\nEstimated Paxes: ${this.surveyForm.estimated_paxes}\nVilla Types: ${this.surveyForm.villa_types}\nNotes: ${this.surveyForm.notes}\nStatus: ${this.surveyForm.status}\nPriority: ${this.surveyForm.priority}\nFollow-up Date: ${this.surveyForm.follow_up_date}\nVisiting Date: ${this.surveyForm.visiting_date}`;
+      const message = `Selamat Siang,\n\nBerikut data survey:\n\nClient Name: ${this.surveyForm.client_name}\nEmail: ${this.surveyForm.email}\nPhone: ${this.surveyForm.phone_number}\nEstimated Paxes: ${this.surveyForm.estimated_paxes}\nVilla Types: ${this.surveyForm.villa_types}\nNotes: ${this.surveyForm.notes}\nStatus: ${this.surveyForm.status}\nPriority: ${this.surveyForm.priority}\nSales: ${this.surveyForm.sales_account_name}\nFollow-up Date: ${this.surveyForm.follow_up_date}\nVisiting Date: ${this.surveyForm.visiting_date}`;
       const encodedMessage = encodeURIComponent(message);
       if (phone) {
         window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
@@ -558,6 +589,29 @@ export default {
         hour: '2-digit',
         minute: '2-digit'
       });
+    },
+    triggerDatePicker(event) {
+      // Find the closest date input element from the clicked calendar icon
+      const wrapper = event.target.closest('.formkit-outer');
+      if (wrapper) {
+        const input = wrapper.querySelector('input[type="date"]');
+        if (input) {
+          // Focus the input first
+          input.focus();
+          // Use showPicker API if available (modern browsers)
+          if (input.showPicker) {
+            try {
+              input.showPicker();
+            } catch (e) {
+              // Fallback: trigger click on the input
+              input.click();
+            }
+          } else {
+            // Fallback for browsers without showPicker
+            input.click();
+          }
+        }
+      }
     }
   }
 };

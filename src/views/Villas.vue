@@ -76,10 +76,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewVilla"
-          @edit="canUpdate ? editVilla : null"
-          @delete="canDelete ? confirmDeleteVilla : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          @edit="editVilla"
+          @delete="confirmDeleteVilla"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>
@@ -102,7 +102,7 @@
           type="form"
           :actions="false"
           @submit="saveVilla"
-
+          ref="villaFormRef"
         >
           <div class="mb-4">
             <FormKit
@@ -111,12 +111,7 @@
               label="Name"
               v-model="villaForm.name"
               placeholder="Enter villa name"
-              validation="required|length:2"
-              validation-messages="{
-                required: 'Villa name is required',
-                length: 'Villa name must be at least 2 characters long'
-              }"
-
+              @blur="validateField('name')"
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -131,12 +126,7 @@
               label="Description"
               v-model="villaForm.description"
               placeholder="Enter villa description"
-              validation="required|length:10"
-              validation-messages="{
-                required: 'Description is required',
-                length: 'Description must be at least 10 characters long'
-              }"
-
+              @blur="validateField('description')"
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -146,19 +136,12 @@
 
           <div class="mb-4">
             <FormKit
-              type="number"
+              type="text"
               name="capacity"
               label="Capacity"
               v-model="villaForm.capacity"
               placeholder="Enter villa capacity"
-              min="1"
-              max="50"
-              validation="required|between:1,50"
-              validation-messages="{
-                required: 'Capacity is required',
-                between: 'Capacity must be between 1 and 50 guests'
-              }"
-
+              @blur="validateField('capacity')"
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -174,17 +157,10 @@
               v-model="villaForm.room_type"
               :options="[
                 { label: 'Select room type', value: '' },
-                { label: 'Standard', value: 'Standard' },
-                { label: 'Deluxe', value: 'Deluxe' },
-                { label: 'Suite', value: 'Suite' },
-                { label: 'Presidential', value: 'Presidential' },
-                { label: 'Villa', value: 'Villa' }
+                { label: 'Villa', value: 'Villa' },
+                { label: 'Aula', value: 'Aula' }
               ]"
-              validation="required"
-              validation-messages="{
-                required: 'Please select a room type'
-              }"
-
+              @blur="validateField('room_type')"
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -201,12 +177,7 @@
               placeholder="0.00"
               min="0"
               step="100000"
-              validation="required|min:0"
-              validation-messages="{
-                required: 'Base price is required',
-                min: 'Base price must be greater than 0'
-              }"
-
+              disabled
             >
               <template #label="context">
                 {{ context.label }} <span class="text-meta-1">*</span>
@@ -223,8 +194,24 @@
               name="is_active"
               label="Active Villa"
               v-model="villaForm.is_active"
-
             />
+          </div>
+
+          <!-- Validation Errors Display Above Buttons -->
+          <div v-if="Object.keys(formErrors).length > 0" class="mb-4 rounded-md border-2 border-red-400 bg-red-50 p-4 dark:border-red-600 dark:bg-red-900/30">
+            <div class="flex items-start">
+              <svg class="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+              <div class="ml-3 flex-1">
+                <h3 class="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">Please fix the following errors:</h3>
+                <ul class="list-inside list-disc space-y-1">
+                  <li v-for="(error, field) in formErrors" :key="field" class="text-sm text-red-700 dark:text-red-300">
+                    {{ error }}
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div class="flex justify-end gap-4">
@@ -236,7 +223,6 @@
             </FormKit>
             <FormKit
               type="submit"
-
             >
               {{ isEditing ? 'Update' : 'Save' }}
             </FormKit>
@@ -426,7 +412,7 @@ export default {
       villaForm: {
         name: '',
         description: '',
-        capacity: 1,
+        capacity: '',
         room_type: '',
         base_price: 0,
         is_active: true
@@ -493,7 +479,7 @@ export default {
       this.villaForm = {
         name: '',
         description: '',
-        capacity: 1,
+        capacity: '',
         room_type: '',
         base_price: 0,
         is_active: true
@@ -547,7 +533,7 @@ export default {
       this.villaForm = {
         name: '',
         description: '',
-        capacity: 1,
+        capacity: '',
         room_type: '',
         base_price: 0,
         is_active: true
@@ -583,8 +569,8 @@ export default {
           }
           break;
         case 'capacity':
-          if (!this.villaForm.capacity || this.villaForm.capacity < 1 || this.villaForm.capacity > 50) {
-            this.formErrors.capacity = 'Capacity must be between 1 and 50 guests';
+          if (!this.villaForm.capacity) {
+            this.formErrors.capacity = 'Capacity is required';
           }
           break;
         case 'room_type':
@@ -593,9 +579,11 @@ export default {
           }
           break;
         case 'base_price':
-          if (!this.villaForm.base_price || this.villaForm.base_price <= 0) {
-            this.formErrors.base_price = 'Base price must be greater than 0';
-          }
+          // console.log(this.villaForm.base_price);
+
+          // if (!this.villaForm.base_price) {
+          //   this.formErrors.base_price = 'Base price must be greater than 0';
+          // }
           break;
       }
     },
@@ -625,7 +613,6 @@ export default {
     },
     async saveVilla() {
       if (!this.validateForm()) {
-        this.showNotification('error', 'Please fix the validation errors before submitting');
         return;
       }
 
@@ -642,8 +629,25 @@ export default {
         await this.fetchVillas();
       } catch (error) {
         console.error('Error saving villa:', error);
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to save villa';
-        this.showNotification('error', errorMessage);
+
+        // Check if error contains validation errors from API
+        if (error.response?.data?.errors) {
+          // Parse API validation errors and add to formErrors
+          const apiErrors = error.response.data.errors;
+          this.formErrors = {};
+
+          // Handle different error formats
+          if (typeof apiErrors === 'object') {
+            for (const [field, messages] of Object.entries(apiErrors)) {
+              // If messages is an array, take the first message
+              this.formErrors[field] = Array.isArray(messages) ? messages[0] : messages;
+            }
+          }
+        } else {
+          // Show notification only for non-validation errors
+          const errorMessage = error.response?.data?.message || error.message || 'Failed to save villa';
+          this.showNotification('error', errorMessage);
+        }
       } finally {
         this.loading = false;
       }

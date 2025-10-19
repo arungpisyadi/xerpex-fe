@@ -113,9 +113,6 @@
               placeholder="Enter villa name"
               @blur="validateField('name')"
             >
-              <template #label="context">
-                {{ context.label }} <span class="text-meta-1">*</span>
-              </template>
             </FormKit>
           </div>
 
@@ -128,9 +125,6 @@
               placeholder="Enter villa description"
               @blur="validateField('description')"
             >
-              <template #label="context">
-                {{ context.label }} <span class="text-meta-1">*</span>
-              </template>
             </FormKit>
           </div>
 
@@ -143,9 +137,6 @@
               placeholder="Enter villa capacity"
               @blur="validateField('capacity')"
             >
-              <template #label="context">
-                {{ context.label }} <span class="text-meta-1">*</span>
-              </template>
             </FormKit>
           </div>
 
@@ -162,9 +153,6 @@
               ]"
               @blur="validateField('room_type')"
             >
-              <template #label="context">
-                {{ context.label }} <span class="text-meta-1">*</span>
-              </template>
             </FormKit>
           </div>
 
@@ -179,9 +167,6 @@
               step="100000"
               disabled
             >
-              <template #label="context">
-                {{ context.label }} <span class="text-meta-1">*</span>
-              </template>
               <template #prefix>
                 <span class="absolute left-1 top-1/2 -translate-y-2 text-gray-500 text-xs">IDR</span>
               </template>

@@ -279,6 +279,16 @@ const erpRoutes = [
       action: PermissionAction.VIEW
     },
   },
+  // Profile route
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Others/UserProfile.vue'),
+    meta: {
+      title: 'Profile',
+      requiresAuth: true
+    },
+  },
   // Authentication routes
   {
     path: '/signin',

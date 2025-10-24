@@ -137,6 +137,42 @@ class AuthService {
   }
 
   /**
+   * Update personal information
+   * @param {Object} personalInfo - Personal information data
+   * @param {string} personalInfo.full_name - Full name
+   * @param {string} personalInfo.email - Email
+   * @param {string} personalInfo.phone - Phone number
+   * @param {string} personalInfo.bio - Bio
+   * @returns {Promise} - Response from API
+   */
+  async updatePersonalInfo(personalInfo) {
+    try {
+      const response = await apiClient.put('/auth/profile/personal-info', personalInfo);
+      // Update stored user data
+      localStorage.setItem('user', JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Update password
+   * @param {Object} passwordData - Password change data
+   * @param {string} passwordData.current_password - Current password
+   * @param {string} passwordData.new_password - New password
+   * @returns {Promise} - Response from API
+   */
+  async updatePassword(passwordData) {
+    try {
+      const response = await apiClient.put('/auth/profile/password', passwordData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Check if user is authenticated
    * @returns {boolean} - True if authenticated
    */

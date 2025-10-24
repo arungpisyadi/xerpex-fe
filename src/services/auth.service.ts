@@ -9,6 +9,20 @@ export interface User {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  phone?: string;
+  bio?: string;
+}
+
+export interface UpdatePersonalInfoRequest {
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+}
+
+export interface UpdatePasswordRequest {
+  current_password: string;
+  new_password: string;
 }
 
 export interface LoginRequest {
@@ -135,6 +149,35 @@ class AuthService {
       return response.data;
     } catch (error) {
       throw handleError(error, 'updateProfile');
+    }
+  }
+
+  /**
+   * Update personal information
+   * @param personalInfo - Personal information data
+   * @returns Promise with updated user
+   */
+  async updatePersonalInfo(personalInfo: UpdatePersonalInfoRequest): Promise<User> {
+    try {
+      const response = await apiClient.put('/auth/profile/personal-info', personalInfo);
+      this.currentUser = response.data;
+      localStorage.setItem('user', JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      throw handleError(error, 'updatePersonalInfo');
+    }
+  }
+
+  /**
+   * Update password
+   * @param passwordData - Password change data
+   * @returns Promise with success response
+   */
+  async updatePassword(passwordData: UpdatePasswordRequest): Promise<void> {
+    try {
+      await apiClient.put('/auth/profile/password', passwordData);
+    } catch (error) {
+      throw handleError(error, 'updatePassword');
     }
   }
 

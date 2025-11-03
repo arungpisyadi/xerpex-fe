@@ -151,12 +151,12 @@
                   validation="required"
                   @input="onPackageSelect"
                   :disabled="!isEditable"
-                  help="Select package from available options"
+                  help="Select package"
                 />
               </div>
 
               <!-- Unit Price -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="unit_price"
@@ -168,7 +168,21 @@
                   validation="required|min:0"
                   @input="calculateItemAmount"
                   :disabled="!isEditable"
-                  help="Price per person (editable)"
+                  help="Price per pax"
+                />
+              </div>
+
+              <!-- Pax -->
+              <div class="sm:col-span-2">
+                <FormKit
+                  type="number"
+                  name="pax"
+                  label="Pax"
+                  placeholder="Enter pax"
+                  validation="required|min:1"
+                  @input="calculateItemAmount"
+                  :disabled="!isEditable"
+                  help="Number of pax"
                 />
               </div>
 
@@ -184,12 +198,12 @@
                   :min="0"
                   @input="calculateItemAmount"
                   :disabled="!isEditable"
-                  help="Discount amount in Rp"
+                  help="Discount in IDR"
                 />
               </div>
 
               <!-- Line Total (calculated) -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="line_total"
@@ -197,7 +211,6 @@
                   currency="IDR"
                   :step="0.01"
                   :min="0"
-                  readonly
                   help="Automatically calculated"
                 />
               </div>
@@ -266,7 +279,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, readonly } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
@@ -311,6 +324,7 @@ const invoiceForm = ref({
     {
       package_id: '',
       unit_price: 0,
+      pax: 1,
       discount: 0,
       line_total: 0
     }
@@ -374,6 +388,7 @@ const isFormValid = computed(() => {
   return form.items.every(item =>
     item.package_id &&
     Number(item.unit_price) >= 0 &&
+    Number(item.pax) >= 1 &&
     Number(item.discount) >= 0
   )
 })
@@ -407,6 +422,7 @@ const onPackageSelect = (value: number | undefined, node: any) => {
   if (selectedPackage && node?.parent?.value) {
     // Auto-populate unit_price from package cost_per_pax
     node.parent.value.unit_price = selectedPackage.cost_per_pax
+    node.parent.value.discount = 0
     // Trigger calculation
     calculateItemAmount()
   }
@@ -446,9 +462,16 @@ const loadInvoiceData = async () => {
 
     // Fetch invoice data
     const response = await invoiceService.getInvoice(Number(invoiceId.value))
-    console.log(response);
+    // console.log(response);
 
     invoice.value = response as unknown as Invoice
+
+    // Convert status to string if it's an array
+    if (invoice.value && invoice.value.status) {
+      invoice.value.status = Array.isArray(invoice.value.status)
+        ? invoice.value.status[0]
+        : invoice.value.status
+    }
 
     // Pre-populate form with invoice data
     if (invoice.value) {
@@ -460,12 +483,14 @@ const loadInvoiceData = async () => {
         items: invoice.value.items?.map(item => ({
           package_id: item.package_id?.toString() || '',
           unit_price: item.unit_price || 0,
+          pax: item.pax || 1,
           discount: item.discount || 0,
           line_total: item.line_total || 0
         })) || [
           {
             package_id: '',
             unit_price: 0,
+            pax: 1,
             discount: 0,
             line_total: 0
           }
@@ -506,12 +531,13 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
       due_date: invoiceForm.value.due_date || undefined,
       payment_terms: invoiceForm.value.payment_terms || undefined,
       notes: invoiceForm.value.notes || undefined,
-      status: status,
+      status: invoice.value?.status,
       total: calculations.value.total,
       tax_total: 0, // No tax calculation as per requirements
       items: invoiceForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
+        pax: Number(item.pax) || 1,
         discount: Number(item.discount),
         line_total: Number(item.line_total)
       }))
@@ -534,11 +560,12 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
 
 // Watchers
 watch(() => invoiceForm.value.items, (newItems) => {
-  // Update line_total for each item when unit_price or discount changes
+  // Update line_total for each item when unit_price, pax, or discount changes
   newItems.forEach(item => {
     const unitPrice = Number(item.unit_price) || 0
+    const pax = Number(item.pax) || 1
     const discount = Number(item.discount) || 0
-    item.line_total = Math.max(0, unitPrice - discount)
+    item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
 

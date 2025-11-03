@@ -281,11 +281,11 @@ export default {
     };
   },
   mounted() {
-    console.log('DataTable mounted with props:', {
-      showWhatsAppButton: this.showWhatsAppButton,
-      waPhoneNumber: this.waPhoneNumber,
-      dataLength: this.data?.length || 0
-    });
+    // console.log('DataTable mounted with props:', {
+    //   showWhatsAppButton: this.showWhatsAppButton,
+    //   waPhoneNumber: this.waPhoneNumber,
+    //   dataLength: this.data?.length || 0
+    // });
   },
   computed: {
     filteredData() {

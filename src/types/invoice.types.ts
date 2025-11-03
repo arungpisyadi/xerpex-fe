@@ -6,6 +6,7 @@ export interface InvoiceItem {
   id: number;
   package_id: number;
   unit_price: number;
+  pax: number;
   discount: number;
   line_total: number;
   package_name?: string;

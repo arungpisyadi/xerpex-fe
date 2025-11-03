@@ -103,12 +103,12 @@
                   placeholder="Select a package"
                   validation="required"
                   @input="onPackageSelect"
-                  help="Select package from available options"
+                  help="Select package"
                 />
               </div>
 
               <!-- Unit Price -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="unit_price"
@@ -119,7 +119,19 @@
                   :min="0"
                   validation="required|min:0"
                   @input="calculateItemAmount"
-                  help="Price per person (editable)"
+                  help="Price per pax"
+                />
+              </div>
+
+              <!-- Pax -->
+              <div class="sm:col-span-2">
+                <FormKit
+                  type="number"
+                  name="pax"
+                  label="Pax"
+                  placeholder="Enter pax"
+                  validation="required|min:1"
+                  help="Number of pax"
                 />
               </div>
 
@@ -134,12 +146,12 @@
                   :step="0.01"
                   :min="0"
                   @input="calculateItemAmount"
-                  help="Discount amount in Rp"
+                  help="Discount in IDR"
                 />
               </div>
 
               <!-- Line Total (calculated) -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="line_total"
@@ -250,6 +262,7 @@ const quoteForm = ref({
     {
       package_id: '',
       unit_price: 0,
+      pax: 1,
       discount: 0,
       line_total: 0
     }
@@ -415,11 +428,12 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
 
 // Watchers
 watch(() => quoteForm.value.items, (newItems) => {
-  // Update line_total for each item when unit_price or discount changes
+  // Update line_total for each item when unit_price, pax or discount changes
   newItems.forEach(item => {
     const unitPrice = Number(item.unit_price) || 0
+    const pax = Number(item.pax) || 1
     const discount = Number(item.discount) || 0
-    item.line_total = Math.max(0, unitPrice - discount)
+    item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
 

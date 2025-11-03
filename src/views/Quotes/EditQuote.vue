@@ -139,12 +139,12 @@
                   validation="required"
                   @input="onPackageSelect"
                   :disabled="!isEditable"
-                  help="Select package from available options"
+                  help="Select package"
                 />
               </div>
 
               <!-- Unit Price -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="unit_price"
@@ -156,7 +156,20 @@
                   validation="required|min:0"
                   @input="calculateItemAmount"
                   :disabled="!isEditable"
-                  help="Price per person (editable)"
+                  help="Price per pax"
+                />
+              </div>
+
+              <!-- Pax -->
+              <div class="sm:col-span-2">
+                <FormKit
+                  type="number"
+                  name="pax"
+                  label="Pax"
+                  placeholder="Enter pax"
+                  validation="required|min:1"
+                  :disabled="!isEditable"
+                  help="Number of pax"
                 />
               </div>
 
@@ -172,12 +185,12 @@
                   :min="0"
                   @input="calculateItemAmount"
                   :disabled="!isEditable"
-                  help="Discount amount in Rp"
+                  help="Discount in IDR"
                 />
               </div>
 
               <!-- Line Total (calculated) -->
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-2">
                 <FormKit
                   type="currency"
                   name="line_total"
@@ -297,6 +310,7 @@ const quoteForm = ref({
     {
       package_id: '',
       unit_price: 0,
+      pax: 1,
       discount: 0,
       line_total: 0
     }
@@ -357,6 +371,7 @@ const isFormValid = computed(() => {
   return form.items.every(item =>
     item.package_id &&
     Number(item.unit_price) >= 0 &&
+    Number(item.pax) >= 1 &&
     Number(item.discount) >= 0
   )
 })
@@ -429,20 +444,30 @@ const loadQuoteData = async () => {
     const response = await quoteService.getQuoteById(Number(quoteId.value))
     quote.value = response
 
+    // Convert status to string if it's an array
+    if (quote.value && quote.value.status) {
+      quote.value.status = Array.isArray(quote.value.status)
+      ? quote.value.status[0]
+      : quote.value.status
+    }
+    // console.log(quote.value.status);
+
     // Pre-populate form with quote data
     quoteForm.value = {
-      customer_id: quote.value.customer_id?.toString() || '',
-      expiry_date: quote.value.expiry_date || '',
+      customer_id: quote.value?.customer_id?.toString() || '',
+      expiry_date: quote.value?.expiry_date || '',
       notes: '', // Notes field doesn't exist in Quote type, so we'll leave it empty
-      items: quote.value.items?.map(item => ({
+      items: quote.value?.items?.map(item => ({
         package_id: item.package_id?.toString() || '',
         unit_price: item.unit_price || 0,
+        pax: (item as any).pax || 1,
         discount: item.discount || 0,
         line_total: item.line_total || 0
       })) || [
         {
           package_id: '',
           unit_price: 0,
+          pax: 1,
           discount: 0,
           line_total: 0
         }
@@ -474,17 +499,19 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
   }
 
   loading.value = true
+  // console.log(quote.value?.status);
 
   try {
     // Prepare quote data
     const quoteData: UpdateQuoteRequest = {
       customer_id: Number(quoteForm.value.customer_id),
       expiry_date: quoteForm.value.expiry_date || undefined,
-      status: status,
+      status: quote.value?.status,
       total: calculations.value.total,
       items: quoteForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
+        pax: Number(item.pax) || 1,
         discount: Number(item.discount),
         line_total: Number(item.line_total)
       }))
@@ -507,11 +534,12 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
 
 // Watchers
 watch(() => quoteForm.value.items, (newItems) => {
-  // Update line_total for each item when unit_price or discount changes
+  // Update line_total for each item when unit_price, pax or discount changes
   newItems.forEach(item => {
     const unitPrice = Number(item.unit_price) || 0
+    const pax = Number(item.pax) || 1
     const discount = Number(item.discount) || 0
-    item.line_total = Math.max(0, unitPrice - discount)
+    item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
 

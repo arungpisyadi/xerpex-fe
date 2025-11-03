@@ -206,7 +206,6 @@ export default {
       { key: 'invoice_number', label: 'Invoice #', span: 1 },
       { key: 'customer_name', label: 'Customer', span: 2 },
       { key: 'total', label: 'Amount', span: 1, type: 'currency' },
-      { key: 'tax_total', label: 'Tax', span: 1, type: 'currency' },
       { key: 'status', label: 'Status', span: 1, type: 'status' },
       { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
       { key: 'due_date', label: 'Due Date', span: 1, type: 'date' }
@@ -289,7 +288,15 @@ export default {
           skip: (currentPage.value - 1) * itemsPerPage.value,
           limit: itemsPerPage.value
         });
-        console.log('Invoices loaded:', invoices.value);
+
+        // Pre-process data to flatten nested customer names
+        if (invoices.value && Array.isArray(invoices.value)) {
+          invoices.value = invoices.value.map(item => ({
+            ...item,
+          }));
+        }
+
+        // console.log('Invoices loaded:', invoices.value);
         totalItems.value = invoices.value?.length || 0;
       } catch (err) {
         handleError(err, 'loadData');

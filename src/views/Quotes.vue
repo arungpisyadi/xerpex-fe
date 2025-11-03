@@ -122,7 +122,6 @@ export default {
         { key: 'quote_number', label: 'Quote #', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
         { key: 'total', label: 'Amount', span: 1, type: 'currency' },
-        { key: 'tax_total', label: 'Tax', span: 1, type: 'currency' },
         { key: 'status', label: 'Status', span: 1, type: 'status' },
         { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
         { key: 'expiry_date', label: 'Expiry Date', span: 1, type: 'date' }
@@ -165,8 +164,7 @@ export default {
         filtered = filtered.filter(quote => quote.status === this.statusFilter);
 
       }
-
-
+      // console.log(filtered);
 
       return filtered;
     },
@@ -190,6 +188,15 @@ export default {
           skip: (this.currentPage - 1) * this.itemsPerPage,
           limit: this.itemsPerPage
         });
+
+        // Pre-process data to flatten nested customer names
+        if (this.quotes && Array.isArray(this.quotes)) {
+          this.quotes = this.quotes.map(item => ({
+            ...item,
+            customer_name: item.customer?.name || 'N/A'
+          }));
+        }
+
         this.totalItems = this.quotes.length;
       } catch (error) {
         this.handleError(error, 'loadData');

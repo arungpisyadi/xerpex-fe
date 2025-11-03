@@ -310,8 +310,8 @@
                   <p class="text-black dark:text-white">{{ formatCurrency(selectedBooking.total_price) }}</p>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Booking ID:</span>
-                  <p class="text-black dark:text-white">#{{ selectedBooking.id }}</p>
+                  <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Booking Code:</span>
+                  <p class="text-black dark:text-white">{{ selectedBooking.booking_code }}</p>
                 </div>
               </div>
             </div>
@@ -420,9 +420,8 @@ export default {
       loading: false,
       searchQuery: '',
       columns: [
-        { key: 'id', label: 'ID', span: 1 },
+        { key: 'booking_code', label: 'Booking Code', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
-        { key: 'villa_name', label: 'Villa', span: 2 },
         { key: 'check_in_date', label: 'Check-in', span: 1, type: 'date' },
         { key: 'check_out_date', label: 'Check-out', span: 1, type: 'date' },
         { key: 'total_price', label: 'Total', span: 1, type: 'currency' },
@@ -471,6 +470,7 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.bookings.filter(booking => {
         return (
+          booking.booking_code?.toLowerCase().includes(query) ||
           booking.customer_name?.toLowerCase().includes(query) ||
           booking.customer_email?.toLowerCase().includes(query) ||
           booking.customer_phone?.toLowerCase().includes(query) ||
@@ -492,10 +492,14 @@ export default {
     async fetchBookings() {
       this.loading = true;
       try {
-        const response = await bookingService.getBookings();
+        const params = {
+          skip: 0,
+          limit: 100
+        };
+        const response = await bookingService.getBookings(params);
 
         // Process bookings to add villa_name
-        this.bookings = (response.items || []).map(booking => {
+        this.bookings = (response.bookings || []).map(booking => {
           const villa = this.villas.find(v => v.id === booking.villa_id);
           return {
             ...booking,

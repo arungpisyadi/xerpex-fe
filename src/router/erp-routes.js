@@ -168,6 +168,28 @@ const erpRoutes = [
     },
   },
   {
+    path: '/bookings/create',
+    name: 'CreateBooking',
+    component: () => import('../views/CreateBooking.vue'),
+    meta: {
+      title: 'Create Booking',
+      requiresAuth: true,
+      module: SystemModule.BOOKINGS,
+      action: PermissionAction.CREATE
+    },
+  },
+  {
+    path: '/bookings/edit/:id',
+    name: 'EditBooking',
+    component: () => import('../views/EditBooking.vue'),
+    meta: {
+      title: 'Edit Booking',
+      requiresAuth: true,
+      module: SystemModule.BOOKINGS,
+      action: PermissionAction.UPDATE
+    },
+  },
+  {
     path: '/bookings/:id',
     name: 'BookingDetail',
     component: () => import('../views/BookingDetail.vue'),

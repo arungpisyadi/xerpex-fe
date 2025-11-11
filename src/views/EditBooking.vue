@@ -590,7 +590,7 @@ const loadBookingData = async () => {
     const response = await bookingService.getBookingById(Number(bookingId.value))
     booking.value = response as any // Type assertion since API might return BookingDetail structure
 
-    console.log('Booking data loaded:', booking.value)
+    // console.log('Booking data loaded:', booking.value)
 
     // Extract villa IDs - handle both structures
     let villaIds: number[] = []
@@ -614,11 +614,11 @@ const loadBookingData = async () => {
     // Extract sales person ID - handle both field names
     const salesPersonId = (booking.value as any)?.sales_person_id || booking.value?.salesmen_id
 
-    console.log('Extracted data:', {
-      villaIds,
-      packagesCount: packagesData.length,
-      salesPersonId
-    })
+    // console.log('Extracted data:', {
+    //   villaIds,
+    //   packagesCount: packagesData.length,
+    //   salesPersonId
+    // })
 
     // Pre-populate form with booking data
     bookingForm.value = {
@@ -652,13 +652,13 @@ const loadBookingData = async () => {
       customer_notes: booking.value?.customer_notes || ''
     }
 
-    console.log('Form populated with values:', {
-      customer_id: bookingForm.value.customer_id,
-      booking_date: bookingForm.value.booking_date,
-      villa_ids: bookingForm.value.villa_ids,
-      salesmen_id: bookingForm.value.salesmen_id,
-      packagesCount: bookingForm.value.packages.length
-    })
+    // console.log('Form populated with values:', {
+    //   customer_id: bookingForm.value.customer_id,
+    //   booking_date: bookingForm.value.booking_date,
+    //   villa_ids: bookingForm.value.villa_ids,
+    //   salesmen_id: bookingForm.value.salesmen_id,
+    //   packagesCount: bookingForm.value.packages.length
+    // })
 
   } catch (err: any) {
     console.error('Error loading booking:', err)
@@ -705,12 +705,12 @@ const submitBooking = async () => {
       customer_notes: bookingForm.value.customer_notes || undefined
     }
 
-    console.log('Booking update payload before API call:', JSON.stringify(bookingData, null, 2))
+    // console.log('Booking update payload before API call:', JSON.stringify(bookingData, null, 2))
 
     // Update the booking
     await bookingService.updateBooking(Number(bookingId.value), bookingData)
 
-    console.log('Booking updated successfully')
+    // console.log('Booking updated successfully')
 
     // Redirect to booking detail
     router.push(`/bookings/${bookingId.value}`)

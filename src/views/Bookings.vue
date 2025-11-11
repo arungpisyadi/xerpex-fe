@@ -213,12 +213,13 @@ export default {
         search: ''
       },
       columns: [
-        { key: 'booking_number', label: 'Booking #', span: 1.5 },
-        { key: 'customer_name', label: 'Customer', span: 2 },
-        { key: 'earliest_check_in', label: 'Check-in', span: 1.5, type: 'date' },
-        { key: 'latest_check_out', label: 'Check-out', span: 1.5, type: 'date' },
-        { key: 'villas_count', label: 'Villas', span: 1 },
-        { key: 'total_amount', label: 'Total', span: 1.5, type: 'currency' },
+        { key: 'booking_code', label: 'Booking #', span: 1.5 },
+        { key: 'customer_name', label: 'Customer', span: 1.5 },
+        { key: 'sales_person_name', label: 'Sales Person', span: 1.5 },
+        { key: 'stay_date', label: 'Stay Date', span: 2 },
+        { key: 'total', label: 'Total', span: 1.5, type: 'currency' },
+        { key: 'amount_paid', label: 'Paid', span: 1.5, type: 'currency' },
+        { key: 'amount_due', label: 'Due', span: 1.5, type: 'currency' },
         { key: 'status', label: 'Status', span: 1.5, type: 'status' }
       ],
       showDeleteModal: false,
@@ -253,9 +254,10 @@ export default {
       if (this.filters.search) {
         const search = this.filters.search.toLowerCase();
         result = result.filter(b =>
-          b.booking_number?.toLowerCase().includes(search) ||
-          b.customer_name?.toLowerCase().includes(search) ||
-          b.customer_email?.toLowerCase().includes(search)
+          b.booking_code?.toLowerCase().includes(search) ||
+          b.customer?.name?.toLowerCase().includes(search) ||
+          b.customer?.email?.toLowerCase().includes(search) ||
+          b.sales_person?.full_name?.toLowerCase().includes(search)
         );
       }
 
@@ -263,7 +265,7 @@ export default {
       if (this.filters.from_date) {
         const fromDate = new Date(this.filters.from_date);
         result = result.filter(b => {
-          const checkInDate = new Date(b.earliest_check_in);
+          const checkInDate = new Date(b.check_in);
           return checkInDate >= fromDate;
         });
       }
@@ -271,7 +273,7 @@ export default {
       if (this.filters.to_date) {
         const toDate = new Date(this.filters.to_date);
         result = result.filter(b => {
-          const checkInDate = new Date(b.earliest_check_in);
+          const checkInDate = new Date(b.check_in);
           return checkInDate <= toDate;
         });
       }
@@ -281,10 +283,12 @@ export default {
     displayBookings() {
       return this.filteredBookings.map(booking => ({
         ...booking,
+        customer_name: booking.customer?.name || 'N/A',
+        sales_person_name: booking.sales_person?.full_name || 'N/A',
+        stay_date: this.formatDateRange(booking.check_in, booking.check_out),
         villas_count: booking.villas?.length || 0,
-        formatted_check_in: this.formatDate(booking.earliest_check_in),
-        formatted_check_out: this.formatDate(booking.latest_check_out),
-        formatted_total: this.formatCurrency(booking.total_amount)
+        packages_list: booking.items?.map(item => item.package?.name).filter(Boolean).join(', ') || 'N/A',
+        villas_list: booking.villas?.map(villa => villa.villa?.name).filter(Boolean).join(', ') || 'N/A'
       }));
     },
     hasActiveFilters() {
@@ -336,7 +340,7 @@ export default {
         return;
       }
       this.selectedBookingId = booking.id;
-      this.selectedBookingNumber = booking.booking_number || `#${booking.id}`;
+      this.selectedBookingNumber = booking.booking_code || `#${booking.id}`;
       this.showDeleteModal = true;
     },
     async deleteBooking() {
@@ -375,6 +379,20 @@ export default {
         month: 'short',
         day: 'numeric'
       });
+    },
+    formatDateRange(checkIn, checkOut) {
+      if (!checkIn || !checkOut) return 'N/A';
+      const checkInFormatted = new Date(checkIn).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      const checkOutFormatted = new Date(checkOut).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      return `${checkInFormatted} - ${checkOutFormatted}`;
     },
     formatCurrency(amount) {
       if (amount === null || amount === undefined) return '';

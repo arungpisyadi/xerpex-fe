@@ -192,7 +192,7 @@
           @click="goToPage(page)"
           :class="[
             'flex h-9 min-w-[36px] items-center justify-center rounded-md border px-2',
-            currentPage === page ? 'border-primary bg-primary text-white' : 'border-stroke'
+            currentPage === page ? 'border-primary bg-green-500 text-white' : 'border-stroke'
           ]"
         >
           {{ page }}

@@ -48,6 +48,7 @@ import BarChartIcon from "./BarChartIcon.vue";
 import SalesmanIcon from "./SalesmanIcon.vue";
 import SurveyIcon from "./SurveyIcon.vue";
 import PackageIcon from "./PackageIcon.vue";
+import DollarBillIcon from "./DollarBillIcon.vue";
 
 export {
   BellIcon,
@@ -100,4 +101,5 @@ export {
   SalesmanIcon,
   SurveyIcon,
   PackageIcon,
+  DollarBillIcon,
 };

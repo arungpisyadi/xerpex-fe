@@ -364,7 +364,7 @@ onMounted(async () => {
     currentYearPerformance.value = currentYearPerf;
 
     // Update KPI metrics from new endpoints
-    console.log(customersData);
+    // console.log(customersData);
     customerCount.value = customersData.previous_month_total || 0;
     customerGrowth.value = customersData.growth_percentage || 0;
     bookingsCount.value = bookingsData.previous_month_total || 0;

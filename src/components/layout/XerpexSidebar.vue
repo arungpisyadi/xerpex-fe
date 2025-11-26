@@ -161,7 +161,7 @@ const menuModuleMap = {
   "Bookings": SystemModule.BOOKINGS,
   "Surveys": SystemModule.SURVEYS,
   "Customers": SystemModule.CUSTOMERS,
-  "Quotes": SystemModule.QUOTES,
+  "Quotations": SystemModule.QUOTES,
   "Invoices": SystemModule.INVOICES,
   "Payments": SystemModule.PAYMENTS,
   "General": SystemModule.SETTINGS_GENERAL,
@@ -211,7 +211,7 @@ const menuGroups = computed(() => {
       name: "Revenues",
       subItems: [
         { name: "Customers", path: "/customers", module: SystemModule.CUSTOMERS },
-        { name: "Quotes", path: "/quotes", module: SystemModule.QUOTES },
+        { name: "Quotations", path: "/quotes", module: SystemModule.QUOTES },
         { name: "Invoices", path: "/invoices", module: SystemModule.INVOICES },
         { name: "Payments", path: "/payments", module: SystemModule.PAYMENTS },
       ],

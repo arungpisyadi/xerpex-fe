@@ -1,14 +1,14 @@
 <template>
   <admin-layout>
     <div class="mb-[1.5rem]">
-      <page-breadcrumb page-title="Edit Quote" />
+      <page-breadcrumb page-title="Edit Quotation" />
     </div>
 
     <!-- Loading State -->
     <div v-if="loadingQuote" class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
       <div class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <span class="ml-3 text-[#4b5563] dark:text-gray-400">Loading quote...</span>
+        <span class="ml-3 text-[#4b5563] dark:text-gray-400">Loading Quotation...</span>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
             @click="$router.push('/quotes')"
             class="px-[1rem] py-[0.5rem] bg-primary text-white rounded-[0.5rem] hover:bg-primary-dark"
           >
-            Back to Quotes
+            Back to Quotations
           </button>
         </div>
       </div>
@@ -32,7 +32,7 @@
       <div class="mb-[1.5rem] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-title-md2 font-[700] text-black dark:text-white">
-            Edit Quote #{{ quote?.quote_number }}
+            Edit Quotation #{{ quote?.quote_number }}
           </h2>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">Status:</span>
@@ -51,14 +51,14 @@
         </div>
       </div>
 
-      <!-- Non-editable Quote Warning -->
+      <!-- Non-editable Quotation Warning -->
       <div v-if="!isEditable" class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800">
         <div class="flex items-center">
           <svg class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
           </svg>
           <span class="text-[#92400e] dark:text-yellow-200 font-[500]">
-            This quote cannot be edited because its status is "{{ quote?.status }}". Only draft quotes can be modified.
+            This Quotation cannot be edited because its status is "{{ quote?.status }}". Only draft quotations can be modified.
           </span>
         </div>
       </div>
@@ -79,18 +79,18 @@
             :options="customerOptions"
             placeholder="Choose a customer"
             validation="required"
-            help="Select the customer for this quote"
+            help="Select the customer for this Quotation"
             :disabled="!isEditable"
           />
         </div>
 
-        <!-- Quote Details -->
+        <!-- Quotation Details -->
         <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
           <FormKit
             type="date"
             name="expiry_date"
             label="Expiry Date"
-            help="When this quote expires"
+            help="When this Quotation expires"
             :disabled="!isEditable"
           />
           <div class="flex items-end">
@@ -106,15 +106,15 @@
             type="textarea"
             name="notes"
             label="Notes"
-            placeholder="Add any additional notes for this quote"
-            help="Optional notes that will appear on the quote"
+            placeholder="Add any additional notes for this Quotation"
+            help="Optional notes that will appear on the Quotation"
             :disabled="!isEditable"
           />
         </div>
 
         <!-- Items Section -->
         <div class="mb-[1.5rem]">
-          <h3 class="text-lg font-[600] text-black dark:text-white mb-[1rem]">Quote Items</h3>
+          <h3 class="text-lg font-[600] text-black dark:text-white mb-[1rem]">Quotation Items</h3>
 
           <FormKit
             type="repeater"
@@ -124,7 +124,7 @@
             remove-label="Remove Item"
             up-label="Move Up"
             down-label="Move Down"
-            help="Add items to this quote. At least one item is required."
+            help="Add items to this Quotation. At least one item is required."
             :disabled="!isEditable"
           >
             <div class="grid grid-cols-1 gap-[1rem] sm:grid-cols-12 items-center">
@@ -208,19 +208,19 @@
 
         <!-- Calculations Summary -->
         <div class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]">
-          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Quote Summary</h4>
+          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Quotation Summary</h4>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
-              <span class="font-[500] text-black dark:text-white">${{ formatPrice(calculations.subtotal) }}</span>
+              <span class="font-[500] text-black dark:text-white">IDR {{ formatPrice(calculations.subtotal) }}</span>
             </div>
 
             <hr class="border-[#d1d5db] dark:border-gray-600">
 
             <div class="flex justify-between text-lg font-[700]">
               <span class="text-black dark:text-white">Total:</span>
-              <span class="text-black dark:text-white">${{ formatPrice(calculations.total) }}</span>
+              <span class="text-black dark:text-white">IDR {{ formatPrice(calculations.total) }}</span>
             </div>
           </div>
         </div>
@@ -248,7 +248,7 @@
             type="submit"
             :disabled="loading || !isFormValid"
           >
-            {{ loading ? 'Updating...' : 'Update Quote' }}
+            {{ loading ? 'Updating...' : 'Update Quotation' }}
           </FormKit>
         </div>
 
@@ -258,7 +258,7 @@
             type="button"
             @click="$router.push('/quotes')"
           >
-            Back to Quotes
+            Back to Quotations
           </FormKit> -->
         </div>
       </FormKit>

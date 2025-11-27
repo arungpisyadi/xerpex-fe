@@ -58,7 +58,7 @@
               </div>
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Amount:</span>
-                <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(payment.amount) }}</span>
+                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(payment.amount) }}</span>
               </div>
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Payment Method:</span>
@@ -188,27 +188,27 @@
             <div class="mb-6">
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Base Rate ({{ getDuration(booking.check_in, booking.check_out) }} nights):</span>
-                <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(booking.base_amount) }}</span>
+                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(booking.base_amount) }}</span>
               </div>
               <div class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Cleaning Fee:</span>
-                <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(booking.cleaning_fee) }}</span>
+                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(booking.cleaning_fee) }}</span>
               </div>
               <div v-if="booking.additional_fees > 0" class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Additional Fees:</span>
-                <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(booking.additional_fees) }}</span>
+                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(booking.additional_fees) }}</span>
               </div>
               <div v-if="booking.discount > 0" class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Discount:</span>
-                <span class="text-sm font-medium text-green-600 dark:text-green-400">-${{ formatPrice(booking.discount) }}</span>
+                <span class="text-sm font-medium text-green-600 dark:text-green-400">-IDR {{ formatPrice(booking.discount) }}</span>
               </div>
               <div v-if="booking.tax > 0" class="mb-3 flex justify-between">
                 <span class="text-sm text-gray-500 dark:text-gray-400">Tax:</span>
-                <span class="text-sm font-medium text-black dark:text-white">${{ formatPrice(booking.tax) }}</span>
+                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(booking.tax) }}</span>
               </div>
               <div class="pt-3 border-t border-stroke dark:border-strokedark flex justify-between">
                 <span class="text-base font-semibold text-black dark:text-white">Total Amount:</span>
-                <span class="text-base font-semibold text-black dark:text-white">${{ formatPrice(payment.amount) }}</span>
+                <span class="text-base font-semibold text-black dark:text-white">IDR {{ formatPrice(payment.amount) }}</span>
               </div>
             </div>
           </div>
@@ -287,7 +287,7 @@
                   </span>
                 </td>
                 <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">${{ formatPrice(history.amount) }}</p>
+                  <p class="text-black dark:text-white">IDR {{ formatPrice(history.amount) }}</p>
                 </td>
                 <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p class="text-black dark:text-white">{{ history.user }}</p>

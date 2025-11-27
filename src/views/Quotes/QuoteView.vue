@@ -12,7 +12,7 @@
           <p>Phone: (123) 456-7890 | Email: info@company.com</p>
         </div>
         <div class="quote-title">
-          <h2>QUOTE</h2>
+          <h2>QUOTATION</h2>
           <p class="quote-number">#{{ quote.quote_number }}</p>
         </div>
       </div>
@@ -20,7 +20,7 @@
       <!-- Quote Details -->
       <div class="quote-details">
         <div class="detail-row">
-          <div><strong>Quote Number:</strong> {{ quote.quote_number }}</div>
+          <div><strong>Quotation Number:</strong> {{ quote.quote_number }}</div>
           <div><strong>Issue Date:</strong> {{ quote.issue_date }}</div>
         </div>
         <div class="detail-row">
@@ -64,7 +64,7 @@
 
       <!-- Footer -->
       <div class="footer">
-        <p>Thank you for your business! This quote is valid until {{ quote.expiry_date || 'expiry date' }}.</p>
+        <p>Thank you for your business! This quotation is valid until {{ quote.expiry_date || 'expiry date' }}.</p>
         <p>Terms and Conditions: Payment due within 30 days. All prices are in USD.</p>
       </div>
     </div>
@@ -90,7 +90,7 @@ const exportToPdf = () => {
   const element = quoteRef.value
   const opt = {
     margin: 1,
-    filename: `quote-${quote.value.quote_number}.pdf`,
+    filename: `quotation-${quote.value.quote_number}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2 },
     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }

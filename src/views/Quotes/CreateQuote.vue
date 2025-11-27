@@ -1,13 +1,13 @@
 <template>
   <admin-layout>
     <div class="mb-[1.5rem]">
-      <page-breadcrumb page-title="Create Quote" />
+      <page-breadcrumb page-title="Create Quotation" />
     </div>
 
     <div class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
       <div class="mb-[1.5rem] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 class="text-title-md2 font-[700] text-black dark:text-white">
-          Create New Quote
+          Create New Quotation
         </h2>
         <div class="flex gap-[1rem]">
           <button
@@ -36,7 +36,7 @@
               :options="customerOptions"
               placeholder="Choose a customer"
               validation="required"
-              help="Select the customer for this quote"
+              help="Select the customer for this Quotation"
             />
           </div>
           <div>
@@ -47,18 +47,18 @@
               :options="salesUserOptions"
               placeholder="Choose sales person"
               validation="required"
-              help="Select the sales person responsible for this quote"
+              help="Select the sales person responsible for this Quotation"
             />
           </div>
         </div>
 
-        <!-- Quote Details -->
+        <!-- Quotation Details -->
         <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
           <FormKit
             type="date"
             name="expiry_date"
             label="Expiry Date"
-            help="When this quote expires"
+            help="When this Quotation expires"
           />
           <div class="flex items-end">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">
@@ -73,14 +73,14 @@
             type="textarea"
             name="notes"
             label="Notes"
-            placeholder="Add any additional notes for this quote"
-            help="Optional notes that will appear on the quote"
+            placeholder="Add any additional notes for this Quotation"
+            help="Optional notes that will appear on the Quotation"
           />
         </div>
 
         <!-- Items Section -->
         <div class="mb-[1.5rem]">
-          <h3 class="text-lg font-[600] text-black dark:text-white mb-[1rem]">Quote Items</h3>
+          <h3 class="text-lg font-[600] text-black dark:text-white mb-[1rem]">Quotation Items</h3>
 
           <FormKit
             type="repeater"
@@ -90,7 +90,7 @@
             remove-label="Remove Item"
             up-label="Move Up"
             down-label="Move Down"
-            help="Add items to this quote. At least one item is required."
+            help="Add items to this Quotation. At least one item is required."
           >
             <div class="grid grid-cols-1 gap-[1rem] sm:grid-cols-12 items-center">
               <!-- Package Selection -->
@@ -169,19 +169,19 @@
 
         <!-- Calculations Summary -->
         <div class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]">
-          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Quote Summary</h4>
+          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Quotation Summary</h4>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
-              <span class="font-[500] text-black dark:text-white">${{ formatPrice(calculations.subtotal) }}</span>
+              <span class="font-[500] text-black dark:text-white">IDR {{ formatPrice(calculations.subtotal) }}</span>
             </div>
 
             <hr class="border-[#d1d5db] dark:border-gray-600">
 
             <div class="flex justify-between text-lg font-[700]">
               <span class="text-black dark:text-white">Total:</span>
-              <span class="text-black dark:text-white">${{ formatPrice(calculations.total) }}</span>
+              <span class="text-black dark:text-white">IDR {{ formatPrice(calculations.total) }}</span>
             </div>
           </div>
         </div>
@@ -209,7 +209,7 @@
             type="submit"
             :disabled="loading || !isFormValid"
           >
-            {{ loading ? 'Creating...' : 'Create Quote' }}
+            {{ loading ? 'Creating...' : 'Create Quotation' }}
           </FormKit>
         </div>
       </FormKit>

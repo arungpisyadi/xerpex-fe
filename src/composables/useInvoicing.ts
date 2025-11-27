@@ -89,7 +89,7 @@ export function useInvoicing() {
     }
   };
 
-  // Quote management
+  // Quotation management
   const fetchQuotes = async (filters = {}) => {
     loading.value = true;
     error.value = null;

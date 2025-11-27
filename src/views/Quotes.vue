@@ -1,19 +1,19 @@
 <template>
   <admin-layout>
     <div class="mb-6">
-      <page-breadcrumb page-title="Quotes" />
+      <page-breadcrumb page-title="Quotations" />
     </div>
 
     <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 class="text-title-md2 font-bold text-black dark:text-white">
-          Quotes Management
+          Quotations Management
         </h2>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div class="relative">
             <input
               type="text"
-              placeholder="Search quotes..."
+              placeholder="Search Quotations..."
               v-model="searchQuery"
               class="w-full rounded-md border border-stroke bg-transparent py-2 pl-10 pr-4 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             />
@@ -46,7 +46,7 @@
                 <path d="M15 7H9V1C9 0.4 8.6 0 8 0C7.4 0 7 0.4 7 1V7H1C0.4 7 0 7.4 0 8C0 8.6 0.4 9 1 9H7V15C7 15.6 7.4 16 8 16C8.6 16 9 15.6 9 15V9H15C15.6 9 16 8.6 16 8C16 7.4 15.6 7 15 7Z" fill="white"/>
               </svg>
             </span>
-            Create Quote
+            Create Quotation
           </button>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default {
       itemsPerPage: 10,
       totalItems: 0,
       columns: [
-        { key: 'quote_number', label: 'Quote #', span: 1 },
+        { key: 'quote_number', label: 'Quotation #', span: 1 },
         { key: 'customer_name', label: 'Customer', span: 2 },
         { key: 'total', label: 'Amount', span: 1, type: 'currency' },
         { key: 'status', label: 'Status', span: 1, type: 'status' },
@@ -217,8 +217,8 @@ export default {
       console.log('canCreate permission:', this.canCreate);
 
       if (!this.canCreate) {
-        console.error('You do not have permission to create quotes');
-        this.showPermissionDeniedAlert('create quotes');
+        console.error('You do not have permission to create quotations');
+        this.showPermissionDeniedAlert('create quotations');
         return;
       }
 
@@ -274,8 +274,8 @@ export default {
       console.log('authService.isAuthenticated():', this.authService.isAuthenticated());
 
       if (!this.canUpdate) {
-        console.error('You do not have permission to edit quotes');
-        this.showPermissionDeniedAlert('edit quotes');
+        console.error('You do not have permission to edit quotations');
+        this.showPermissionDeniedAlert('edit quotations');
         return;
       }
 
@@ -289,7 +289,7 @@ export default {
 
       if (!this.canUpdate) {
         console.log('Edit permission denied, showing alert');
-        this.showPermissionDeniedAlert('edit quotes');
+        this.showPermissionDeniedAlert('edit quotations');
         return;
       }
 
@@ -334,8 +334,8 @@ export default {
       console.log('canDelete permission:', this.canDelete);
 
       if (!this.canDelete) {
-        console.error('You do not have permission to delete quotes');
-        this.showPermissionDeniedAlert('delete quotes');
+        console.error('You do not have permission to delete quotations');
+        this.showPermissionDeniedAlert('delete quotations');
         return;
       }
 

@@ -134,7 +134,7 @@ const products = ref([
     variants: 2,
     image: '/images/product/product-01.jpg',
     category: 'Laptop',
-    price: '$2399.00',
+    price: 'IDR 2399.00',
     status: 'Delivered',
   },
   {
@@ -142,7 +142,7 @@ const products = ref([
     variants: 1,
     image: '/images/product/product-02.jpg',
     category: 'Watch',
-    price: '$879.00',
+    price: 'IDR 879.00',
     status: 'Pending',
   },
   {
@@ -150,7 +150,7 @@ const products = ref([
     variants: 2,
     image: '/images/product/product-03.jpg',
     category: 'SmartPhone',
-    price: '$1869.00',
+    price: 'IDR 1869.00',
     status: 'Delivered',
   },
   {
@@ -158,7 +158,7 @@ const products = ref([
     variants: 2,
     image: '/images/product/product-04.jpg',
     category: 'Electronics',
-    price: '$1699.00',
+    price: 'IDR 1699.00',
     status: 'Canceled',
   },
   {
@@ -166,7 +166,7 @@ const products = ref([
     variants: 1,
     image: '/images/product/product-05.jpg',
     category: 'Accessories',
-    price: '$240.00',
+    price: 'IDR 240.00',
     status: 'Delivered',
   },
 ])

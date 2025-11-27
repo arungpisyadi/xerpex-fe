@@ -107,7 +107,7 @@ const chartOptions = computed(() => ({
     },
     y: {
       formatter: function (val) {
-        return '$' + val.toString()
+        return 'IDR ' + val.toString()
       },
     },
   },

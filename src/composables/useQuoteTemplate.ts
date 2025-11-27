@@ -3,27 +3,27 @@ import type { Quote } from '../types/quote.types';
 import { useGlobalCompanySettings } from './useCompanySettings';
 
 /**
- * Centralized Quote Template Service
- * Provides consistent HTML generation for quotes across all components
+ * Centralized Quotation Template Service
+ * Provides consistent HTML generation for Quotations across all components
  */
 export function useQuoteTemplate() {
   const { getInvoiceDisplaySettings, getInvoiceDisplaySettingsSync } = useGlobalCompanySettings();
 
   /**
-   * Generate consistent quote HTML for preview display
-   * @param quoteData - Quote data object
+   * Generate consistent Quotation HTML for preview display
+   * @param quoteData - Quotation data object
    * @param companyData - Optional company data (if already loaded)
-   * @returns HTML string for quote display
+   * @returns HTML string for Quotation display
    */
   const generatePreviewHTML = (quoteData: Quote, companyData?: any): string => {
-    console.log('[useQuoteTemplate] Generating preview HTML for quote:', quoteData?.quote_number);
+    console.log('[useQuoteTemplate] Generating preview HTML for Quotation:', quoteData?.quote_number);
 
     if (!quoteData) {
-      console.error('[useQuoteTemplate] Quote data is null or undefined:', quoteData);
+      console.error('[useQuoteTemplate] Quotation data is null or undefined:', quoteData);
       return `
         <div style="padding: 20px; text-align: center; background: #f8f9fa; border-radius: 8px;">
-          <h3 style="color: #dc3545;">Quote data is incomplete</h3>
-          <p>Please check if the quote data was loaded correctly.</p>
+          <h3 style="color: #dc3545;">Quotation data is incomplete</h3>
+          <p>Please check if the Quotation data was loaded correctly.</p>
         </div>
       `;
     }
@@ -41,7 +41,7 @@ export function useQuoteTemplate() {
       `Valid until ${quoteData.expiry_date}` :
       'No expiry date set';
 
-    console.log('[useQuoteTemplate] Processing quote data:', {
+    console.log('[useQuoteTemplate] Processing Quotation data:', {
       quote_number: quoteData.quote_number,
       items_count: items.length,
       total,
@@ -55,7 +55,7 @@ export function useQuoteTemplate() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote ${quoteData.quote_number}</title>
+    <title>Quotation ${quoteData.quote_number}</title>
     <style>
         * {
             margin: 0;
@@ -322,7 +322,7 @@ export function useQuoteTemplate() {
                 <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
             </div>
             <div class="quote-title">
-                <h2>QUOTE</h2>
+                <h2>Quotation</h2>
             </div>
         </div>
 
@@ -390,7 +390,7 @@ export function useQuoteTemplate() {
 
         <div class="conversion-note">
             <h4>📋 Next Steps:</h4>
-            <p>This quote can be converted to an invoice once accepted. All pricing and terms will be transferred automatically.</p>
+            <p>This Quotation can be converted to an invoice once accepted. All pricing and terms will be transferred automatically.</p>
         </div>
 
         <div class="footer">
@@ -403,7 +403,7 @@ export function useQuoteTemplate() {
   };
 
   /**
-   * Generate print-optimized quote HTML
+   * Generate print-optimized Quotation HTML
    * @param quoteData - Quote data object
    * @param companyData - Optional company data (if already loaded)
    * @returns HTML string optimized for printing
@@ -435,7 +435,7 @@ export function useQuoteTemplate() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote ${quoteData.quote_number} - Print</title>
+    <title>Quotation ${quoteData.quote_number} - Print</title>
     <style>
         * {
             margin: 0;
@@ -710,7 +710,7 @@ export function useQuoteTemplate() {
                 <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
             </div>
             <div class="quote-title">
-                <h2>QUOTE</h2>
+                <h2>Quotation</h2>
             </div>
         </div>
 
@@ -738,7 +738,7 @@ export function useQuoteTemplate() {
         </div>
 
         <div class="customer-details">
-            <h3>Quote For:</h3>
+            <h3>Quotation For:</h3>
             <p>${quoteData.customer_name || 'N/A'}</p>
         </div>
 
@@ -778,7 +778,7 @@ export function useQuoteTemplate() {
 
         <div class="conversion-note">
             <h4>Next Steps:</h4>
-            <p>This quote can be converted to an invoice once accepted. All pricing and terms will be transferred automatically.</p>
+            <p>This Quotation can be converted to an invoice once accepted. All pricing and terms will be transferred automatically.</p>
         </div>
 
         <div class="footer">
@@ -791,7 +791,7 @@ export function useQuoteTemplate() {
   };
 
   /**
-   * Validate quote data before template generation
+   * Validate Quotation data before template generation
    * @param quoteData - Quote data to validate
    * @returns boolean indicating if data is valid
    */

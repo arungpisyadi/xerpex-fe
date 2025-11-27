@@ -87,7 +87,7 @@
             <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
               <DocsIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
-            <span class="text-sm text-gray-500 dark:text-gray-400">Quotes</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Quotations</span>
           </div>
           <div class="flex items-end justify-between">
             <div>

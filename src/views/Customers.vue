@@ -158,7 +158,7 @@
             class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-blue-500 hover:bg-blue-600"
             @click="createQuoteForCustomer(selectedCustomer)"
           >
-            Create Quote
+            Create Quotation
           </button>
           <button
             v-if="!getCustomerStatus(selectedCustomer.status)"

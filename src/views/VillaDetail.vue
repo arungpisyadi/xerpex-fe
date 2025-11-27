@@ -112,19 +112,19 @@
           <div class="mb-4">
             <div class="flex justify-between mb-2">
               <span class="text-sm text-gray-600 dark:text-gray-400">Base Price:</span>
-              <span class="text-sm font-medium text-black dark:text-white">${{ villa.base_price }} / night</span>
+              <span class="text-sm font-medium text-black dark:text-white">IDR {{ villa.base_price }} / night</span>
             </div>
             <div class="flex justify-between mb-2">
               <span class="text-sm text-gray-600 dark:text-gray-400">Weekend Price:</span>
-              <span class="text-sm font-medium text-black dark:text-white">${{ villa.weekend_price || (villa.base_price * 1.2).toFixed(2) }} / night</span>
+              <span class="text-sm font-medium text-black dark:text-white">IDR {{ villa.weekend_price || (villa.base_price * 1.2).toFixed(2) }} / night</span>
             </div>
             <div class="flex justify-between mb-2">
               <span class="text-sm text-gray-600 dark:text-gray-400">Holiday Price:</span>
-              <span class="text-sm font-medium text-black dark:text-white">${{ villa.holiday_price || (villa.base_price * 1.5).toFixed(2) }} / night</span>
+              <span class="text-sm font-medium text-black dark:text-white">IDR {{ villa.holiday_price || (villa.base_price * 1.5).toFixed(2) }} / night</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm text-gray-600 dark:text-gray-400">Cleaning Fee:</span>
-              <span class="text-sm font-medium text-black dark:text-white">${{ villa.cleaning_fee || '50.00' }}</span>
+              <span class="text-sm font-medium text-black dark:text-white">IDR {{ villa.cleaning_fee || '50.00' }}</span>
             </div>
           </div>
           <div class="pt-4 border-t border-stroke dark:border-strokedark">

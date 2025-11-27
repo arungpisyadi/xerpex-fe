@@ -171,7 +171,7 @@
           />
         </div>
 
-        <!-- Package Repeater (Like Quotes/Invoice Module) -->
+        <!-- Package Repeater (Like Quotations/Invoice Module) -->
         <div class="mb-[1.5rem]">
           <h3 class="text-lg font-[600] text-black dark:text-white mb-[1rem]">Packages</h3>
 

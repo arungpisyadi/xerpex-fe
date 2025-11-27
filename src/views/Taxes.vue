@@ -82,15 +82,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             <span class="text-gray-500 dark:text-gray-400">Subtotal:</span>
-            <span class="ml-2 font-medium text-black dark:text-white">${{ calculator.result.subtotal.toFixed(2) }}</span>
+            <span class="ml-2 font-medium text-black dark:text-white">IDR {{ calculator.result.subtotal.toFixed(2) }}</span>
           </div>
           <div>
             <span class="text-gray-500 dark:text-gray-400">Tax Total:</span>
-            <span class="ml-2 font-medium text-black dark:text-white">${{ calculator.result.tax_total.toFixed(2) }}</span>
+            <span class="ml-2 font-medium text-black dark:text-white">IDR {{ calculator.result.tax_total.toFixed(2) }}</span>
           </div>
           <div>
             <span class="text-gray-500 dark:text-gray-400">Total:</span>
-            <span class="ml-2 font-medium text-black dark:text-white">${{ calculator.result.total.toFixed(2) }}</span>
+            <span class="ml-2 font-medium text-black dark:text-white">IDR {{ calculator.result.total.toFixed(2) }}</span>
           </div>
         </div>
         <div v-if="calculator.result.tax_breakdown.length > 0" class="mt-3">
@@ -98,7 +98,7 @@
           <div class="space-y-1">
             <div v-for="breakdown in calculator.result.tax_breakdown" :key="breakdown.name" class="flex justify-between text-sm">
               <span class="text-gray-500 dark:text-gray-400">{{ breakdown.name }} ({{ breakdown.percentage }}%):</span>
-              <span class="font-medium text-black dark:text-white">${{ breakdown.amount.toFixed(2) }}</span>
+              <span class="font-medium text-black dark:text-white">IDR {{ breakdown.amount.toFixed(2) }}</span>
             </div>
           </div>
         </div>

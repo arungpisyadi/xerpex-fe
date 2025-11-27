@@ -114,7 +114,7 @@
             </div>
             <div>
               <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Amount</p>
-              <p class="text-base font-medium text-black dark:text-white">${{ formatPrice(selectedPayment.amount) }}</p>
+              <p class="text-base font-medium text-black dark:text-white">IDR {{ formatPrice(selectedPayment.amount) }}</p>
             </div>
             <div>
               <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Payment Method</p>

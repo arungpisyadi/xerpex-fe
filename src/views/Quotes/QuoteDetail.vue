@@ -1,9 +1,9 @@
 <template>
   <admin-layout>
     <div class="mb-6">
-      <page-breadcrumb page-title="Quote Detail" :breadcrumbs="[
-          { text: 'Quotes', href: '/quotes' },
-          { text: `Quote ${quote?.quote_number || quoteId}` }
+      <page-breadcrumb page-title="Quotation Detail" :breadcrumbs="[
+          { text: 'Quotations', href: '/quotes' },
+          { text: `Quotation ${quote?.quote_number || quoteId}` }
         ]" />
     </div>
 
@@ -31,7 +31,7 @@
                   stroke-linejoin="round" />
               </svg>
             </span>
-            <span class="text-lg font-medium">Quote #{{ quote.quote_number }} -
+            <span class="text-lg font-medium">Quotation #{{ quote.quote_number }} -
               {{ capitalizeFirstLetter(quote.status) }}</span>
           </div>
           <div class="flex gap-2">
@@ -52,7 +52,7 @@
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
-              Accept Quote
+              Accept Quotation
             </button>
             <button v-if="quote.status === 'sent'"
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
@@ -61,7 +61,7 @@
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
-              Decline Quote
+              Decline Quotation
             </button>
             <button v-if="quote.status === 'accepted'"
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-purple-600 hover:bg-purple-700 shadow-theme-xs transition-colors duration-200"
@@ -84,7 +84,7 @@
                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                 </path>
               </svg>
-              📄 Preview Quote
+              📄 Preview Quotation
             </button>
             <button
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg shadow-theme-xs transition-colors duration-200"
@@ -98,8 +98,8 @@
               </svg>
               <div v-else class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               <span v-if="sendingQuote">Sending...</span>
-              <span v-else-if="quote?.status === 'sent'">Quote Sent</span>
-              <span v-else>Send Quote</span>
+              <span v-else-if="quote?.status === 'sent'">Quotation Sent</span>
+              <span v-else>Send Quotation</span>
             </button>
           </div>
         </div>
@@ -112,11 +112,11 @@
           <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
             <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
-              Quote Summary
+              Quotation Summary
             </h4>
             <div class="mb-4">
               <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Quote Number:</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">Quotation Number:</span>
                 <span class="text-sm font-medium text-black dark:text-white">{{ quote.quote_number }}</span>
               </div>
               <div class="mb-3 flex justify-between">
@@ -169,7 +169,7 @@
           <!-- Quote Notes -->
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h4 class="mb-4 text-xl font-semibold text-black dark:text-white">
-              Quote Notes
+              Quotation Notes
             </h4>
 
             <div v-if="quote.notes" class="mb-6">
@@ -183,7 +183,7 @@
               <h5 class="mb-2 text-base font-medium text-black dark:text-white">Add Notes:</h5>
               <textarea v-model="quoteNotes"
                 class="w-full rounded border-stroke bg-gray-100 py-3 px-4 text-sm text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
-                rows="4" placeholder="Add notes about this quote..."></textarea>
+                rows="4" placeholder="Add notes about this quotation..."></textarea>
               <div class="flex justify-end mt-2">
                 <button
                   class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
@@ -206,11 +206,11 @@
           <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
-              Quote Items
+              Quotation Items
             </h4>
 
             <div v-if="!quote.items || quote.items.length === 0" class="text-center py-8">
-              <p class="text-gray-500 dark:text-gray-400">No quote items available.</p>
+              <p class="text-gray-500 dark:text-gray-400">No quotation items available.</p>
             </div>
 
             <div v-else>
@@ -282,11 +282,11 @@
       <div
         class="mt-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
-          Quote History
+          Quotation History
         </h4>
 
         <div v-if="quoteHistory.length === 0" class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400">No quote history available.</p>
+          <p class="text-gray-500 dark:text-gray-400">No quotation history available.</p>
         </div>
 
         <div v-else class="overflow-x-auto">
@@ -435,7 +435,7 @@ export default {
         };
 
         // Show error notification to user
-        alert(`Failed to load quote data: ${error.message}`);
+        alert(`Failed to load quotation data: ${error.message}`);
       } finally {
         this.loading = false;
       }
@@ -509,13 +509,13 @@ export default {
     async updateQuoteStatus(status) {
       try {
         // Show confirmation dialog
-        if (!confirm(`Are you sure you want to mark this quote as ${status}?`)) {
+        if (!confirm(`Are you sure you want to mark this quotation as ${status}?`)) {
           return;
         }
 
         // Check if quote ID is available
         if (!this.quote || !this.quote.id) {
-          alert('Quote data not available');
+          alert('Quotation data not available');
           return;
         }
 
@@ -546,7 +546,7 @@ export default {
         await this.fetchQuoteData();
 
         // Show success notification
-        alert(`Quote status updated to ${status}`);
+        alert(`Quotation status updated to ${status}`);
       } catch (error) {
         console.error('Error updating quote status:', error);
         alert(`Failed to update quote status: ${error.message}`);
@@ -569,7 +569,7 @@ export default {
         // Check if quote ID is available
         if (!this.quote || !this.quote.id) {
           console.error('2. VALIDATION FAILED: Quote data not available');
-          alert('Quote data not available');
+          alert('Quotation data not available');
           return;
         }
 
@@ -637,7 +637,7 @@ export default {
     previewQuote() {
       // Navigate to quote preview page
       if (!this.quote || !this.quote.id) {
-        alert('Quote data not available');
+        alert('Quotation data not available');
         return;
       }
 
@@ -647,21 +647,21 @@ export default {
       try {
         // Validation: Check if customer email is available
         if (!this.quote?.customer.email && !this.quote?.customer.name) {
-          alert('Customer email is required to send quote. Please add customer information first.');
+          alert('Customer email is required to send quotation. Please add customer information first.');
           return;
         }
 
         // Show confirmation dialog
         const customerInfo = this.quote.customer.email || this.quote.customer.name || 'the customer';
         const confirmed = confirm(
-          `Are you sure you want to send Quote ${this.quote.quote_number} to ${customerInfo}?`
+          `Are you sure you want to send Quotation ${this.quote.quote_number} to ${customerInfo}?`
         );
 
         if (!confirmed) return;
 
         // Check if quote ID is available
         if (!this.quote || !this.quote.id) {
-          alert('Quote data not available');
+          alert('Quotation data not available');
           return;
         }
 
@@ -674,7 +674,7 @@ export default {
         // Handle response
         if (response && response.success) {
           // Show success message
-          alert('Quote sent successfully!');
+          alert('Quotation sent successfully!');
 
           // Update quote status to 'sent'
           if (this.quote) {
@@ -694,7 +694,7 @@ export default {
         console.error('Error sending quote:', error);
 
         // Extract error message from various possible response structures
-        let errorMessage = 'Failed to send quote. Please try again.';
+        let errorMessage = 'Failed to send quotation. Please try again.';
 
         if (error.response && error.response.data && error.response.data.detail) {
           errorMessage = error.response.data.detail;
@@ -714,13 +714,13 @@ export default {
     async convertToInvoice() {
       try {
         // Show confirmation dialog
-        if (!confirm('Are you sure you want to convert this quote to an invoice?')) {
+        if (!confirm('Are you sure you want to convert this quotation to an invoice?')) {
           return;
         }
 
         // Check if quote ID is available
         if (!this.quote || !this.quote.id) {
-          alert('Quote data not available');
+          alert('Quotation data not available');
           return;
         }
 
@@ -742,7 +742,7 @@ export default {
         const response = await quoteService.convertToInvoice(this.quote.id, conversionData);
 
         // Show success and redirect to invoice
-        alert('Quote converted to invoice successfully');
+        alert('Quotation converted to invoice successfully');
 
         // Redirect to invoice detail if we have the invoice ID
         if (response && response.id) {
@@ -753,7 +753,7 @@ export default {
       } catch (error) {
         console.error('Error converting quote to invoice:', error);
 
-        let errorMessage = 'Failed to convert quote to invoice';
+        let errorMessage = 'Failed to convert quotation to invoice';
         if (error.message) {
           errorMessage = error.message;
         }

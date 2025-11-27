@@ -5,16 +5,16 @@
       <div class="preview-header">
         <div class="header-left">
           <button @click="goBack" class="back-button">
-            ← Back to Quote
+            ← Back to Quotation
           </button>
-          <h2 class="preview-title">Quote Preview</h2>
+          <h2 class="preview-title">Quotation Preview</h2>
         </div>
         <div class="header-right">
           <button
             @click="printQuote"
             :disabled="loading || !iframeLoaded"
             class="print-button"
-            title="Print Quote"
+            title="Print Quotation"
           >
             🖨️ Print
           </button>
@@ -39,15 +39,15 @@
       <div v-if="loading || loadingDetails.quote || loadingDetails.settings" class="loading-container">
         <div class="spinner"></div>
         <div class="loading-details">
-          <p v-if="loadingDetails.quote">Loading quote data...</p>
+          <p v-if="loadingDetails.quote">Loading quotation data...</p>
           <p v-else-if="loadingDetails.settings">Loading company settings...</p>
           <p v-else-if="loadingDetails.template">Generating preview...</p>
-          <p v-else>Loading quote preview...</p>
+          <p v-else>Loading quotation preview...</p>
 
           <div class="loading-progress">
             <div class="step" :class="{ completed: loadingDetails.quoteCompleted }">
               <span class="step-icon">{{ loadingDetails.quoteCompleted ? '✓' : '○' }}</span>
-              Quote Data
+              Quotation Data
             </div>
             <div class="step" :class="{ completed: loadingDetails.settingsCompleted }">
               <span class="step-icon">{{ loadingDetails.settingsCompleted ? '✓' : '○' }}</span>
@@ -91,7 +91,7 @@
           class="pdf-preview-iframe"
           ref="previewFrame"
           @load="onIframeLoad"
-          title="Quote Preview">
+          title="Quotation Preview">
         </iframe>
       </div>
     </div>
@@ -164,7 +164,7 @@ const onIframeLoad = () => {
 // Print functionality
 const printQuote = () => {
   if (!currentQuote.value || !iframeLoaded.value) {
-    pdfStatus.value = 'Error: Quote not loaded yet'
+    pdfStatus.value = 'Error: Quotation not loaded yet'
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
@@ -223,7 +223,7 @@ const printQuote = () => {
 
 const downloadPDF = async () => {
   if (!currentQuote.value) {
-    pdfStatus.value = 'Error: Quote data not available'
+    pdfStatus.value = 'Error: Quotation data not available'
     return
   }
 
@@ -241,7 +241,7 @@ const downloadPDF = async () => {
     const url = window.URL.createObjectURL(pdfBlob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `Quote_${currentQuote.value.quote_number}.pdf`
+    link.download = `Quotation_${currentQuote.value.quote_number}.pdf`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)

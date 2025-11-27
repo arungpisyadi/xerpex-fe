@@ -16,7 +16,7 @@
 
 ### What is Xerpex ERP
 
-Xerpex ERP is a comprehensive Enterprise Resource Planning system specifically designed for service-based businesses, with particular strength in hospitality and tourism sectors. Built on modern Vue.js technology, Xerpex provides a complete quote-to-payment workflow solution that streamlines business operations from initial customer contact to final payment collection.
+Xerpex ERP is a comprehensive Enterprise Resource Planning system specifically designed for service-based businesses, with particular strength in hospitality and tourism sectors. Built on modern Vue.js technology, Xerpex provides a complete Quotation-to-payment workflow solution that streamlines business operations from initial customer contact to final payment collection.
 
 ### Target Audience
 
@@ -29,10 +29,10 @@ Xerpex ERP is designed for:
 
 ### Key Benefits and Capabilities
 
-- **Complete Business Workflow**: From quote creation to payment collection
+- **Complete Business Workflow**: From Quotation creation to payment collection
 - **Multi-User Environment**: Role-based access with user isolation and cross-user capabilities
 - **Real-Time Updates**: Live status tracking and notifications
-- **Professional Documentation**: Automated PDF generation for quotes and invoices
+- **Professional Documentation**: Automated PDF generation for Quotations and invoices
 - **Financial Integration**: Comprehensive payment tracking and reconciliation
 - **Scalable Architecture**: Modern web-based system accessible from anywhere
 - **Industry-Specific Features**: Villa management, booking systems, and package management
@@ -76,7 +76,7 @@ Xerpex ERP operates with three distinct user roles:
 
 #### Regular Users
 - **Data Isolation**: Can only access data they created (user_id isolation)
-- **Core Functions**: Create and manage their own customers, quotes, invoices
+- **Core Functions**: Create and manage their own customers, Quotations, invoices
 - **Limitations**: Cannot view other users' data or access financial reports
 
 #### Finance Users
@@ -95,7 +95,7 @@ Xerpex ERP operates with three distinct user roles:
 
 Upon login, users are presented with a personalized dashboard featuring:
 
-- **Quick Stats**: Summary of active quotes, pending invoices, recent payments
+- **Quick Stats**: Summary of active Quotations, pending invoices, recent payments
 - **Recent Activity**: Latest actions and updates across your data
 - **Pending Actions**: Items requiring your attention (approvals, follow-ups)
 - **Navigation Menu**: Access to all system modules
@@ -114,7 +114,7 @@ The Customer Management module serves as the foundation for all business relatio
 - Complete customer profile management
 - Contact information and communication history
 - Customer status tracking (Active/Inactive)
-- Integration with quotes, invoices, and payments
+- Integration with Quotations, invoices, and payments
 - Search and filtering capabilities
 
 #### Step-by-Step Workflows
@@ -139,38 +139,38 @@ The Customer Management module serves as the foundation for all business relatio
 5. Use **"Deactivate"** to disable customer (preserves data)
 
 **Customer Profile Features:**
-- **Contact History**: View all quotes, invoices, and payments
+- **Contact History**: View all Quotations, invoices, and payments
 - **Communication Log**: Track emails and interactions
 - **Status Management**: Activate/deactivate customers
 - **Related Documents**: Quick access to all customer documents
 
-### Quote Management
+### Quotation Management
 
 #### Purpose
-Quote Management handles the creation, approval, and tracking of business proposals, serving as the starting point for most business transactions.
+Quotation Management handles the creation, approval, and tracking of business proposals, serving as the starting point for most business transactions.
 
 #### Key Features
-- Professional quote creation with itemized details
+- Professional Quotation creation with itemized details
 - Multi-stage approval workflow
 - PDF generation and email delivery
 - Status tracking and expiration management
 - Conversion to invoices
 
 #### Workflow States
-1. **Draft**: Quote being prepared, not yet sent
-2. **Sent**: Quote delivered to customer, awaiting response
-3. **Accepted**: Customer approved the quote
-4. **Declined**: Customer rejected the quote
-5. **Expired**: Quote passed expiration date
+1. **Draft**: Quotation being prepared, not yet sent
+2. **Sent**: Quotation delivered to customer, awaiting response
+3. **Accepted**: Customer approved the Quotation
+4. **Declined**: Customer rejected the Quotation
+5. **Expired**: Quotation passed expiration date
 
 #### Step-by-Step Workflows
 
-**Creating a Quote:**
-1. Navigate to **Quotes** module
-2. Click **"Create New Quote"**
+**Creating a Quotation:**
+1. Navigate to **Quotations** module
+2. Click **"Create New Quotation"**
 3. Select customer from dropdown (or create new)
-4. Fill in quote details:
-   - Quote number (auto-generated)
+4. Fill in Quotation details:
+   - Quotation number (auto-generated)
    - Expiration date
    - Terms and conditions
 5. Add line items:
@@ -181,29 +181,29 @@ Quote Management handles the creation, approval, and tracking of business propos
 6. Review totals and calculations
 7. Save as **Draft** or immediately **Send**
 
-**Quote Approval Process:**
+**Quotation Approval Process:**
 1. **Draft Stage**: Internal review and modifications
-2. **Send Quote**: Generate PDF and email to customer
+2. **Send Quotation**: Generate PDF and email to customer
 3. **Customer Review**: Customer evaluates proposal
 4. **Response Handling**: 
    - If **Accepted**: Convert to invoice
    - If **Declined**: Archive or revise
-   - If **Expired**: Follow up or create new quote
+   - If **Expired**: Follow up or create new Quotation
 
 **PDF Generation and Delivery:**
-1. From quote details, click **"Generate PDF"**
+1. From Quotation details, click **"Generate PDF"**
 2. Review PDF preview
 3. Click **"Send Email"** to deliver to customer
 4. System tracks delivery and opens
-5. Customer receives professional quote document
+5. Customer receives professional Quotation document
 
 ### Invoice Management
 
 #### Purpose
-Invoice Management handles billing processes, converting accepted quotes into payable invoices and tracking payment collection.
+Invoice Management handles billing processes, converting accepted Quotations into payable invoices and tracking payment collection.
 
 #### Key Features
-- Automatic creation from accepted quotes
+- Automatic creation from accepted Quotations
 - Manual invoice creation
 - Payment status tracking
 - PDF generation and delivery
@@ -218,8 +218,8 @@ Invoice Management handles billing processes, converting accepted quotes into pa
 
 #### Step-by-Step Workflows
 
-**Creating Invoice from Quote:**
-1. Navigate to accepted quote
+**Creating Invoice from Quotation:**
+1. Navigate to accepted Quotation
 2. Click **"Convert to Invoice"**
 3. System automatically creates invoice with:
    - Same line items and pricing
@@ -286,7 +286,7 @@ Payment Management tracks all financial transactions, reconciles payments with i
 ### Tax Management
 
 #### Purpose
-Tax Management handles tax rate configuration and automatic tax calculations across quotes and invoices.
+Tax Management handles tax rate configuration and automatic tax calculations across Quotations and invoices.
 
 #### Key Features
 - Multiple tax rate configuration
@@ -309,7 +309,7 @@ Tax Management handles tax rate configuration and automatic tax calculations acr
 #### Salesmen Management
 - **Purpose**: Track sales team performance and assign territories
 - **Features**: Salesman profiles, territory assignment, performance tracking
-- **Integration**: Link salesmen to customers and quotes
+- **Integration**: Link salesmen to customers and Quotations
 
 #### Villa Management
 - **Purpose**: Manage property inventory for hospitality businesses
@@ -324,13 +324,13 @@ Tax Management handles tax rate configuration and automatic tax calculations acr
 #### Package Management
 - **Purpose**: Create and manage service packages
 - **Features**: Package definition, pricing, availability
-- **Integration**: Use packages in quotes and invoices
+- **Integration**: Use packages in Quotations and invoices
 
 ---
 
 ## Business Workflows
 
-### Complete Quote-to-Payment Process
+### Complete Quotation-to-Payment Process
 
 This is the core business workflow that most transactions follow:
 
@@ -340,24 +340,24 @@ This is the core business workflow that most transactions follow:
    - Verify contact details
    - Set customer preferences
 
-#### Phase 2: Quote Creation
-2. **Prepare Quote**
+#### Phase 2: Quotation Creation
+2. **Prepare Quotation**
    - Select customer
    - Add services/products
    - Calculate pricing and taxes
    - Set terms and expiration
 
-3. **Quote Review and Approval**
+3. **Quotation Review and Approval**
    - Internal review (Draft stage)
    - Generate PDF preview
    - Make final adjustments
 
-4. **Quote Delivery**
+4. **Quotation Delivery**
    - Send PDF via email
    - Track delivery status
    - Monitor customer response
 
-#### Phase 3: Quote Response
+#### Phase 3: Quotation Response
 5. **Customer Decision**
    - **If Accepted**: Proceed to invoicing
    - **If Declined**: Archive or revise
@@ -365,7 +365,7 @@ This is the core business workflow that most transactions follow:
 
 #### Phase 4: Invoice Generation
 6. **Create Invoice**
-   - Convert accepted quote to invoice
+   - Convert accepted Quotation to invoice
    - Set payment terms
    - Generate and send invoice
 
@@ -396,14 +396,14 @@ This is the core business workflow that most transactions follow:
    - Determine service needs
 
 #### Proposal
-3. **Quote Preparation**
-   - Create detailed quote
+3. **Quotation Preparation**
+   - Create detailed Quotation
    - Include all services and costs
    - Set competitive pricing
 
 #### Conversion
 4. **Close Deal**
-   - Follow up on quote
+   - Follow up on Quotation
    - Handle objections
    - Secure acceptance
 
@@ -411,7 +411,7 @@ This is the core business workflow that most transactions follow:
 
 #### Invoice Creation
 1. **Generate Invoice**
-   - From accepted quote or manual creation
+   - From accepted Quotation or manual creation
    - Verify all details and pricing
    - Set payment terms
 
@@ -442,7 +442,7 @@ This is the core business workflow that most transactions follow:
 #### Main Navigation Menu
 - **Dashboard**: Overview and quick stats
 - **Customers**: Customer management
-- **Quotes**: Quote creation and tracking
+- **Quotations**: Quotation creation and tracking
 - **Invoices**: Invoice management
 - **Payments**: Payment tracking
 - **Reports**: Financial and business reports
@@ -496,7 +496,7 @@ Consistent form elements across the system:
 
 #### Global Search
 - Available in top navigation
-- Searches across customers, quotes, invoices
+- Searches across customers, Quotations, invoices
 - Provides quick access to any record
 
 #### Module-Specific Filters
@@ -507,7 +507,7 @@ Each module provides targeted filtering:
 - Date range
 - Customer type
 
-**Quote Filters:**
+**Quotation Filters:**
 - Status (Draft, Sent, Accepted, etc.)
 - Date range
 - Customer
@@ -536,7 +536,7 @@ Available in most data tables:
 
 ### Status Indicators and Color Coding
 
-#### Quote Status Colors
+#### Quotation Status Colors
 - **Gray**: Draft
 - **Blue**: Sent
 - **Green**: Accepted
@@ -564,7 +564,7 @@ Available in most data tables:
 
 #### Capabilities
 - **Customer Management**: Create and manage own customers
-- **Quote Creation**: Full quote creation and management
+- **Quotation Creation**: Full Quotation creation and management
 - **Invoice Management**: Create and track own invoices
 - **Payment Recording**: Record payments for own invoices
 - **Document Generation**: Create PDFs for own documents
@@ -577,9 +577,9 @@ Available in most data tables:
 
 #### Best Practices for Regular Users
 - Keep customer information updated
-- Follow up on quotes promptly
+- Follow up on Quotations promptly
 - Record payments immediately upon receipt
-- Use proper quote expiration dates
+- Use proper Quotation expiration dates
 - Maintain organized filing system
 
 ### Finance Users
@@ -656,7 +656,7 @@ Available in most data tables:
 ### Email Integration
 
 #### Automated Email Features
-- **Quote Delivery**: Automatic PDF generation and email delivery
+- **Quotation Delivery**: Automatic PDF generation and email delivery
 - **Invoice Delivery**: Professional invoice emails with PDF attachments
 - **Payment Confirmations**: Automated receipt delivery
 - **Reminder Systems**: Automated follow-up emails for overdue items
@@ -676,7 +676,7 @@ Available in most data tables:
 ### PDF Generation and Export
 
 #### Document Types
-- **Professional Quotes**: Branded quote documents with terms
+- **Professional Quotations**: Branded Quotation documents with terms
 - **Detailed Invoices**: Comprehensive invoice with payment terms
 - **Payment Receipts**: Official payment confirmation documents
 - **Financial Reports**: Formatted reports for analysis
@@ -697,7 +697,7 @@ Available in most data tables:
 ### Real-Time Updates and Notifications
 
 #### Live Status Updates
-- **Quote Status Changes**: Real-time status updates
+- **Quotation Status Changes**: Real-time status updates
 - **Payment Notifications**: Immediate payment confirmations
 - **System Alerts**: Important system messages
 - **User Activity**: Live activity feeds
@@ -756,7 +756,7 @@ Available in most data tables:
 1. **Start of Day**
    - Check dashboard for urgent items
    - Review notifications and alerts
-   - Check pending quotes and invoices
+   - Check pending Quotations and invoices
 
 2. **Customer Interactions**
    - Update customer information immediately
@@ -765,14 +765,14 @@ Available in most data tables:
 
 3. **End of Day**
    - Record any payments received
-   - Update quote and invoice statuses
+   - Update Quotation and invoice statuses
    - Plan follow-up activities
 
 #### Weekly Reviews
-1. **Quote Management**
-   - Review all pending quotes
-   - Follow up on quotes nearing expiration
-   - Convert accepted quotes to invoices
+1. **Quotation Management**
+   - Review all pending Quotations
+   - Follow up on Quotations nearing expiration
+   - Convert accepted Quotations to invoices
 
 2. **Invoice Management**
    - Review overdue invoices
@@ -793,7 +793,7 @@ Available in most data tables:
 - **Data Validation**: Double-check important information before saving
 
 #### Organization Strategies
-- **Naming Conventions**: Use consistent naming for quotes and invoices
+- **Naming Conventions**: Use consistent naming for Quotations and invoices
 - **Categorization**: Use customer types and categories effectively
 - **Documentation**: Add notes and comments for future reference
 - **File Management**: Organize related documents together
@@ -835,7 +835,7 @@ Available in most data tables:
 #### Workflow Efficiency
 - **Keyboard Shortcuts**: Learn and use keyboard shortcuts
 - **Bulk Operations**: Use bulk actions for multiple items
-- **Templates**: Create templates for common quotes and invoices
+- **Templates**: Create templates for common Quotations and invoices
 - **Automation**: Use automated features where available
 
 #### Time Management

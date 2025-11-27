@@ -31,7 +31,7 @@
               <option value="contacted">Contacted</option>
               <option value="scheduled">Scheduled</option>
               <option value="visited">Visited</option>
-              <option value="quoted">Quoted</option>
+              <option value="quoted">Quotation</option>
               <option value="closed_won">Closed Won</option>
               <option value="closed_lost">Closed Lost</option>
             </select>
@@ -230,7 +230,7 @@
                     { label: 'Contacted', value: 'contacted' },
                     { label: 'Scheduled', value: 'scheduled' },
                     { label: 'Visited', value: 'visited' },
-                    { label: 'Quoted', value: 'quoted' },
+                    { label: 'Quotation', value: 'quoted' },
                     { label: 'Closed Won', value: 'closed_won' },
                     { label: 'Closed Lost', value: 'closed_lost' }
                   ]"  />

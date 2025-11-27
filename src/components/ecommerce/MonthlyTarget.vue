@@ -45,7 +45,7 @@
         >
       </div>
       <p class="mx-auto mt-1.5 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-        You earn $3287 today, it's higher than last month. Keep up your good work!
+        You earn IDR 3287 today, it's higher than last month. Keep up your good work!
       </p>
     </div>
 
@@ -57,7 +57,7 @@
         <p
           class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg"
         >
-          $20K
+          IDR 20K
           <svg
             width="16"
             height="16"
@@ -84,7 +84,7 @@
         <p
           class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg"
         >
-          $20K
+          IDR 20K
           <svg
             width="16"
             height="16"
@@ -111,7 +111,7 @@
         <p
           class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg"
         >
-          $20K
+          IDR 20K
           <svg
             width="16"
             height="16"

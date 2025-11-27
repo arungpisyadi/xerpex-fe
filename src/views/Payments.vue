@@ -191,13 +191,16 @@
               label="Select Invoice"
               v-model="paymentForm.invoice_id"
               :options="availableInvoices.map(invoice => ({
-                label: `${invoice.invoice_number} - $${formatPrice(invoice.total)} (${capitalizeFirstLetter(invoice.status)})`,
+                label: `${invoice.invoice_number} - IDR ${formatPrice(invoice.total)} (${capitalizeFirstLetter(invoice.status)})`,
                 value: invoice.id
               }))"
               placeholder="Select an invoice"
               validation="required"
-
-            />
+            >
+              <template #suffixIcon>
+                <ChevronDownIcon />
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4 grid grid-cols-2 gap-4">
@@ -210,7 +213,6 @@
               step="0.01"
               min="0"
               validation="required|min:0"
-
             />
             <FormKit
               type="select"
@@ -228,8 +230,31 @@
               ]"
               placeholder="Select method"
               validation="required"
+            >
+              <template #suffixIcon>
+                <ChevronDownIcon />
+              </template>
+            </FormKit>
+          </div>
 
-            />
+          <div class="mb-4">
+            <FormKit
+              type="select"
+              name="payment_type"
+              label="Payment Type"
+              v-model="paymentForm.payment_type"
+              :options="[
+                { label: 'Down Payment', value: 'down-payment' },
+                { label: 'Installment', value: 'installment' },
+                { label: 'Paid Off', value: 'paid-off' }
+              ]"
+              placeholder="Select payment type"
+              validation="required"
+            >
+              <template #suffixIcon>
+                <ChevronDownIcon />
+              </template>
+            </FormKit>
           </div>
 
           <div class="mb-4 grid grid-cols-2 gap-4">
@@ -239,15 +264,42 @@
               label="Payment Date"
               v-model="paymentForm.payment_date"
               validation="required"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+            <FormKit
+              type="select"
+              name="status"
+              label="Status"
+              v-model="paymentForm.status"
+              :options="[
+                { label: 'Pending', value: 'pending' },
+                { label: 'Completed', value: 'completed' },
+                { label: 'Failed', value: 'failed' },
+                { label: 'Refunded', value: 'refunded' },
+                { label: 'Partial', value: 'partial' },
+                { label: 'Full', value: 'full' }
+              ]"
+              placeholder="Select status"
+              validation="required"
+            >
+              <template #suffixIcon>
+                <ChevronDownIcon />
+              </template>
+            </FormKit>
+          </div>
 
-            />
+          <div class="mb-4">
             <FormKit
               type="text"
               name="reference_number"
               label="Reference Number"
               v-model="paymentForm.reference_number"
               placeholder="Enter reference number"
-
             />
           </div>
 
@@ -287,6 +339,8 @@
 import AdminLayout from '../components/layout/AdminLayout.vue';
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue';
 import DataTable from '../components/common/DataTable.vue';
+import CalenderIcon from '../icons/CalenderIcon.vue';
+import ChevronDownIcon from '../icons/ChevronDownIcon.vue';
 import { useInvoicing } from '../composables/useInvoicing';
 import invoiceService from '../services/invoice.service.ts';
 import paymentService from '../services/payment.service';
@@ -299,7 +353,9 @@ export default {
   components: {
     AdminLayout,
     PageBreadcrumb,
-    DataTable
+    DataTable,
+    CalenderIcon,
+    ChevronDownIcon
   },
   setup() {
     const {
@@ -347,7 +403,9 @@ export default {
         invoice_id: '',
         amount: '',
         payment_method: '',
+        payment_type: '',
         payment_date: '',
+        status: '',
         reference_number: '',
         notes: ''
       },
@@ -451,7 +509,9 @@ export default {
         invoice_id: '',
         amount: '',
         payment_method: '',
+        payment_type: '',
         payment_date: new Date().toISOString().split('T')[0],
+        status: '',
         reference_number: '',
         notes: ''
       };
@@ -580,6 +640,26 @@ export default {
           return 'bg-gray-500 bg-opacity-10 text-gray-500';
         default:
           return 'bg-gray-500 bg-opacity-10 text-gray-500';
+      }
+    },
+
+    triggerDatePicker(event) {
+      const target = event.target;
+      const wrapper = target.closest('.formkit-outer');
+      if (wrapper) {
+        const input = wrapper.querySelector('input[type="date"]');
+        if (input) {
+          input.focus();
+          if (input.showPicker) {
+            try {
+              input.showPicker();
+            } catch (e) {
+              input.click();
+            }
+          } else {
+            input.click();
+          }
+        }
       }
     }
   }

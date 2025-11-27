@@ -1,5 +1,6 @@
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded' | 'partial' | 'full';
 export type PaymentMethod = 'cash' | 'bank_transfer' | 'credit_card' | 'debit_card' | 'digital_wallet' | 'check' | 'other';
+export type PaymentType = 'down-payment' | 'installment' | 'paid-off';
 
 export interface Payment {
   id: number;
@@ -20,8 +21,10 @@ export interface CreatePaymentRequest {
   amount: number;
   payment_method: PaymentMethod;
   payment_date: string;
-  reference_number?: string;
-  notes?: string;
+  payment_type: PaymentType;
+  reference_number: string;
+  notes: string;
+  status: PaymentStatus;
 }
 
 export interface UpdatePaymentRequest extends Partial<CreatePaymentRequest> {}

@@ -35,3 +35,4 @@ coverage
 FRONTEND_DEVELOPMENT_GUIDE.md
 .kilocode/*
 .env.*
+/localhost/

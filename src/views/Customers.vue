@@ -55,10 +55,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewCustomerDetails"
-          @edit="canUpdate ? editCustomer : null"
-          @delete="canDelete ? confirmDeactivateCustomer : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          @edit="editCustomer"
+          @delete="confirmDeactivateCustomer"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>

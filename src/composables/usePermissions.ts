@@ -67,6 +67,7 @@ export function usePermissions() {
    */
   const canPerform = (module: SystemModule, action: PermissionAction): boolean => {
     const matrixRole = getCurrentUserMatrixRole();
+
     if (!matrixRole || !permissionContext.isAuthenticated) {
       return false;
     }
@@ -84,16 +85,19 @@ export function usePermissions() {
   ): boolean => {
     try {
       const rolePermissions = PERMISSION_MATRIX[role];
+
       if (!rolePermissions) {
         return false;
       }
 
       const modulePermissions = rolePermissions[module];
+
       if (!modulePermissions) {
         return false;
       }
 
       const actionPermission = modulePermissions[action];
+
       return actionPermission === PermissionState.ENABLED;
     } catch (error) {
       console.error('Error checking role permission:', error);

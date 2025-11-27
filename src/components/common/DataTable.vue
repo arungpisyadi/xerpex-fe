@@ -142,6 +142,7 @@
                     @click="handleEdit(item)"
                     class="hover:text-primary transition-colors"
                     title="Edit"
+                    :data-customer-id="item.id"
                   >
                     <svg class="fill-current" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -429,9 +430,6 @@ Ket: ${item.notes}`;
       return url;
     },
     handleEdit(item) {
-      console.log('DataTable handleEdit called with item:', item);
-      console.log('showEditButton prop:', this.showEditButton);
-      console.log('Emitting edit event with item:', item);
       this.$emit('edit', item);
     }
   }

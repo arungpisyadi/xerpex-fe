@@ -26,48 +26,114 @@
         v-model="invoiceForm"
         :disabled="loading"
       >
-        <!-- Customer Selection -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="select"
-            name="customer_id"
-            label="Select Customer"
-            :options="customerOptions"
-            placeholder="Choose a customer"
-            validation="required"
-            help="Select the customer for this invoice"
-          />
+        <!-- Customer Selection and Check-in/Check-out Dates -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div>
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
+              :options="customerOptions"
+              placeholder="Choose a customer"
+              validation="required"
+              help="Select the customer for this invoice"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="select"
+              name="sales_person_id"
+              label="Sales In Charge"
+              :options="salesPersonOptions"
+              placeholder="Choose sales person"
+              validation="required"
+              help="Select the sales person responsible for this invoice"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_in"
+              label="Check-In Date"
+              validation="required"
+              help="Guest check-in date"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_out"
+              label="Check-Out Date"
+              validation="required"
+              help="Guest check-out date"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
         </div>
 
-        <!-- Invoice Details -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-4">
-          <FormKit
-            type="select"
-            name="payment_terms"
-            label="Payment Terms"
-            :options="paymentTermsOptions"
-            placeholder="Select payment terms"
-            validation="required"
-            help="Payment terms for this invoice"
-            @input="calculateDueDate"
-          />
-          <FormKit
-            type="select"
-            name="status"
-            label="Status"
-            :options="statusOptions"
-            placeholder="Select status"
-            validation="required"
-            help="Payment status for this invoice"
-          />
-          <FormKit
-            type="date"
-            name="due_date"
-            label="Due Date"
-            help="When payment is due"
-            validation="required"
-          />
-          <div class="flex items-end">
+        <!-- Villa Selection and Invoice Details -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div class="col-span-2">
+            <FormKit
+              type="taglist"
+              name="villa_ids"
+              label="Select Villas"
+              :options="villaOptions"
+              placeholder="Choose villas for this invoice"
+              help="Select one or more villas"
+              select-icon="down"
+              :classes="{
+                selectIcon: '!opacity-100 !block'
+              }"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="select"
+              name="payment_terms"
+              label="Payment Terms"
+              :options="paymentTermsOptions"
+              placeholder="Select payment terms"
+              validation="required"
+              help="Payment terms for this invoice"
+              @input="calculateDueDate"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="select"
+              name="status"
+              label="Status"
+              :options="statusOptions"
+              placeholder="Select status"
+              validation="required"
+              help="Payment status for this invoice"
+            />
+          </div>
+        </div>
+
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div>
+            <FormKit
+              type="date"
+              name="due_date"
+              label="Due Date"
+              help="When payment is due"
+              validation="required"
+            />
+          </div>
+          <div class="flex items-center">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">
               Issue Date: {{ formatDate(new Date()) }}
             </span>
@@ -150,6 +216,7 @@
                   name="discount"
                   label="Discount"
                   placeholder="0.00"
+                  value="0"
                   currency="IDR"
                   :step="0.01"
                   :min="0"
@@ -193,19 +260,6 @@
           </div>
         </div>
 
-        <!-- Sales Person Selection -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="select"
-            name="sales_person_id"
-            label="Sales Person"
-            :options="salesPersonOptions"
-            placeholder="Select a sales person"
-            validation="required"
-            help="Select the sales person responsible for this invoice"
-          />
-        </div>
-
         <!-- Form Actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]">
           <FormKit
@@ -242,10 +296,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
+import CalenderIcon from '../../icons/CalenderIcon.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
 import userService from '../../services/user.service'
+import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
@@ -266,6 +322,7 @@ const {
 const loading = ref(false)
 const packages = ref<Package[]>([])
 const salespeople = ref<any[]>([])
+const villas = ref<any[]>([])
 
 // Payment terms options
 const paymentTermsOptions = [
@@ -290,6 +347,9 @@ const statusOptions = [
 // Form data structure
 const invoiceForm = ref({
   customer_id: '',
+  check_in: '',
+  check_out: '',
+  villa_ids: [] as number[],
   payment_terms: 'Net 30',
   status: 'draft',
   due_date: '',
@@ -340,6 +400,17 @@ const salesPersonOptions = computed(() => {
   return salespeople.value.map((person: any) => ({
     label: `${person.name || person.first_name + ' ' + person.last_name} - ${person.email || 'No email'}`,
     value: person.id
+  }))
+})
+
+const villaOptions = computed(() => {
+  if (!villas.value || !Array.isArray(villas.value)) {
+    return []
+  }
+
+  return villas.value.map((villa: any) => ({
+    label: villa.name,
+    value: villa.id
   }))
 })
 
@@ -455,6 +526,9 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
       payment_terms: invoiceForm.value.payment_terms,
       notes: invoiceForm.value.notes || undefined,
       sales_person_id: Number(invoiceForm.value.sales_person_id),
+      check_in: invoiceForm.value.check_in || undefined,
+      check_out: invoiceForm.value.check_out || undefined,
+      villa_ids: invoiceForm.value.villa_ids.length > 0 ? invoiceForm.value.villa_ids.map(id => Number(id)) : undefined,
       items: invoiceForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
@@ -496,6 +570,50 @@ watch(() => invoiceForm.value.payment_terms, () => {
     calculateDueDate()
   }
 })
+
+// Watch for date changes to load available villas
+watch([() => invoiceForm.value.check_in, () => invoiceForm.value.check_out],
+  async ([checkIn, checkOut]) => {
+    if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
+      await loadAvailableVillas(checkIn, checkOut)
+    }
+  }
+)
+
+const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
+  try {
+    const response = await villaService.getAvailableVillas(checkIn, checkOut)
+    villas.value = response.villas || response || []
+  } catch (error) {
+    console.error('Error loading available villas:', error)
+    villas.value = []
+  }
+}
+
+const triggerDatePicker = (event: Event) => {
+  // Find the closest date input element from the clicked calendar icon
+  const target = event.target as HTMLElement
+  const wrapper = target.closest('.formkit-outer')
+  if (wrapper) {
+    const input = wrapper.querySelector('input[type="date"]') as HTMLInputElement
+    if (input) {
+      // Focus the input first
+      input.focus()
+      // Use showPicker API if available (modern browsers)
+      if (input.showPicker) {
+        try {
+          input.showPicker()
+        } catch (e) {
+          // Fallback: trigger click on the input
+          input.click()
+        }
+      } else {
+        // Fallback for browsers without showPicker
+        input.click()
+      }
+    }
+  }
+}
 
 // Lifecycle
 onMounted(async () => {

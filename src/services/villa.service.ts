@@ -145,6 +145,23 @@ class VillaService {
       throw error;
     }
   }
+
+  /**
+   * Get available villas for a specific date range
+   * @param checkIn - Check-in date in YYYY-MM-DD format
+   * @param checkOut - Check-out date in YYYY-MM-DD format
+   * @returns Promise - Response from API containing available villas
+   */
+  async getAvailableVillas(checkIn: string, checkOut: string): Promise<any> {
+    try {
+      const response = await apiClient.get('/villas/available', {
+        params: { check_in: checkIn, check_out: checkOut }
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new VillaService();

@@ -180,6 +180,7 @@
                   name="discount"
                   label="Discount"
                   placeholder="0.00"
+                  value="0"
                   currency="IDR"
                   :step="0.01"
                   :min="0"

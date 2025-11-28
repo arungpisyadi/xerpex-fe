@@ -29,6 +29,9 @@ export interface Invoice {
   payments: Payment[];
   payment_terms?: string;
   notes?: string;
+  check_in?: string;
+  check_out?: string;
+  villa_ids?: number[];
   created_at: string;
   updated_at: string;
 }
@@ -48,6 +51,9 @@ export interface CreateInvoiceRequest {
   payment_terms?: string;
   notes?: string;
   sales_person_id: number;
+  check_in?: string;
+  check_out?: string;
+  villa_ids?: number[];
   items: Omit<InvoiceItem, 'id'>[];
 }
 

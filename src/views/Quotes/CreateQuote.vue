@@ -27,7 +27,7 @@
         :disabled="loading"
       >
         <!-- Customer Selection and Sales In Charge -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
           <div>
             <FormKit
               type="select"
@@ -50,32 +50,74 @@
               help="Select the sales person responsible for this Quotation"
             />
           </div>
+          <!-- Check-in and Check-out Dates -->
+          <div>
+            <FormKit
+              type="date"
+              name="check_in"
+              label="Check-In Date"
+              validation="required"
+              help="Guest check-in date"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_out"
+              label="Check-Out Date"
+              validation="required"
+              help="Guest check-out date"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
         </div>
 
-        <!-- Quotation Details -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
-          <FormKit
-            type="date"
-            name="expiry_date"
-            label="Expiry Date"
-            help="When this Quotation expires"
-          />
-          <div class="flex items-end">
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <!-- Villa Selection -->
+          <div class="col-span-2">
+            <FormKit
+              type="taglist"
+              name="villa_ids"
+              label="Select Villas"
+              :options="villaOptions"
+              placeholder="Choose villas for this quote"
+              help="Select one or more villas"
+              select-icon="down"
+              :classes="{
+                selectIcon: '!opacity-100 !block'
+              }"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="expiry_date"
+              label="Expiry Date"
+              help="When this Quotation expires"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
+          <div class="flex items-center">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">
               Issue Date: {{ formatDate(new Date()) }}
             </span>
           </div>
-        </div>
-
-        <!-- Notes -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="textarea"
-            name="notes"
-            label="Notes"
-            placeholder="Add any additional notes for this Quotation"
-            help="Optional notes that will appear on the Quotation"
-          />
         </div>
 
         <!-- Items Section -->
@@ -142,6 +184,7 @@
                   name="discount"
                   label="Discount"
                   placeholder="0.00"
+                  value="0"
                   currency="IDR"
                   :step="0.01"
                   :min="0"
@@ -165,6 +208,17 @@
               </div>
             </div>
           </FormKit>
+        </div>
+
+        <!-- Notes -->
+        <div class="mb-[1.5rem]">
+          <FormKit
+            type="textarea"
+            name="notes"
+            label="Notes"
+            placeholder="Add any additional notes for this Quotation"
+            help="Optional notes that will appear on the Quotation"
+          />
         </div>
 
         <!-- Calculations Summary -->
@@ -222,10 +276,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
+import CalenderIcon from '../../icons/CalenderIcon.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import quoteService from '../../services/quote.service'
 import packageService from '../../services/package.service'
 import userService from '../../services/user.service'
+import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { CreateQuoteRequest, QuoteItem, QuoteStatus } from '../../types/quote.types'
 import type { Package } from '../../types/package.types'
@@ -247,11 +303,15 @@ const {
 const loading = ref(false)
 const packages = ref<Package[]>([])
 const salesUsers = ref<User[]>([])
+const villas = ref<any[]>([])
 
 // Form data structure
 const quoteForm = ref({
   customer_id: '',
   sales_person_id: null,
+  check_in: '',
+  check_out: '',
+  villa_ids: [] as number[],
   expiry_date: (() => {
     const today = new Date()
     const expiryDate = new Date(today.getTime() + 10 * 24 * 60 * 60 * 1000)
@@ -303,6 +363,17 @@ const salesUserOptions = computed(() => {
   return salesUsers.value.map((user: User) => ({
     label: user.full_name,
     value: user.id
+  }))
+})
+
+const villaOptions = computed(() => {
+  if (!villas.value || !Array.isArray(villas.value)) {
+    return []
+  }
+
+  return villas.value.map((villa: any) => ({
+    label: villa.name,
+    value: villa.id
   }))
 })
 
@@ -399,6 +470,9 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
       expiry_date: quoteForm.value.expiry_date || undefined,
       status: String(status) as QuoteStatus, // Now correctly uses the status parameter
       total: calculations.value.total,
+      check_in: quoteForm.value.check_in || undefined,
+      check_out: quoteForm.value.check_out || undefined,
+      villa_ids: quoteForm.value.villa_ids.length > 0 ? quoteForm.value.villa_ids.map(id => Number(id)) : undefined,
       items: quoteForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
@@ -436,6 +510,50 @@ watch(() => quoteForm.value.items, (newItems) => {
     item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
+
+// Watch for date changes to load available villas
+watch([() => quoteForm.value.check_in, () => quoteForm.value.check_out],
+  async ([checkIn, checkOut]) => {
+    if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
+      await loadAvailableVillas(checkIn, checkOut)
+    }
+  }
+)
+
+const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
+  try {
+    const response = await villaService.getAvailableVillas(checkIn, checkOut)
+    villas.value = response.villas || response || []
+  } catch (error) {
+    console.error('Error loading available villas:', error)
+    villas.value = []
+  }
+}
+
+const triggerDatePicker = (event: Event) => {
+  // Find the closest date input element from the clicked calendar icon
+  const target = event.target as HTMLElement
+  const wrapper = target.closest('.formkit-outer')
+  if (wrapper) {
+    const input = wrapper.querySelector('input[type="date"]') as HTMLInputElement
+    if (input) {
+      // Focus the input first
+      input.focus()
+      // Use showPicker API if available (modern browsers)
+      if (input.showPicker) {
+        try {
+          input.showPicker()
+        } catch (e) {
+          // Fallback: trigger click on the input
+          input.click()
+        }
+      } else {
+        // Fallback for browsers without showPicker
+        input.click()
+      }
+    }
+  }
+}
 
 // Fetch sales users function
 const fetchSalesUsers = async () => {

@@ -19,6 +19,9 @@ export interface Quote {
   expiry_date?: string;
   status: QuoteStatus;
   total: number;
+  check_in?: string;  // Check-in date for villa booking
+  check_out?: string;  // Check-out date for villa booking
+  villa_ids?: number[];  // Array of villa IDs
   customer_name?: string;
   items: QuoteItem[];
   notes?: string;  // Added notes field
@@ -39,6 +42,9 @@ export interface CreateQuoteRequest {
   expiry_date?: string;
   status: QuoteStatus;
   total: number;
+  check_in?: string;  // Check-in date for villa booking
+  check_out?: string;  // Check-out date for villa booking
+  villa_ids?: number[];  // Array of villa IDs
   items: Omit<QuoteItem, 'id'>[];
 }
 

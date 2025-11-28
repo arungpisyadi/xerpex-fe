@@ -70,30 +70,81 @@
         v-model="quoteForm"
         :disabled="loading || !isEditable"
       >
-        <!-- Customer Selection -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="select"
-            name="customer_id"
-            label="Select Customer"
-            :options="customerOptions"
-            placeholder="Choose a customer"
-            validation="required"
-            help="Select the customer for this Quotation"
-            :disabled="!isEditable"
-          />
+        <!-- Customer Selection and Check-in/Check-out Dates -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div>
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
+              :options="customerOptions"
+              placeholder="Choose a customer"
+              validation="required"
+              help="Select the customer for this Quotation"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_in"
+              label="Check-In Date"
+              validation="required"
+              help="Guest check-in date"
+              :disabled="!isEditable"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_out"
+              label="Check-Out Date"
+              validation="required"
+              help="Guest check-out date"
+              :disabled="!isEditable"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
         </div>
 
-        <!-- Quotation Details -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
-          <FormKit
-            type="date"
-            name="expiry_date"
-            label="Expiry Date"
-            help="When this Quotation expires"
-            :disabled="!isEditable"
-          />
-          <div class="flex items-end">
+        <!-- Villa Selection and Expiry Date -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div class="col-span-2">
+            <FormKit
+              type="taglist"
+              name="villa_ids"
+              label="Select Villas"
+              :options="villaOptions"
+              placeholder="Choose villas for this quote"
+              help="Select one or more villas"
+              select-icon="down"
+              :classes="{
+                selectIcon: '!opacity-100 !block'
+              }"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="expiry_date"
+              label="Expiry Date"
+              help="When this Quotation expires"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div class="flex items-center">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">
               Issue Date: {{ formatDate(new Date(quote?.issue_date || new Date())) }}
             </span>
@@ -180,6 +231,7 @@
                   name="discount"
                   label="Discount"
                   placeholder="0.00"
+                  value="0"
                   currency="IDR"
                   :step="0.01"
                   :min="0"
@@ -271,9 +323,11 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
+import CalenderIcon from '../../icons/CalenderIcon.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import quoteService from '../../services/quote.service'
 import packageService from '../../services/package.service'
+import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { Quote, UpdateQuoteRequest, QuoteItem } from '../../types/quote.types'
 import type { Package } from '../../types/package.types'
@@ -300,10 +354,14 @@ const loadingQuote = ref(true)
 const error = ref<string | null>(null)
 const quote = ref<Quote | null>(null)
 const packages = ref<Package[]>([])
+const villas = ref<any[]>([])
 
 // Form data structure
 const quoteForm = ref({
   customer_id: '',
+  check_in: '',
+  check_out: '',
+  villa_ids: [] as number[],
   expiry_date: '',
   notes: '',
   items: [
@@ -339,6 +397,17 @@ const packageOptions = computed(() => {
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
     cost_per_pax: pkg.cost_per_pax
+  }))
+})
+
+const villaOptions = computed(() => {
+  if (!villas.value || !Array.isArray(villas.value)) {
+    return []
+  }
+
+  return villas.value.map((villa: any) => ({
+    label: villa.name,
+    value: villa.id
   }))
 })
 
@@ -455,6 +524,9 @@ const loadQuoteData = async () => {
     // Pre-populate form with quote data
     quoteForm.value = {
       customer_id: quote.value?.customer_id?.toString() || '',
+      check_in: (quote.value as any)?.check_in || '',
+      check_out: (quote.value as any)?.check_out || '',
+      villa_ids: (quote.value as any)?.villa_ids || [],
       expiry_date: quote.value?.expiry_date || '',
       notes: '', // Notes field doesn't exist in Quote type, so we'll leave it empty
       items: quote.value?.items?.map(item => ({
@@ -472,6 +544,11 @@ const loadQuoteData = async () => {
           line_total: 0
         }
       ]
+    }
+
+    // Load available villas if dates are present
+    if (quoteForm.value.check_in && quoteForm.value.check_out) {
+      await loadAvailableVillas(quoteForm.value.check_in, quoteForm.value.check_out)
     }
 
   } catch (err: any) {
@@ -508,6 +585,9 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
       expiry_date: quoteForm.value.expiry_date || undefined,
       status: quote.value?.status,
       total: calculations.value.total,
+      check_in: quoteForm.value.check_in || undefined,
+      check_out: quoteForm.value.check_out || undefined,
+      villa_ids: quoteForm.value.villa_ids.length > 0 ? quoteForm.value.villa_ids.map(id => Number(id)) : undefined,
       items: quoteForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
@@ -542,6 +622,50 @@ watch(() => quoteForm.value.items, (newItems) => {
     item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
+
+// Watch for date changes to load available villas
+watch([() => quoteForm.value.check_in, () => quoteForm.value.check_out],
+  async ([checkIn, checkOut]) => {
+    if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
+      await loadAvailableVillas(checkIn, checkOut)
+    }
+  }
+)
+
+const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
+  try {
+    const response = await villaService.getAvailableVillas(checkIn, checkOut)
+    villas.value = response.villas || response || []
+  } catch (error) {
+    console.error('Error loading available villas:', error)
+    villas.value = []
+  }
+}
+
+const triggerDatePicker = (event: Event) => {
+  // Find the closest date input element from the clicked calendar icon
+  const target = event.target as HTMLElement
+  const wrapper = target.closest('.formkit-outer')
+  if (wrapper) {
+    const input = wrapper.querySelector('input[type="date"]') as HTMLInputElement
+    if (input) {
+      // Focus the input first
+      input.focus()
+      // Use showPicker API if available (modern browsers)
+      if (input.showPicker) {
+        try {
+          input.showPicker()
+        } catch (e) {
+          // Fallback: trigger click on the input
+          input.click()
+        }
+      } else {
+        // Fallback for browsers without showPicker
+        input.click()
+      }
+    }
+  }
+}
 
 // Lifecycle
 onMounted(async () => {

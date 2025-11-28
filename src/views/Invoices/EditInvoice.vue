@@ -70,42 +70,95 @@
         v-model="invoiceForm"
         :disabled="loading || !isEditable"
       >
-        <!-- Customer Selection -->
-        <div class="mb-[1.5rem]">
-          <FormKit
-            type="select"
-            name="customer_id"
-            label="Select Customer"
-            :options="customerOptions"
-            placeholder="Choose a customer"
-            validation="required"
-            help="Select the customer for this invoice"
-            :disabled="!isEditable"
-          />
+        <!-- Customer Selection and Check-in/Check-out Dates -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div>
+            <FormKit
+              type="select"
+              name="customer_id"
+              label="Select Customer"
+              :options="customerOptions"
+              placeholder="Choose a customer"
+              validation="required"
+              help="Select the customer for this invoice"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_in"
+              label="Check-In Date"
+              validation="required"
+              help="Guest check-in date"
+              :disabled="!isEditable"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="check_out"
+              label="Check-Out Date"
+              validation="required"
+              help="Guest check-out date"
+              :disabled="!isEditable"
+            >
+              <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
+          </div>
         </div>
 
-        <!-- Invoice Details -->
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
-          <FormKit
-            type="date"
-            name="due_date"
-            label="Due Date"
-            help="When this invoice is due for payment"
-            validation="required"
-            :disabled="!isEditable"
-          />
-          <FormKit
-            type="text"
-            name="payment_terms"
-            label="Payment Terms"
-            placeholder="e.g., Net 30 days"
-            help="Payment terms for this invoice"
-            :disabled="!isEditable"
-          />
+        <!-- Villa Selection and Invoice Details -->
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div class="col-span-2">
+            <FormKit
+              type="taglist"
+              name="villa_ids"
+              label="Select Villas"
+              :options="villaOptions"
+              placeholder="Choose villas for this invoice"
+              help="Select one or more villas"
+              select-icon="down"
+              :classes="{
+                selectIcon: '!opacity-100 !block'
+              }"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="date"
+              name="due_date"
+              label="Due Date"
+              help="When this invoice is due for payment"
+              validation="required"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
+              type="text"
+              name="payment_terms"
+              label="Payment Terms"
+              placeholder="e.g., Net 30 days"
+              help="Payment terms for this invoice"
+              :disabled="!isEditable"
+            />
+          </div>
         </div>
 
-        <div class="mb-[1.5rem] grid grid-cols-1 gap-[1rem] sm:grid-cols-2">
-          <div class="flex items-end">
+        <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div class="flex items-center">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">
               Issue Date: {{ formatDate(new Date(invoice?.issue_date || new Date())) }}
             </span>
@@ -193,6 +246,7 @@
                   name="discount"
                   label="Discount"
                   placeholder="0.00"
+                  value="0"
                   currency="IDR"
                   :step="0.01"
                   :min="0"
@@ -283,9 +337,11 @@ import { ref, computed, watch, onMounted, readonly } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../../components/common/PageBreadcrumb.vue'
+import CalenderIcon from '../../icons/CalenderIcon.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
+import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { Invoice, UpdateInvoiceRequest, InvoiceItem } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
@@ -313,10 +369,14 @@ const loadingInvoice = ref(true)
 const error = ref<string | null>(null)
 const invoice = ref<Invoice | null>(null)
 const packages = ref<Package[]>([])
+const villas = ref<any[]>([])
 
 // Form data structure
 const invoiceForm = ref({
   customer_id: '',
+  check_in: '',
+  check_out: '',
+  villa_ids: [] as number[],
   due_date: '',
   payment_terms: '',
   notes: '',
@@ -353,6 +413,17 @@ const packageOptions = computed(() => {
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
     cost_per_pax: pkg.cost_per_pax
+  }))
+})
+
+const villaOptions = computed(() => {
+  if (!villas.value || !Array.isArray(villas.value)) {
+    return []
+  }
+
+  return villas.value.map((villa: any) => ({
+    label: villa.name,
+    value: villa.id
   }))
 })
 
@@ -477,6 +548,9 @@ const loadInvoiceData = async () => {
     if (invoice.value) {
       invoiceForm.value = {
         customer_id: invoice.value.customer_id?.toString() || '',
+        check_in: (invoice.value as any).check_in || '',
+        check_out: (invoice.value as any).check_out || '',
+        villa_ids: (invoice.value as any).villa_ids || [],
         due_date: invoice.value.due_date || '',
         payment_terms: invoice.value.payment_terms || '',
         notes: invoice.value.notes || '',
@@ -496,6 +570,11 @@ const loadInvoiceData = async () => {
           }
         ]
       }
+    }
+
+    // Load available villas if dates are present
+    if (invoiceForm.value.check_in && invoiceForm.value.check_out) {
+      await loadAvailableVillas(invoiceForm.value.check_in, invoiceForm.value.check_out)
     }
 
   } catch (err: any) {
@@ -534,6 +613,9 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
       status: invoice.value?.status,
       total: calculations.value.total,
       tax_total: 0, // No tax calculation as per requirements
+      check_in: invoiceForm.value.check_in || undefined,
+      check_out: invoiceForm.value.check_out || undefined,
+      villa_ids: invoiceForm.value.villa_ids.length > 0 ? invoiceForm.value.villa_ids.map(id => Number(id)) : undefined,
       items: invoiceForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
@@ -568,6 +650,50 @@ watch(() => invoiceForm.value.items, (newItems) => {
     item.line_total = Math.max(0, (unitPrice * pax) - discount)
   })
 }, { deep: true })
+
+// Watch for date changes to load available villas
+watch([() => invoiceForm.value.check_in, () => invoiceForm.value.check_out],
+  async ([checkIn, checkOut]) => {
+    if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
+      await loadAvailableVillas(checkIn, checkOut)
+    }
+  }
+)
+
+const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
+  try {
+    const response = await villaService.getAvailableVillas(checkIn, checkOut)
+    villas.value = response.villas || response || []
+  } catch (error) {
+    console.error('Error loading available villas:', error)
+    villas.value = []
+  }
+}
+
+const triggerDatePicker = (event: Event) => {
+  // Find the closest date input element from the clicked calendar icon
+  const target = event.target as HTMLElement
+  const wrapper = target.closest('.formkit-outer')
+  if (wrapper) {
+    const input = wrapper.querySelector('input[type="date"]') as HTMLInputElement
+    if (input) {
+      // Focus the input first
+      input.focus()
+      // Use showPicker API if available (modern browsers)
+      if (input.showPicker) {
+        try {
+          input.showPicker()
+        } catch (e) {
+          // Fallback: trigger click on the input
+          input.click()
+        }
+      } else {
+        // Fallback for browsers without showPicker
+        input.click()
+      }
+    }
+  }
+}
 
 // Lifecycle
 onMounted(async () => {

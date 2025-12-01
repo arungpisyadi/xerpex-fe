@@ -135,6 +135,18 @@ const erpRoutes = [
     },
   },
   {
+    path: '/quotes/:id/pdf/view',
+    name: 'QuotePdfView',
+    component: () => import('../views/Quotes/QuotePdfView.vue'),
+    meta: {
+      title: 'Quote PDF View',
+      requiresAuth: true,
+      fullScreen: true,
+      module: SystemModule.QUOTES,
+      action: PermissionAction.VIEW
+    },
+  },
+  {
     path: '/packages',
     name: 'Packages',
     component: () => import('../views/Packages.vue'),

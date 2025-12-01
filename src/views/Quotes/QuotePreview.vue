@@ -87,7 +87,7 @@
       <!-- Preview Frame -->
       <div v-else-if="currentQuote" class="iframe-container">
         <iframe
-          :src="previewUrl"
+          :src="`/quotes/${route.params.id}/pdf/view`"
           class="pdf-preview-iframe"
           ref="previewFrame"
           @load="onIframeLoad"
@@ -106,6 +106,7 @@ import quoteService from '../../services/quote.service.ts'
 import type { Quote } from '../../types/quote.types'
 import { useQuoteTemplate } from '../../composables/useQuoteTemplate'
 import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
+import html2pdf from 'html2pdf.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -119,7 +120,6 @@ const currentQuote = ref<Quote | null>(null)
 const loading = ref(true)
 const error = ref<string>('')
 const previewFrame = ref<HTMLIFrameElement | null>(null)
-const previewUrl = ref<string>('')
 const iframeLoaded = ref(false)
 
 // Enhanced loading state tracking
@@ -222,30 +222,59 @@ const printQuote = () => {
 }
 
 const downloadPDF = async () => {
-  if (!currentQuote.value) {
+  if (!currentQuote.value || !previewFrame.value) {
     pdfStatus.value = 'Error: Quotation data not available'
     return
   }
 
   try {
     pdfGenerating.value = true
-    pdfStatus.value = 'Connecting to server...'
+    pdfStatus.value = 'Preparing PDF content...'
 
     // Add delay to show status message
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => setTimeout(resolve, 300))
 
-    // Try backend PDF generation first
-    const pdfBlob = await quoteService.generatePdf(currentQuote.value.id)
+    pdfStatus.value = 'Capturing content from iframe...'
 
-    // Create download link
-    const url = window.URL.createObjectURL(pdfBlob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `Quotation_${currentQuote.value.quote_number}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(url)
+    // Get the iframe's document
+    const iframeDoc = previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
+
+    if (!iframeDoc) {
+      throw new Error('Unable to access iframe content')
+    }
+
+    // Get the content element from the iframe
+    const content = iframeDoc.body
+
+    if (!content) {
+      throw new Error('No content found in iframe')
+    }
+
+    pdfStatus.value = 'Generating PDF...'
+
+    // Configure html2pdf options
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: `Quotation_${currentQuote.value.quote_number}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        letterRendering: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    }
+
+    // Generate and download PDF from iframe content
+    await html2pdf().set(opt).from(content).save()
 
     pdfStatus.value = 'PDF downloaded successfully!'
 
@@ -259,12 +288,14 @@ const downloadPDF = async () => {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
 
     // Provide user feedback based on error type
-    if (errorMessage.includes('timeout') || errorMessage.includes('network')) {
-      pdfStatus.value = 'Error: Connection timeout. Please try again later.'
-    } else if (errorMessage.includes('404')) {
-      pdfStatus.value = 'Error: PDF generation service not available.'
+    if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
+      pdfStatus.value = 'Error: Failed to render content. Please try printing instead.'
+    } else if (errorMessage.includes('timeout') || errorMessage.includes('network')) {
+      pdfStatus.value = 'Error: Connection timeout. Please try again.'
+    } else if (errorMessage.includes('iframe')) {
+      pdfStatus.value = 'Error: Unable to access content. Please try printing instead.'
     } else {
-      pdfStatus.value = 'Error: Failed to download PDF. Please try again.'
+      pdfStatus.value = 'Error: Failed to generate PDF. Please try printing as an alternative.'
     }
 
     setTimeout(() => {
@@ -291,15 +322,15 @@ const loadQuoteData = async (quoteId: number) => {
   // Reset loading details
   loadingDetails.value = {
     quote: true,
-    settings: true,
+    settings: false,
     template: false,
     quoteCompleted: false,
-    settingsCompleted: false,
-    templateCompleted: false
+    settingsCompleted: true, // We don't load settings here anymore
+    templateCompleted: true // Template is loaded via the route
   }
 
   try {
-    // Step 1: Load quote data
+    // Step 1: Load quote data (just to verify it exists and store for reference)
     console.log('[QuotePreview] Step 1: Loading quote data...')
     const quote = await quoteService.getQuoteById(quoteId)
 
@@ -312,52 +343,13 @@ const loadQuoteData = async (quoteId: number) => {
     loadingDetails.value.quoteCompleted = true
     console.log('[QuotePreview] Step 1 completed: Quote data loaded')
 
-    // Step 2: Load company settings
-    console.log('[QuotePreview] Step 2: Loading company settings...')
-    const companySettings = await getInvoiceDisplaySettings()
-
-    loadingDetails.value.settings = false
-    loadingDetails.value.settingsCompleted = true
-    console.log('[QuotePreview] Step 2 completed: Company settings loaded')
-
-    // Step 3: Generate template
-    console.log('[QuotePreview] Step 3: Generating template...')
-    loadingDetails.value.template = true
-
-    // Validate quote data before generating template
-    if (!validateQuoteData(quote)) {
-      throw new Error('Quote data validation failed - missing required fields')
-    }
-
-    // Generate preview HTML with company settings
-    const htmlContent = generatePreviewHTML(quote, companySettings)
-
-    if (!htmlContent || htmlContent.includes('Quote data is incomplete')) {
-      throw new Error('Template generation failed - HTML content is invalid')
-    }
-
-    const blob = new Blob([htmlContent], { type: 'text/html' })
-
-    // Clean up previous URL if it exists
-    if (previewUrl.value) {
-      URL.revokeObjectURL(previewUrl.value)
-    }
-
-    previewUrl.value = URL.createObjectURL(blob)
-
-    loadingDetails.value.template = false
-    loadingDetails.value.templateCompleted = true
-    console.log('[QuotePreview] Step 3 completed: Template generated successfully')
-
     // Store debug info for troubleshooting
     debugInfo.value = {
       quoteId,
       quoteNumber: quote.quote_number,
-      companyName: companySettings.companyName,
       itemsCount: quote.items?.length || 0,
       total: quote.total,
       status: quote.status,
-      blobSize: blob.size,
       timestamp: new Date().toISOString()
     }
 
@@ -417,12 +409,7 @@ onMounted(async () => {
   await loadQuoteData(Number(quoteId))
 })
 
-// Cleanup
-onBeforeUnmount(() => {
-  if (previewUrl.value) {
-    URL.revokeObjectURL(previewUrl.value)
-  }
-})
+// No cleanup needed since we're not using blob URLs anymore
 </script>
 
 <style scoped>

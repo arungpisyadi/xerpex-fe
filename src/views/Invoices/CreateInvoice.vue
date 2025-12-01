@@ -44,7 +44,7 @@
               type="select"
               name="sales_person_id"
               label="Sales In Charge"
-              :options="salesPersonOptions"
+              :options="salesUserOptions"
               placeholder="Choose sales person"
               validation="required"
               help="Select the sales person responsible for this invoice"
@@ -305,6 +305,7 @@ import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { CreateInvoiceRequest, InvoiceItem, InvoiceStatus } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
+import type { User } from '../../services/auth.service'
 import { handleError } from '../../utils/errorHandler'
 
 // Router
@@ -321,7 +322,7 @@ const {
 // Reactive state
 const loading = ref(false)
 const packages = ref<Package[]>([])
-const salespeople = ref<any[]>([])
+const salesUsers = ref<User[]>([])
 const villas = ref<any[]>([])
 
 // Payment terms options
@@ -391,15 +392,14 @@ const packageOptions = computed(() => {
   }))
 })
 
-const salesPersonOptions = computed(() => {
-  console.log('Sales people for options:', salespeople.value)
-  if (!salespeople.value || !Array.isArray(salespeople.value)) {
+const salesUserOptions = computed(() => {
+  if (!salesUsers.value || !Array.isArray(salesUsers.value)) {
     return []
   }
 
-  return salespeople.value.map((person: any) => ({
-    label: `${person.name || person.first_name + ' ' + person.last_name} - ${person.email || 'No email'}`,
-    value: person.id
+  return salesUsers.value.map((user: User) => ({
+    label: user.full_name,
+    value: user.id
   }))
 })
 
@@ -618,11 +618,11 @@ const triggerDatePicker = (event: Event) => {
 // Lifecycle
 onMounted(async () => {
   try {
-    // Load customers, packages, and salespeople for the dropdowns
+    // Load customers, packages, and sales users for the dropdowns
     await Promise.all([
       fetchCustomers({ active_only: true }),
       loadPackages(),
-      loadSalespeople()
+      fetchSalesUsers()
     ])
 
     // Set default due date
@@ -658,33 +658,33 @@ const loadPackages = async () => {
   }
 }
 
-const loadSalespeople = async () => {
+const fetchSalesUsers = async () => {
   try {
-    // Ensure we have authentication token before making the request
     const token = localStorage.getItem('token')
     if (!token) {
       console.error('No authentication token found')
-      salespeople.value = []
+      salesUsers.value = []
       return
     }
 
-    const response = await userService.getUsers({ is_active: true })
+    const response = await userService.getUsers()
     console.log('Users service response:', response)
-    // Filter for sales users if there's a role field, otherwise use all users
-    const users = Array.isArray(response) ? response : (response.users || [])
-    salespeople.value = users.filter((user: any) =>
-      user.role === 'sales' || user.role === 'admin' || !user.role // Include admin and users without role as fallback
+
+    // Filter users by sales role and active status
+    const allUsers = Array.isArray(response) ? response : response.users
+    salesUsers.value = allUsers.filter((user: User) =>
+      user.role === 'sales' && user.is_active !== false
     )
-    console.log('Sales users loaded successfully:', salespeople.value.length, 'users')
+
+    console.log('Sales users loaded successfully:', salesUsers.value.length, 'sales users')
   } catch (error: any) {
-    console.error('Error loading users:', error)
-    // Show user-friendly error message
+    console.error('Error loading sales users:', error)
     if (error.response?.status === 401) {
       console.error('Authentication failed - please log in again')
     } else if (error.response?.status === 404) {
       console.error('Users endpoint not found')
     }
-    salespeople.value = []
+    salesUsers.value = []
   }
 }
 </script>

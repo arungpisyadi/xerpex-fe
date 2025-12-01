@@ -86,6 +86,18 @@
           </div>
           <div>
             <FormKit
+              type="select"
+              name="sales_person_id"
+              id="sales_person_id"
+              label="Sales In Charge"
+              placeholder="Select sales person"
+              validation="required"
+              :options="salesUserOptions"
+              :disabled="!isEditable"
+            />
+          </div>
+          <div>
+            <FormKit
               type="date"
               name="check_in"
               label="Check-In Date"
@@ -341,10 +353,12 @@ import CalenderIcon from '../../icons/CalenderIcon.vue'
 import { useInvoicing } from '../../composables/useInvoicing'
 import invoiceService from '../../services/invoice.service.ts'
 import packageService from '../../services/package.service.ts'
+import userService from '../../services/user.service'
 import villaService from '../../services/villa.service'
 import type { Customer } from '../../types/customer.types'
 import type { Invoice, UpdateInvoiceRequest, InvoiceItem } from '../../types/invoice.types'
 import type { Package } from '../../types/package.types'
+import type { User } from '../../services/auth.service'
 import { handleError } from '../../utils/errorHandler'
 
 // Router
@@ -369,11 +383,13 @@ const loadingInvoice = ref(true)
 const error = ref<string | null>(null)
 const invoice = ref<Invoice | null>(null)
 const packages = ref<Package[]>([])
+const salesUsers = ref<User[]>([])
 const villas = ref<any[]>([])
 
 // Form data structure
 const invoiceForm = ref({
   customer_id: '',
+  sales_person_id: '',
   check_in: '',
   check_out: '',
   villa_ids: [] as number[],
@@ -413,6 +429,17 @@ const packageOptions = computed(() => {
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
     cost_per_pax: pkg.cost_per_pax
+  }))
+})
+
+const salesUserOptions = computed(() => {
+  if (!salesUsers.value || !Array.isArray(salesUsers.value)) {
+    return []
+  }
+
+  return salesUsers.value.map((user: User) => ({
+    label: user.full_name,
+    value: user.id
   }))
 })
 
@@ -548,6 +575,7 @@ const loadInvoiceData = async () => {
     if (invoice.value) {
       invoiceForm.value = {
         customer_id: invoice.value.customer_id?.toString() || '',
+        sales_person_id: (invoice.value as any).sales_person_id?.toString() || '',
         check_in: (invoice.value as any).check_in || '',
         check_out: (invoice.value as any).check_out || '',
         villa_ids: (invoice.value as any).villa_ids || [],
@@ -607,6 +635,7 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
     // Prepare invoice data
     const invoiceData: UpdateInvoiceRequest = {
       customer_id: Number(invoiceForm.value.customer_id),
+      sales_person_id: Number(invoiceForm.value.sales_person_id),
       due_date: invoiceForm.value.due_date || undefined,
       payment_terms: invoiceForm.value.payment_terms || undefined,
       notes: invoiceForm.value.notes || undefined,
@@ -698,10 +727,11 @@ const triggerDatePicker = (event: Event) => {
 // Lifecycle
 onMounted(async () => {
   try {
-    // Load customers, packages, and invoice data in parallel
+    // Load customers, packages, sales users, and invoice data in parallel
     await Promise.all([
       fetchCustomers({ active_only: true }),
       loadPackages(),
+      fetchSalesUsers(),
       loadInvoiceData()
     ])
   } catch (error) {
@@ -732,6 +762,36 @@ const loadPackages = async () => {
       console.error('Packages endpoint not found')
     }
     packages.value = []
+  }
+}
+
+const fetchSalesUsers = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No authentication token found')
+      salesUsers.value = []
+      return
+    }
+
+    const response = await userService.getUsers()
+    console.log('Users service response:', response)
+
+    // Filter users by sales role and active status
+    const allUsers = Array.isArray(response) ? response : response.users
+    salesUsers.value = allUsers.filter((user: User) =>
+      user.role === 'sales' && user.is_active !== false
+    )
+
+    console.log('Sales users loaded successfully:', salesUsers.value.length, 'sales users')
+  } catch (error: any) {
+    console.error('Error loading sales users:', error)
+    if (error.response?.status === 401) {
+      console.error('Authentication failed - please log in again')
+    } else if (error.response?.status === 404) {
+      console.error('Users endpoint not found')
+    }
+    salesUsers.value = []
   }
 }
 </script>

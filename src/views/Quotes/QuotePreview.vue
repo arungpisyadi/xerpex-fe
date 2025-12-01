@@ -19,7 +19,7 @@
             🖨️ Print
           </button>
           <button
-            @click="downloadPDF"
+            @click="printQuote"
             :disabled="pdfGenerating"
             class="download-button"
             :class="{ 'loading': pdfGenerating }"
@@ -27,6 +27,15 @@
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
           </button>
+          <!-- <button
+            @click="downloadPDF"
+            :disabled="pdfGenerating"
+            class="download-button"
+            :class="{ 'loading': pdfGenerating }"
+          >
+            <span v-if="pdfGenerating">Generating PDF...</span>
+            <span v-else>📄 Download PDF</span>
+          </button> -->
         </div>
       </div>
 
@@ -252,7 +261,10 @@ const downloadPDF = async () => {
 
     pdfStatus.value = 'Generating PDF...'
 
-    // Configure html2pdf options
+    // Get the full scrollable height of the content
+    const scrollHeight = content.scrollHeight
+
+    // Configure html2pdf options with full content capture
     const opt = {
       margin: [10, 10, 10, 10],
       filename: `Quotation_${currentQuote.value.quote_number}.pdf`,
@@ -263,14 +275,16 @@ const downloadPDF = async () => {
         logging: false,
         letterRendering: true,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        scrollY: 0,  // Start from top of content
+        scrollX: 0,  // Start from left of content
+        windowHeight: scrollHeight  // Capture full scrollable height
       },
       jsPDF: {
         unit: 'mm',
         format: 'a4',
         orientation: 'portrait'
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }
     }
 
     // Generate and download PDF from iframe content

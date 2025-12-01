@@ -2,14 +2,14 @@
   <div class="pdf-view-container">
     <div v-if="loading" class="loading-container">
       <div class="spinner"></div>
-      <p>Loading quote...</p>
+      <p>Loading invoice...</p>
     </div>
     <div v-else-if="error" class="error-container">
-      <h3>Error Loading Quote</h3>
+      <h3>Error Loading Invoice</h3>
       <p>{{ error }}</p>
     </div>
     <div v-else class="pdf-content-wrapper">
-      <div v-html="htmlContent" class="quote-pdf-content"></div>
+      <div v-html="htmlContent" class="invoice-pdf-content"></div>
     </div>
   </div>
 </template>
@@ -17,9 +17,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import quoteService from '../../services/quote.service'
-import type { Quote } from '../../types/quote.types'
-import { useQuoteTemplate } from '../../composables/useQuoteTemplate'
+import invoiceService from '../../services/invoice.service'
+import type { Invoice } from '../../types/invoice.types'
+import { useInvoiceTemplate } from '../../composables/useInvoiceTemplate'
 import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
 
 // Disable Vue DevTools for this component
@@ -32,57 +32,57 @@ if (typeof window !== 'undefined') {
 
 const route = useRoute()
 
-const { generatePrintHTML, validateQuoteData } = useQuoteTemplate()
+const { generatePrintHTML, validateInvoiceData } = useInvoiceTemplate()
 const { getInvoiceDisplaySettings } = useGlobalCompanySettings()
 
-const currentQuote = ref<Quote | null>(null)
+const currentInvoice = ref<Invoice | null>(null)
 const htmlContent = ref<string>('')
 const loading = ref(true)
 const error = ref<string>('')
 
-const loadQuoteData = async (quoteId: number) => {
+const loadInvoiceData = async (invoiceId: number) => {
   try {
     loading.value = true
     error.value = ''
 
-    // Load quote data
-    const quote = await quoteService.getQuoteById(quoteId)
+    // Load invoice data
+    const invoice = await invoiceService.getInvoice(invoiceId)
 
-    if (!quote) {
-      throw new Error('Quote not found')
+    if (!invoice) {
+      throw new Error('Invoice not found')
     }
 
-    // Validate quote data
-    if (!validateQuoteData(quote)) {
-      throw new Error('Quote data validation failed')
+    // Validate invoice data
+    if (!validateInvoiceData(invoice)) {
+      throw new Error('Invoice data validation failed')
     }
 
-    currentQuote.value = quote
+    currentInvoice.value = invoice
 
     // Load company settings
     const companySettings = await getInvoiceDisplaySettings()
 
     // Generate print HTML
-    htmlContent.value = generatePrintHTML(quote, companySettings)
+    htmlContent.value = generatePrintHTML(invoice, companySettings)
 
   } catch (err) {
-    console.error('[QuotePdfView] Failed to load quote:', err)
-    error.value = err instanceof Error ? err.message : 'Failed to load quote'
+    console.error('[InvoicePdfView] Failed to load invoice:', err)
+    error.value = err instanceof Error ? err.message : 'Failed to load invoice'
   } finally {
     loading.value = false
   }
 }
 
 onMounted(async () => {
-  const quoteId = route.params.id as string
+  const invoiceId = route.params.id as string
 
-  if (!quoteId || isNaN(Number(quoteId))) {
-    error.value = 'Invalid quote ID'
+  if (!invoiceId || isNaN(Number(invoiceId))) {
+    error.value = 'Invalid invoice ID'
     loading.value = false
     return
   }
 
-  await loadQuoteData(Number(quoteId))
+  await loadInvoiceData(Number(invoiceId))
 })
 </script>
 
@@ -113,7 +113,7 @@ onMounted(async () => {
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #28a745;
+  border-top: 5px solid #007bff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

@@ -291,6 +291,18 @@ const erpRoutes = [
     },
   },
   {
+    path: '/invoices/:id/pdf/view',
+    name: 'InvoicePdfView',
+    component: () => import('../views/Invoices/InvoicePdfView.vue'),
+    meta: {
+      title: 'Invoice PDF View',
+      requiresAuth: true,
+      fullScreen: true,
+      module: SystemModule.INVOICES,
+      action: PermissionAction.VIEW
+    },
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('../views/Settings.vue'),

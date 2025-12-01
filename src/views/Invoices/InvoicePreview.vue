@@ -19,7 +19,7 @@
             🖨️ Print
           </button>
           <button
-            @click="downloadPDF"
+            @click="printInvoice"
             :disabled="pdfGenerating"
             class="download-button"
             :class="{ 'loading': pdfGenerating }"
@@ -27,6 +27,15 @@
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
           </button>
+          <!-- <button
+            @click="downloadPDF"
+            :disabled="pdfGenerating"
+            class="download-button"
+            :class="{ 'loading': pdfGenerating }"
+          >
+            <span v-if="pdfGenerating">Generating PDF...</span>
+            <span v-else>📄 Download PDF</span>
+          </button> -->
         </div>
       </div>
 
@@ -87,7 +96,7 @@
       <!-- Preview Frame -->
       <div v-else-if="currentInvoice" class="iframe-container">
         <iframe
-          :src="previewUrl"
+          :src="`/invoices/${route.params.invoiceId}/pdf/view`"
           class="pdf-preview-iframe"
           ref="previewFrame"
           @load="onIframeLoad"
@@ -107,6 +116,7 @@ import type { Invoice } from '../../types/invoice.types'
 import { useInvoiceTemplate } from '../../composables/useInvoiceTemplate'
 import { useInvoiceData } from '../../composables/useInvoiceData'
 import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
+import html2pdf from 'html2pdf.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -118,7 +128,6 @@ const { getInvoiceDisplaySettings } = useGlobalCompanySettings()
 
 // Local state
 const previewFrame = ref<HTMLIFrameElement | null>(null)
-const previewUrl = ref<string>('')
 const iframeLoaded = ref(false)
 
 // Enhanced loading state tracking
@@ -221,7 +230,7 @@ const printInvoice = () => {
 }
 
 const downloadPDF = async () => {
-  if (!currentInvoice.value) {
+  if (!currentInvoice.value || !previewFrame.value) {
     pdfStatus.value = 'Error: Invoice data not available'
     return
   }
@@ -242,34 +251,88 @@ const downloadPDF = async () => {
     }, 3000)
 
   } catch (error) {
-    console.error('PDF download failed:', error)
+    console.error('Backend PDF download failed, trying client-side generation:', error)
 
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    // Try client-side PDF generation as fallback
+    try {
+      pdfStatus.value = 'Server unavailable - Generating PDF locally...'
 
-    // Check if this indicates a fallback was used
-    if (errorMessage.includes('Client-side PDF fallback successful')) {
-      pdfStatus.value = 'PDF generated using fallback method - Downloaded successfully!'
-    }
-    // Check if both methods failed
-    else if (errorMessage.includes('Both backend and client-side PDF generation failed')) {
-      pdfStatus.value = 'Error: All PDF generation methods failed. Please try again later.'
-    }
-    // Backend timeout or connection issues
-    else if (errorMessage.includes('timeout') || errorMessage.includes('network')) {
-      pdfStatus.value = 'Error: Connection timeout. The fallback method should have been attempted automatically.'
-    }
-    // Backend returned JSON (detected by service)
-    else if (errorMessage.includes('BACKEND_JSON_RESPONSE')) {
-      pdfStatus.value = 'Server issue detected - Generated PDF locally instead!'
-    }
-    // Other errors
-    else {
-      pdfStatus.value = 'Error: Failed to download PDF. Please try again.'
-    }
+      await new Promise(resolve => setTimeout(resolve, 300))
 
-    setTimeout(() => {
-      pdfStatus.value = ''
-    }, 5000)
+      pdfStatus.value = 'Capturing content from iframe...'
+
+      // Get the iframe's document
+      const iframeDoc = previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
+
+      if (!iframeDoc) {
+        throw new Error('Unable to access iframe content')
+      }
+
+      // Get the content element from the iframe
+      const content = iframeDoc.body
+
+      if (!content) {
+        throw new Error('No content found in iframe')
+      }
+
+      pdfStatus.value = 'Generating PDF locally...'
+
+      // Get the full scrollable height of the content
+      const scrollHeight = content.scrollHeight
+
+      // Configure html2pdf options with full content capture
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Invoice_${currentInvoice.value.invoice_number}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          letterRendering: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          scrollY: 0,  // Start from top of content
+          scrollX: 0,  // Start from left of content
+          windowHeight: scrollHeight  // Capture full scrollable height
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        },
+        pagebreak: {
+          mode: ['css', 'legacy']  // Use CSS page-break properties
+        }
+      }
+
+      // Generate and download PDF from iframe content
+      await html2pdf().set(opt).from(content).save()
+
+      pdfStatus.value = 'PDF generated successfully using local method!'
+
+      setTimeout(() => {
+        pdfStatus.value = ''
+      }, 3000)
+
+    } catch (clientError) {
+      console.error('Client-side PDF generation also failed:', clientError)
+
+      const errorMessage = clientError instanceof Error ? clientError.message : 'Unknown error occurred'
+
+      // Provide user feedback based on error type
+      if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
+        pdfStatus.value = 'Error: Failed to render content. Please try printing instead.'
+      } else if (errorMessage.includes('iframe')) {
+        pdfStatus.value = 'Error: Unable to access content. Please try printing instead.'
+      } else {
+        pdfStatus.value = 'Error: All PDF generation methods failed. Please try printing as an alternative.'
+      }
+
+      setTimeout(() => {
+        pdfStatus.value = ''
+      }, 5000)
+    }
   } finally {
     pdfGenerating.value = false
   }
@@ -291,15 +354,15 @@ const loadInvoiceData = async (invoiceId: number) => {
   // Reset loading details
   loadingDetails.value = {
     invoice: true,
-    settings: true,
+    settings: false,
     template: false,
     invoiceCompleted: false,
-    settingsCompleted: false,
-    templateCompleted: false
+    settingsCompleted: true, // We don't load settings here anymore
+    templateCompleted: true // Template is loaded via the route
   }
 
   try {
-    // Step 1: Load invoice data
+    // Step 1: Load invoice data (just to verify it exists and store for reference)
     console.log('[InvoicePreview] Step 1: Loading invoice data...')
     const invoice = await getInvoice(invoiceId)
 
@@ -307,55 +370,18 @@ const loadInvoiceData = async (invoiceId: number) => {
       throw new Error('Invoice data not found or is incomplete')
     }
 
+    currentInvoice.value = invoice
     loadingDetails.value.invoice = false
     loadingDetails.value.invoiceCompleted = true
     console.log('[InvoicePreview] Step 1 completed: Invoice data loaded')
-
-    // Step 2: Load company settings
-    console.log('[InvoicePreview] Step 2: Loading company settings...')
-    const companySettings = await getInvoiceDisplaySettings()
-
-    loadingDetails.value.settings = false
-    loadingDetails.value.settingsCompleted = true
-    console.log('[InvoicePreview] Step 2 completed: Company settings loaded')
-
-    // Step 3: Generate template
-    console.log('[InvoicePreview] Step 3: Generating template...')
-    loadingDetails.value.template = true
-
-    // Validate invoice data before generating template
-    if (!validateInvoiceData(invoice)) {
-      throw new Error('Invoice data validation failed - missing required fields')
-    }
-
-    // Generate preview HTML with company settings
-    const htmlContent = generatePreviewHTML(invoice, companySettings)
-
-    if (!htmlContent || htmlContent.includes('Invoice data is incomplete')) {
-      throw new Error('Template generation failed - HTML content is invalid')
-    }
-
-    const blob = new Blob([htmlContent], { type: 'text/html' })
-
-    // Clean up previous URL if it exists
-    if (previewUrl.value) {
-      URL.revokeObjectURL(previewUrl.value)
-    }
-
-    previewUrl.value = URL.createObjectURL(blob)
-
-    loadingDetails.value.template = false
-    loadingDetails.value.templateCompleted = true
-    console.log('[InvoicePreview] Step 3 completed: Template generated successfully')
 
     // Store debug info for troubleshooting
     debugInfo.value = {
       invoiceId,
       invoiceNumber: invoice.invoice_number,
-      companyName: companySettings.companyName,
       itemsCount: invoice.items?.length || 0,
       total: invoice.total,
-      blobSize: blob.size,
+      status: invoice.status,
       timestamp: new Date().toISOString()
     }
 
@@ -389,6 +415,8 @@ const loadInvoiceData = async (invoiceId: number) => {
       timestamp: new Date().toISOString(),
       loadingState: { ...loadingDetails.value }
     }
+  } finally {
+    loading.value = false
   }
 }
 
@@ -396,6 +424,7 @@ const loadInvoiceData = async (invoiceId: number) => {
 const retryLoad = async () => {
   const invoiceId = route.params.invoiceId as string
   if (invoiceId) {
+    loading.value = true
     await loadInvoiceData(Number(invoiceId))
   }
 }
@@ -411,12 +440,7 @@ onMounted(async () => {
   await loadInvoiceData(Number(invoiceId))
 })
 
-// Cleanup
-onBeforeUnmount(() => {
-  if (previewUrl.value) {
-    URL.revokeObjectURL(previewUrl.value)
-  }
-})
+// No cleanup needed since we're not using blob URLs anymore
 </script>
 
 <style scoped>

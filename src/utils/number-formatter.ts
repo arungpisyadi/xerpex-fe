@@ -67,3 +67,26 @@ export function formatLargeNumber(value: number | string | null | undefined): st
 
   return num.toString();
 }
+
+/**
+ * Format currency in Indonesian Rupiah format (IDR)
+ * Uses dots as thousand separators: Rp 9.520.000
+ * @param value - The number to format
+ * @param showSymbol - Whether to show currency symbol (default: true)
+ * @returns Formatted IDR currency string
+ */
+export function formatIDR(value: number | string | null | undefined, showSymbol: boolean = true): string {
+  if (value === null || value === undefined || value === '') {
+    return showSymbol ? 'Rp 0' : '0';
+  }
+
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+
+  if (isNaN(num)) {
+    return showSymbol ? 'Rp 0' : '0';
+  }
+
+  // Convert to Indonesian format with dots as thousand separators
+  const formatted = Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return showSymbol ? `Rp ${formatted}` : formatted;
+}

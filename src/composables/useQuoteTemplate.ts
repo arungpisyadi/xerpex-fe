@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import type { Quote } from '../types/quote.types';
 import { useGlobalCompanySettings } from './useCompanySettings';
+import { formatIDR } from '../utils/number-formatter';
 
 /**
  * Centralized Quotation Template Service
@@ -35,6 +36,9 @@ export function useQuoteTemplate() {
     // Add robust data handling with fallbacks
     const items = Array.isArray(quoteData.items) ? quoteData.items : [];
     const total = Number(quoteData.total || 0);
+    const taxTotal = Number((quoteData as any).tax_total || 0);
+    const customer = quoteData.customer || {} as any;
+    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
 
     // Calculate validity period
     const validityText = quoteData.expiry_date ?
@@ -91,6 +95,17 @@ export function useQuoteTemplate() {
             padding-bottom: 20px;
         }
 
+        .company-logo-section {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .company-logo {
+            max-height: 80px;
+            width: auto;
+        }
+
         .company-info h1 {
             font-size: 28px;
             color: #28a745;
@@ -133,23 +148,39 @@ export function useQuoteTemplate() {
             margin-bottom: 5px;
         }
 
-        .customer-details {
+        .customer-villa-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 30px;
+        }
+
+        .customer-details, .villa-details {
             background-color: #fff;
             border: 2px solid #e9ecef;
             border-radius: 6px;
             padding: 20px;
         }
 
-        .customer-details h3 {
+        .customer-details h3, .villa-details h3 {
             color: #28a745;
             margin-bottom: 15px;
             font-size: 18px;
         }
 
-        .customer-details p {
-            font-size: 16px;
+        .customer-details p, .villa-details p {
+            font-size: 14px;
             color: #333;
+            margin-bottom: 5px;
+        }
+
+        .villa-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .villa-item:last-child {
+            border-bottom: none;
         }
 
         .quote-status {
@@ -214,7 +245,29 @@ export function useQuoteTemplate() {
             padding: 15px 12px;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        .items-table th.col-description {
+            width: 35%;
+        }
+
+        .items-table th.col-pax {
+            width: 10%;
+            text-align: center;
+        }
+
+        .items-table th.col-price {
+            width: 18%;
+            text-align: right;
+        }
+
+        .items-table td.align-center {
+            text-align: center;
+        }
+
+        .items-table td.align-right {
+            text-align: right;
         }
 
         .items-table td {
@@ -289,6 +342,21 @@ export function useQuoteTemplate() {
             font-size: 16px;
         }
 
+        .rules-page {
+            page-break-before: always;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .rules-page img {
+            max-width: 100%;
+            height: auto;
+        }
+
         @media print {
             body {
                 padding: 0;
@@ -315,11 +383,14 @@ export function useQuoteTemplate() {
 <body>
     <div class="quote-container">
         <div class="quote-header">
-            <div class="company-info">
-                <h1>${settings.companyName || 'Company Name Not Set'}</h1>
-                <p>${settings.companyAddress || 'Address Not Set'}</p>
-                <p>Phone: ${settings.companyPhone || 'Phone Not Set'}</p>
-                <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
+            <div class="company-logo-section">
+                <img src="/images/logo/company.png" alt="Company Logo" class="company-logo" />
+                <div class="company-info">
+                    <h1>${settings.companyName || 'Company Name Not Set'}</h1>
+                    <p>${settings.companyAddress || 'Address Not Set'}</p>
+                    <p>Phone: ${settings.companyPhone || 'Phone Not Set'}</p>
+                    <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
+                </div>
             </div>
             <div class="quote-title">
                 <h2>Quotation</h2>
@@ -349,31 +420,46 @@ export function useQuoteTemplate() {
             📅 ${validityText}
         </div>
 
-        <div class="customer-details">
-            <h3>Quote For:</h3>
-            <p>${quoteData.customer_name || 'N/A'}</p>
+        <div class="customer-villa-section">
+            <div class="customer-details">
+                <h3>Customer Details:</h3>
+                <p><strong>${customer.name || 'N/A'}</strong></p>
+                <p>${customer.address || customer.billing_address || 'Address is not available'}</p>
+                <p>Phone: ${customer.phone_number || customer.phone || 'N/A'}</p>
+                <p>Email: ${customer.email || 'N/A'}</p>
+            </div>
+            <div class="villa-details">
+                <h3>Villas:</h3>
+                ${villas.length > 0 ? villas.map((v: any) => `
+                    <div class="villa-item">
+                        <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
+                    </div>
+                `).join('') : '<p>No villas assigned</p>'}
+            </div>
         </div>
 
         <table class="items-table">
             <thead>
                 <tr>
-                    <th>Package</th>
-                    <th>Unit Price</th>
-                    <th>Discount</th>
-                    <th>Line Total</th>
+                    <th>Package Name</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-pax">PAX</th>
+                    <th class="col-price">Unit Price</th>
+                    <th class="col-price">Line Total</th>
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map(item => `
+                ${items.length > 0 ? items.map((item: any) => `
                     <tr>
-                        <td>${item.package_name || 'N/A'}</td>
-                        <td>$${Number(item.unit_price || 0).toFixed(2)}</td>
-                        <td>$${Number(item.discount || 0).toFixed(2)}</td>
-                        <td>$${Number(item.line_total || 0).toFixed(2)}</td>
+                        <td>${item.package?.name || item.package_name || 'N/A'}</td>
+                        <td>${item.package?.description || 'No description available'}</td>
+                        <td class="align-center">${item.pax || 'N/A'}</td>
+                        <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -381,9 +467,15 @@ export function useQuoteTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                ${taxTotal > 0 ? `
+                <tr>
+                    <td class="label">Tax:</td>
+                    <td>${formatIDR(taxTotal)}</td>
+                </tr>
+                ` : ''}
                 <tr class="total-row">
                     <td class="label">Total:</td>
-                    <td>$${total.toFixed(2)}</td>
+                    <td>${formatIDR(total)}</td>
                 </tr>
             </table>
         </div>
@@ -396,6 +488,10 @@ export function useQuoteTemplate() {
         <div class="footer">
             <p>Thank you for considering our services!</p>
         </div>
+    </div>
+
+    <div class="rules-page">
+        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
     </div>
 </body>
 </html>
@@ -423,6 +519,9 @@ export function useQuoteTemplate() {
     // Add robust data handling with fallbacks
     const items = Array.isArray(quoteData.items) ? quoteData.items : [];
     const total = Number(quoteData.total || 0);
+    const taxTotal = Number((quoteData as any).tax_total || 0);
+    const customer = quoteData.customer || {} as any;
+    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
 
     // Calculate validity period
     const validityText = quoteData.expiry_date ?
@@ -467,6 +566,17 @@ export function useQuoteTemplate() {
             margin-bottom: 25px;
             border-bottom: 2px solid #000;
             padding-bottom: 15px;
+        }
+
+        .company-logo-section {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .company-logo {
+            max-height: 70px;
+            width: auto;
         }
 
         .company-info h1 {
@@ -542,22 +652,38 @@ export function useQuoteTemplate() {
             font-size: 11px;
         }
 
-        .customer-details {
+        .customer-villa-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             margin-bottom: 25px;
+        }
+
+        .customer-details, .villa-details {
             background-color: #fff;
             border: 1px solid #ddd;
             padding: 15px;
         }
 
-        .customer-details h3 {
+        .customer-details h3, .villa-details h3 {
             color: #000;
             margin-bottom: 10px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .customer-details p {
-            font-size: 12px;
+        .customer-details p, .villa-details p {
+            font-size: 11px;
             color: #333;
+            margin-bottom: 4px;
+        }
+
+        .villa-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .villa-item:last-child {
+            border-bottom: none;
         }
 
         .items-table {
@@ -573,8 +699,22 @@ export function useQuoteTemplate() {
             padding: 10px 8px;
             text-align: left;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 10px;
             border: 1px solid #000;
+        }
+
+        .items-table th.col-description {
+            width: 35%;
+        }
+
+        .items-table th.col-pax {
+            width: 10%;
+            text-align: center;
+        }
+
+        .items-table th.col-price {
+            width: 18%;
+            text-align: right;
         }
 
         .items-table td {
@@ -582,6 +722,14 @@ export function useQuoteTemplate() {
             border: 1px solid #ddd;
             vertical-align: top;
             font-size: 11px;
+        }
+
+        .items-table td.align-center {
+            text-align: center;
+        }
+
+        .items-table td.align-right {
+            text-align: right;
         }
 
         .items-table tbody tr:nth-child(even) {
@@ -649,6 +797,21 @@ export function useQuoteTemplate() {
             margin-top: 30px;
         }
 
+        .rules-page {
+            page-break-before: always;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .rules-page img {
+            max-width: 100%;
+            height: auto;
+        }
+
         /* Print-specific styles */
         @media print {
             body {
@@ -703,11 +866,14 @@ export function useQuoteTemplate() {
 <body>
     <div class="quote-container">
         <div class="quote-header">
-            <div class="company-info">
-                <h1>${settings.companyName || 'Company Name Not Set'}</h1>
-                <p>${settings.companyAddress || 'Address Not Set'}</p>
-                <p>Phone: ${settings.companyPhone || 'Phone Not Set'}</p>
-                <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
+            <div class="company-logo-section">
+                <img src="/images/logo/company.png" alt="Company Logo" class="company-logo" />
+                <div class="company-info">
+                    <h1>${settings.companyName || 'Company Name Not Set'}</h1>
+                    <p>${settings.companyAddress || 'Address Not Set'}</p>
+                    <p>Phone: ${settings.companyPhone || 'Phone Not Set'}</p>
+                    <p>Email: ${settings.companyEmail || 'Email Not Set'}</p>
+                </div>
             </div>
             <div class="quote-title">
                 <h2>Quotation</h2>
@@ -737,31 +903,46 @@ export function useQuoteTemplate() {
             ${validityText}
         </div>
 
-        <div class="customer-details">
-            <h3>Quotation For:</h3>
-            <p>${quoteData.customer_name || 'N/A'}</p>
+        <div class="customer-villa-section">
+            <div class="customer-details">
+                <h3>Customer Details:</h3>
+                <p><strong>${customer.name || 'N/A'}</strong></p>
+                <p>${customer.address || customer.billing_address || 'Address is not available'}</p>
+                <p>Phone: ${customer.phone_number || customer.phone || 'N/A'}</p>
+                <p>Email: ${customer.email || 'N/A'}</p>
+            </div>
+            <div class="villa-details">
+                <h3>Villas:</h3>
+                ${villas.length > 0 ? villas.map((v: any) => `
+                    <div class="villa-item">
+                        <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
+                    </div>
+                `).join('') : '<p>No villas assigned</p>'}
+            </div>
         </div>
 
         <table class="items-table">
             <thead>
                 <tr>
-                    <th>Package</th>
-                    <th>Unit Price</th>
-                    <th>Discount</th>
-                    <th>Line Total</th>
+                    <th>Package Name</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-pax">PAX</th>
+                    <th class="col-price">Unit Price</th>
+                    <th class="col-price">Line Total</th>
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map(item => `
+                ${items.length > 0 ? items.map((item: any) => `
                     <tr>
-                        <td>${item.package_name || 'N/A'}</td>
-                        <td>$${Number(item.unit_price || 0).toFixed(2)}</td>
-                        <td>$${Number(item.discount || 0).toFixed(2)}</td>
-                        <td>$${Number(item.line_total || 0).toFixed(2)}</td>
+                        <td>${item.package?.name || item.package_name || 'N/A'}</td>
+                        <td>${item.package?.description || 'No description available'}</td>
+                        <td class="align-center">${item.pax || 'N/A'}</td>
+                        <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -769,9 +950,15 @@ export function useQuoteTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                ${taxTotal > 0 ? `
+                <tr>
+                    <td class="label">Tax:</td>
+                    <td>${formatIDR(taxTotal)}</td>
+                </tr>
+                ` : ''}
                 <tr class="total-row">
                     <td class="label">Total:</td>
-                    <td>$${total.toFixed(2)}</td>
+                    <td>${formatIDR(total)}</td>
                 </tr>
             </table>
         </div>
@@ -784,6 +971,10 @@ export function useQuoteTemplate() {
         <div class="footer">
             <p>Thank you for considering our services!</p>
         </div>
+    </div>
+
+    <div class="rules-page">
+        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
     </div>
 </body>
 </html>

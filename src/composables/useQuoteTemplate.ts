@@ -40,6 +40,9 @@ export function useQuoteTemplate() {
     const customer = quoteData.customer || {} as any;
     const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
 
+    // Calculate total discount
+    const totalDiscount = items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0);
+
     // Calculate validity period
     const validityText = quoteData.expiry_date ?
       `Valid until ${quoteData.expiry_date}` :
@@ -445,6 +448,7 @@ export function useQuoteTemplate() {
                     <th class="col-description">Description</th>
                     <th class="col-pax">PAX</th>
                     <th class="col-price">Unit Price</th>
+                    <th class="col-price" style="width: 15%;">Discount</th>
                     <th class="col-price">Line Total</th>
                 </tr>
             </thead>
@@ -455,11 +459,12 @@ export function useQuoteTemplate() {
                         <td>${item.package?.description || 'No description available'}</td>
                         <td class="align-center">${item.pax || 'N/A'}</td>
                         <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -467,9 +472,13 @@ export function useQuoteTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                <tr>
+                    <td class="label" style="background-color: #f8f9fa;">Total Discount:</td>
+                    <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>
+                </tr>
                 ${taxTotal > 0 ? `
                 <tr>
-                    <td class="label">Tax:</td>
+                    <td class="label" style="background-color: #f8f9fa;">Tax:</td>
                     <td>${formatIDR(taxTotal)}</td>
                 </tr>
                 ` : ''}
@@ -522,6 +531,9 @@ export function useQuoteTemplate() {
     const taxTotal = Number((quoteData as any).tax_total || 0);
     const customer = quoteData.customer || {} as any;
     const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
+
+    // Calculate total discount
+    const totalDiscount = items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0);
 
     // Calculate validity period
     const validityText = quoteData.expiry_date ?
@@ -928,6 +940,7 @@ export function useQuoteTemplate() {
                     <th class="col-description">Description</th>
                     <th class="col-pax">PAX</th>
                     <th class="col-price">Unit Price</th>
+                    <th class="col-price" style="width: 15%;">Discount</th>
                     <th class="col-price">Line Total</th>
                 </tr>
             </thead>
@@ -938,11 +951,12 @@ export function useQuoteTemplate() {
                         <td>${item.package?.description || 'No description available'}</td>
                         <td class="align-center">${item.pax || 'N/A'}</td>
                         <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -950,6 +964,10 @@ export function useQuoteTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                <tr>
+                    <td class="label">Total Discount:</td>
+                    <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>
+                </tr>
                 ${taxTotal > 0 ? `
                 <tr>
                     <td class="label">Tax:</td>

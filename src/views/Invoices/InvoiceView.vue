@@ -70,7 +70,7 @@
         </tbody>
       </table>
       <div class="totals">
-        <div><strong>Subtotal:</strong> {{ (invoice.total - invoice.tax_total).toFixed(2) }}</div>
+        <div style="font-style: italic"><strong>Total Discount:</strong> {{ totalDiscount.toFixed(2) }}</div>
         <div><strong>Tax:</strong> {{ invoice.tax_total }}</div>
         <div><strong>Total:</strong> {{ invoice.total }}</div>
       </div>
@@ -136,6 +136,12 @@ const pdfStatusClass = computed(() => {
     return 'status-loading'
   }
   return 'status-info'
+})
+
+// Computed property for total discount - sum of all discounts
+const totalDiscount = computed(() => {
+  if (!invoice.value?.items) return 0
+  return invoice.value.items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0)
 })
 
 // Check backend availability

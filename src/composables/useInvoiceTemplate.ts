@@ -377,6 +377,7 @@ export function useInvoiceTemplate() {
                     <th class="col-description">Description</th>
                     <th class="col-pax">PAX</th>
                     <th class="col-price">Unit Price</th>
+                    <th class="col-price">Discount</th>
                     <th class="col-price">Line Total</th>
                 </tr>
             </thead>
@@ -387,11 +388,12 @@ export function useInvoiceTemplate() {
                         <td>${item.package?.description || 'No description available'}</td>
                         <td class="align-center">${item.pax || 'N/A'}</td>
                         <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -399,6 +401,10 @@ export function useInvoiceTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                <tr>
+                    <td class="label">Total Discount:</td>
+                    <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
+                </tr>
                 ${taxTotal > 0 ? `
                 <tr>
                     <td class="label">Tax:</td>
@@ -841,6 +847,7 @@ export function useInvoiceTemplate() {
                     <th class="col-description">Description</th>
                     <th class="col-pax">PAX</th>
                     <th class="col-price">Unit Price</th>
+                    <th class="col-price">Discount</th>
                     <th class="col-price">Line Total</th>
                 </tr>
             </thead>
@@ -851,11 +858,12 @@ export function useInvoiceTemplate() {
                         <td>${item.package?.description || 'No description available'}</td>
                         <td class="align-center">${item.pax || 'N/A'}</td>
                         <td class="align-right">${formatIDR(item.unit_price)}</td>
+                        <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
                 `).join('') : `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #666; font-style: italic;">No items found</td>
+                        <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
                 `}
             </tbody>
@@ -863,6 +871,10 @@ export function useInvoiceTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                <tr>
+                    <td class="label">Total Discount:</td>
+                    <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
+                </tr>
                 ${taxTotal > 0 ? `
                 <tr>
                     <td class="label">Tax:</td>

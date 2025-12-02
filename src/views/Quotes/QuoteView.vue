@@ -59,7 +59,8 @@
 
       <!-- Totals Section -->
       <div class="totals">
-        <div class="total-row total-grand"><strong>Total:</strong> {{ quote.total }}</div>
+        <div style="font-style: italic">Total Discount: {{ totalDiscount }}</div>
+        <div class="total-grand">Total: {{ quote.total }}</div>
       </div>
 
       <!-- Footer -->
@@ -75,7 +76,7 @@
 // @ts-ignore
 import html2pdf from 'html2pdf.js'
 import axios from 'axios'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Quote } from '../../types/quote.types'
 
@@ -129,6 +130,11 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+})
+
+const totalDiscount = computed(() => {
+  if (!quote.value || !quote.value.items) return '0.00'
+  return quote.value.items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0).toFixed(2)
 })
 </script>
 

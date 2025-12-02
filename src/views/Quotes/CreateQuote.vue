@@ -476,6 +476,7 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
       items: quoteForm.value.items.map(item => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
+        pax: Number(item.pax) || 1,
         discount: Number(item.discount),
         line_total: Number(item.line_total)
       }))

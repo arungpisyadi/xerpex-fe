@@ -886,7 +886,7 @@ export function useQuoteTemplate() {
 
         <div class="quote-details">
             <div>
-                <strong>Quote #:</strong>
+                <strong>Quotation #:</strong>
                 <span>${quoteData.quote_number || 'N/A'}</span>
             </div>
             <div>

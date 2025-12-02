@@ -28,12 +28,12 @@
                   stroke-linejoin="round" />
               </svg>
             </span>
-            <span class="text-lg font-medium">Invoice #{{ invoice.invoice_number }} -
+            <span class="text-sm font-medium">Invoice #{{ invoice.invoice_number }} -
               {{ capitalizeFirstLetter(invoice.status) }}</span>
           </div>
           <div class="flex gap-2">
             <button v-if="invoice.status === 'pending' || invoice.status === 'overdue'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200"
               @click="updateInvoiceStatus('paid')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
               Mark as Paid
             </button>
             <button v-if="invoice.status === 'pending'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
               @click="updateInvoiceStatus('cancelled')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +51,7 @@
               Cancel Invoice
             </button>
             <button
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
               @click="previewPDF">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -75,7 +75,7 @@
               Download PDF (Direct)
             </button> -->
             <button
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
               @click="sendInvoice">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -93,61 +93,61 @@
         <!-- Invoice Summary -->
         <div class="md:col-span-1">
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Invoice Summary
             </h4>
             <div class="mb-4">
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Invoice Number:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ invoice.invoice_number }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Invoice Number:</span>
+                <span class="text-xs font-medium text-black dark:text-white">{{ invoice.invoice_number }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Amount:</span>
-                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(invoice.total) }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Amount:</span>
+                <span class="text-xs font-medium text-black dark:text-white">IDR {{ formatPrice(invoice.total) }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Issue Date:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ formatDate(invoice.issue_date) }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Issue Date:</span>
+                <span class="text-xs font-medium text-black dark:text-white">{{ formatDate(invoice.issue_date) }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Due Date:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ formatDate(invoice.due_date) }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Due Date:</span>
+                <span class="text-xs font-medium text-black dark:text-white">{{ formatDate(invoice.due_date) }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Status:</span>
-                <span class="text-sm font-medium px-2 py-1 rounded" :class="getStatusClass(invoice.status)">
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Status:</span>
+                <span class="text-xs font-medium px-2 py-1 rounded" :class="getStatusClass(invoice.status)">
                   {{ capitalizeFirstLetter(invoice.status) }}
                 </span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Payment Date:</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Payment Date:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ invoice.payment_date ? formatDate(invoice.payment_date) : 'Not paid yet' }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ invoice.payment_date ? formatDate(invoice.payment_date) : 'Not paid yet' }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Created:</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">Created:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ formatDateTime(invoice.created_at) }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ formatDateTime(invoice.created_at) }}</span>
               </div>
             </div>
           </div>
 
           <!-- Customer Information -->
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Customer Information
             </h4>
             <div class="customer-info-section">
-              <div v-if="invoice.customer_name" class="mb-3">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Customer:</span>
-                <div class="customer-name text-sm font-medium text-black dark:text-white mt-1">{{ invoice.customer_name }}</div>
+              <div v-if="invoice.customer_name" class="mb-2">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Customer:</span>
+                <div class="customer-name text-xs font-medium text-black dark:text-white mt-1">{{ invoice.customer_name }}</div>
               </div>
-              <div v-if="invoice.billing_address" class="mb-3">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Billing Address:</span>
+              <div v-if="invoice.billing_address" class="mb-2">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Billing Address:</span>
                 <div class="customer-address text-xs italic text-gray-600 dark:text-gray-400 mt-1">{{ invoice.billing_address }}</div>
               </div>
               <div v-if="!invoice.customer_name && !invoice.billing_address" class="text-center py-4">
-                <p class="text-gray-500 dark:text-gray-400 text-sm italic">No customer information available.</p>
+                <p class="text-gray-500 dark:text-gray-400 text-xs italic">No customer information available.</p>
               </div>
             </div>
           </div>
@@ -155,49 +155,49 @@
           <!-- Payment Method -->
           <div v-if="invoice.status === 'paid'"
             class="mt-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Payment Information
             </h4>
             <div class="mb-4">
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Payment Method:</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Payment Method:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ invoice.payment_method || 'N/A' }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ invoice.payment_method || 'N/A' }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Transaction ID:</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Transaction ID:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ invoice.transaction_id || 'N/A' }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ invoice.transaction_id || 'N/A' }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Payment Date:</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">Payment Date:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ formatDateTime(invoice.payment_date) }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ formatDateTime(invoice.payment_date) }}</span>
               </div>
             </div>
           </div>
 
           <!-- Invoice Notes -->
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-            <h4 class="mb-4 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-3 text-sm font-semibold text-black dark:text-white">
               Invoice Notes
             </h4>
 
-            <div v-if="invoice.notes" class="mb-6">
-              <h5 class="mb-2 text-base font-medium text-black dark:text-white">Notes:</h5>
-              <p class="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-100 dark:bg-gray-800 rounded">
+            <div v-if="invoice.notes" class="mb-4">
+              <h5 class="mb-1 text-xs font-medium text-black dark:text-white">Notes:</h5>
+              <p class="text-xs text-gray-600 dark:text-gray-400 p-2 bg-gray-100 dark:bg-gray-800 rounded">
                 {{ invoice.notes }}
               </p>
             </div>
 
             <div>
-              <h5 class="mb-2 text-base font-medium text-black dark:text-white">Add Notes:</h5>
+              <h5 class="mb-1 text-xs font-medium text-black dark:text-white">Add Notes:</h5>
               <textarea v-model="invoiceNotes"
-                class="w-full rounded border-stroke bg-gray-100 py-3 px-4 text-sm text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
-                rows="4" placeholder="Add notes about this invoice..."></textarea>
+                class="w-full rounded border-stroke bg-gray-100 py-2 px-3 text-xs text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
+                rows="3" placeholder="Add notes about this invoice..."></textarea>
               <div class="flex justify-end mt-2">
                 <button
-                  class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
+                  class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
                   @click="saveNotes">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -215,11 +215,11 @@
         <!-- Booking Information -->
         <div class="md:col-span-2">
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
-            <div class="flex justify-between items-center mb-6">
-              <h4 class="text-xl font-semibold text-black dark:text-white">
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-sm font-semibold text-black dark:text-white">
                 Booking Information
               </h4>
-              <router-link :to="`/bookings/${booking.id}`" class="text-sm text-primary hover:underline">
+              <router-link :to="`/bookings/${booking.id}`" class="text-xs text-primary hover:underline">
                 View Booking Details
               </router-link>
             </div>
@@ -235,31 +235,31 @@
                 </div>
               </div>
               <div class="md:w-2/3">
-                <div class="mb-3">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Booking ID:</span>
-                  <span class="text-sm font-medium text-black dark:text-white ml-2">#{{ booking.id }}</span>
+                <div class="mb-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Booking ID:</span>
+                  <span class="text-xs font-medium text-black dark:text-white ml-2">#{{ booking.id }}</span>
                 </div>
-                <div class="mb-3">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Guest:</span>
-                  <span class="text-sm font-medium text-black dark:text-white ml-2">{{ booking.guest_name }}</span>
+                <div class="mb-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Guest:</span>
+                  <span class="text-xs font-medium text-black dark:text-white ml-2">{{ booking.guest_name }}</span>
                 </div>
-                <div class="mb-3">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Villa:</span>
+                <div class="mb-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Villa:</span>
                   <router-link v-if="booking.villa" :to="`/villas/${booking.villa.id}`"
-                    class="text-sm text-primary hover:underline ml-2">
+                    class="text-xs text-primary hover:underline ml-2">
                     {{ booking.villa.name }}
                   </router-link>
-                  <span v-else class="text-sm text-gray-500 dark:text-gray-400 ml-2">N/A</span>
+                  <span v-else class="text-xs text-gray-500 dark:text-gray-400 ml-2">N/A</span>
                 </div>
-                <div class="mb-3">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Stay Period:</span>
-                  <span class="text-sm font-medium text-black dark:text-white ml-2">
+                <div class="mb-2">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Stay Period:</span>
+                  <span class="text-xs font-medium text-black dark:text-white ml-2">
                     {{ formatDate(booking.check_in) }} - {{ formatDate(booking.check_out) }}
                   </span>
                 </div>
                 <div>
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Booking Status:</span>
-                  <span class="text-sm font-medium px-2 py-1 rounded ml-2"
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Booking Status:</span>
+                  <span class="text-xs font-medium px-2 py-1 rounded ml-2"
                     :class="getBookingStatusClass(booking.status)">
                     {{ capitalizeFirstLetter(booking.status) }}
                   </span>
@@ -268,54 +268,82 @@
             </div>
           </div>
 
+          <!-- Villas Section -->
+          <div
+            class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
+              Villas
+            </h4>
+
+            <div v-if="!invoice.villas || invoice.villas.length === 0" class="text-center py-6">
+              <p class="text-gray-500 dark:text-gray-400 text-xs">No villas information available.</p>
+            </div>
+
+            <div v-else class="space-y-3">
+              <div v-for="villaItem in invoice.villas" :key="villaItem.villa_id" class="p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="mb-1">
+                  <span class="text-xs font-semibold text-black dark:text-white">- {{ villaItem.villa.name }}</span>
+                  <span class="text-xs text-gray-600 dark:text-gray-400"> - {{ villaItem.villa.capacity }}</span>
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 ml-3 whitespace-pre-line">{{ villaItem.villa.description }}</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Invoice items -->
           <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Invoice Items
             </h4>
 
-            <div v-if="!invoice.items || invoice.items.length === 0" class="text-center py-8">
-              <p class="text-gray-500 dark:text-gray-400">No invoice items available.</p>
+            <div v-if="!invoice.items || invoice.items.length === 0" class="text-center py-6">
+              <p class="text-gray-500 dark:text-gray-400 text-xs">No invoice items available.</p>
             </div>
 
             <div v-else>
               <!-- Items Table -->
-              <div class="overflow-x-auto mb-6">
+              <div class="overflow-x-auto mb-4">
                 <table class="w-full table-auto">
                   <thead>
                     <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                      <th class="min-w-[200px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[150px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Package Name
                       </th>
-                      <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
+                        Pax
+                      </th>
+                      <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Unit Price
                       </th>
-                      <th class="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Discount
                       </th>
-                      <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Line Total
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="item in invoice.items" :key="item.id">
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">
-                          {{ item.package_name || `Package #${item.package_id}` }}
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">
+                          {{ item.package?.name || item.package_name || `Package #${item.package_id}` }}
                         </p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">IDR {{ formatPrice(item.unit_price) }}</p>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">{{ item.pax || 0 }}</p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p :class="item.discount > 0 ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'">
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">IDR {{ formatPrice(item.unit_price) }}</p>
+                      </td>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs" :class="item.discount > 0 ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'">
                           IDR {{ formatPrice(item.discount) }}
                         </p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">IDR {{ formatPrice(item.line_total) }}</p>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">IDR {{ formatPrice(item.line_total) }}</p>
                       </td>
                     </tr>
                   </tbody>
@@ -323,24 +351,24 @@
               </div>
 
               <!-- Totals Section -->
-              <div class="border-t border-stroke dark:border-strokedark pt-4">
-                <div class="mb-3 flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Subtotal:</span>
-                  <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(subtotal) }}</span>
+              <div class="border-t border-stroke dark:border-strokedark pt-3">
+                <div class="mb-2 flex justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Subtotal:</span>
+                  <span class="text-xs font-medium text-black dark:text-white">IDR {{ formatPrice(subtotal) }}</span>
                 </div>
-                <div class="mb-3 flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Total Discount:</span>
-                  <span class="text-sm font-medium text-red-600 dark:text-red-400">IDR
+                <div class="mb-2 flex justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Total Discount:</span>
+                  <span class="text-xs font-medium text-red-600 dark:text-red-400">IDR
                     {{ formatPrice(totalDiscount) }}</span>
                 </div>
-                <div class="mb-3 flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Tax:</span>
-                  <span class="text-sm font-medium text-black dark:text-white">IDR
+                <div class="mb-2 flex justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Tax:</span>
+                  <span class="text-xs font-medium text-black dark:text-white">IDR
                     {{ formatPrice(invoice.tax_total || 0) }}</span>
                 </div>
-                <div class="pt-3 border-t border-stroke dark:border-strokedark flex justify-between">
-                  <span class="text-base font-semibold text-black dark:text-white">Total Amount:</span>
-                  <span class="text-base font-semibold text-black dark:text-white">IDR
+                <div class="pt-2 border-t border-stroke dark:border-strokedark flex justify-between">
+                  <span class="text-sm font-semibold text-black dark:text-white">Total Amount:</span>
+                  <span class="text-sm font-semibold text-black dark:text-white">IDR
                     {{ formatPrice(invoice.total) }}</span>
                 </div>
               </div>
@@ -352,48 +380,48 @@
       <!-- Invoice History -->
       <div
         class="mt-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+        <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
           Invoice History
         </h4>
 
-        <div v-if="invoiceHistory.length === 0" class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400">No invoice history available.</p>
+        <div v-if="invoiceHistory.length === 0" class="text-center py-6">
+          <p class="text-gray-500 dark:text-gray-400 text-xs">No invoice history available.</p>
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full table-auto">
             <thead>
               <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Date
                 </th>
-                <th class="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[120px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Action
                 </th>
-                <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Status
                 </th>
-                <th class="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   User
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(history, index) in invoiceHistory" :key="index">
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ formatDateTime(history.timestamp) }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ formatDateTime(history.timestamp) }}</p>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ history.action }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ history.action }}</p>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <span class="inline-flex rounded px-2 py-0.5 text-xs font-medium"
                     :class="getStatusClass(history.status)">
                     {{ capitalizeFirstLetter(history.status) }}
                   </span>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ history.user }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ history.user }}</p>
                 </td>
               </tr>
             </tbody>
@@ -426,7 +454,9 @@ export default {
         due_date: '',
         payment_date: '',
         created_at: '',
-        notes: ''
+        notes: '',
+        items: [],
+        villas: []
       },
       booking: {
         status: '',
@@ -445,13 +475,13 @@ export default {
       if (!this.invoice.items || !Array.isArray(this.invoice.items)) {
         return 0;
       }
-      return this.invoice.items.reduce((sum, item) => sum + (item.unit_price || 0), 0);
+      return this.invoice.items.reduce((sum, item) => sum + (parseFloat(item.line_total) || 0), 0);
     },
     totalDiscount() {
       if (!this.invoice.items || !Array.isArray(this.invoice.items)) {
         return 0;
       }
-      return this.invoice.items.reduce((sum, item) => sum + (item.discount || 0), 0);
+      return this.invoice.items.reduce((sum, item) => sum + (parseFloat(item.discount) || 0), 0);
     }
   },
   async created() {

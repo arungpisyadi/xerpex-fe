@@ -31,12 +31,12 @@
                   stroke-linejoin="round" />
               </svg>
             </span>
-            <span class="text-lg font-medium">Quotation #{{ quote.quote_number }} -
+            <span class="text-sm font-medium">Quotation #{{ quote.quote_number }} -
               {{ capitalizeFirstLetter(quote.status) }}</span>
           </div>
           <div class="flex gap-2">
             <button v-if="quote.status === 'draft'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
               @click="updateQuoteStatus('sent')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +46,7 @@
               Mark as Sent
             </button>
             <button v-if="quote.status === 'sent'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200"
               @click="updateQuoteStatus('accepted')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +55,7 @@
               Accept Quotation
             </button>
             <button v-if="quote.status === 'sent'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
               @click="updateQuoteStatus('declined')">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +64,7 @@
               Decline Quotation
             </button>
             <button v-if="quote.status === 'accepted'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-purple-600 hover:bg-purple-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-purple-600 hover:bg-purple-700 shadow-theme-xs transition-colors duration-200"
               @click="convertToInvoice">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +74,7 @@
               Convert to Invoice
             </button>
             <button
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
               @click="previewQuote">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +86,7 @@
               </svg>
               📄 Preview Quotation
             </button>
-            <button
+            <!-- <button
               class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg shadow-theme-xs transition-colors duration-200"
               :class="[
                 sendingQuote || quote?.status === 'sent' ? 'bg-gray-400 cursor-not-allowed' : 'bg-brand-500 hover:bg-brand-600'
@@ -100,7 +100,7 @@
               <span v-if="sendingQuote">Sending...</span>
               <span v-else-if="quote?.status === 'sent'">Quotation Sent</span>
               <span v-else>Send Quotation</span>
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
@@ -111,37 +111,37 @@
         <div class="md:col-span-1">
           <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Quotation Summary
             </h4>
             <div class="mb-4">
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Quotation Number:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ quote.quote_number }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Quotation Number:</span>
+                <span class="text-xs font-medium text-black dark:text-white">{{ quote.quote_number }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Amount:</span>
-                <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(quote.total) }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Amount:</span>
+                <span class="text-xs font-medium text-black dark:text-white">IDR {{ formatPrice(quote.total) }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Issue Date:</span>
-                <span class="text-sm font-medium text-black dark:text-white">{{ formatDate(quote.issue_date) }}</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Issue Date:</span>
+                <span class="text-xs font-medium text-black dark:text-white">{{ formatDate(quote.issue_date) }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Expiry Date:</span>
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Expiry Date:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ quote.expiry_date ? formatDate(quote.expiry_date) : 'Not set' }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ quote.expiry_date ? formatDate(quote.expiry_date) : 'Not set' }}</span>
               </div>
-              <div class="mb-3 flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Status:</span>
-                <span class="text-sm font-medium px-2 py-1 rounded" :class="getStatusClass(quote.status)">
+              <div class="mb-2 flex justify-between">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Status:</span>
+                <span class="text-xs font-medium px-2 py-1 rounded" :class="getStatusClass(quote.status)">
                   {{ capitalizeFirstLetter(quote.status) }}
                 </span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Created:</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">Created:</span>
                 <span
-                  class="text-sm font-medium text-black dark:text-white">{{ formatDateTime(quote.created_at) }}</span>
+                  class="text-xs font-medium text-black dark:text-white">{{ formatDateTime(quote.created_at) }}</span>
               </div>
             </div>
           </div>
@@ -149,44 +149,44 @@
           <!-- Customer Information -->
           <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Customer Information
             </h4>
             <div class="customer-info-section">
-              <div v-if="quote.customer.name" class="mb-3">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Customer:</span>
-                <div class="customer-name text-sm font-medium text-black dark:text-white mt-1">{{ quote.customer.name }}
+              <div v-if="quote.customer.name" class="mb-2">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Customer:</span>
+                <div class="customer-name text-xs font-medium text-black dark:text-white mt-1">{{ quote.customer.name }}
                 </div>
                 <div class="customer-name text-xs font-medium text-black dark:text-white mt-1">{{ quote.customer.billing_address }}
                 </div>
               </div>
               <div v-if="!quote.customer.name" class="text-center py-4">
-                <p class="text-gray-500 dark:text-gray-400 text-sm italic">No customer information available.</p>
+                <p class="text-gray-500 dark:text-gray-400 text-xs italic">No customer information available.</p>
               </div>
             </div>
           </div>
 
           <!-- Quote Notes -->
           <div class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-            <h4 class="mb-4 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-3 text-sm font-semibold text-black dark:text-white">
               Quotation Notes
             </h4>
 
-            <div v-if="quote.notes" class="mb-6">
-              <h5 class="mb-2 text-base font-medium text-black dark:text-white">Notes:</h5>
-              <p class="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-100 dark:bg-gray-800 rounded">
+            <div v-if="quote.notes" class="mb-4">
+              <h5 class="mb-1 text-xs font-medium text-black dark:text-white">Notes:</h5>
+              <p class="text-xs text-gray-600 dark:text-gray-400 p-2 bg-gray-100 dark:bg-gray-800 rounded">
                 {{ quote.notes }}
               </p>
             </div>
 
             <div>
-              <h5 class="mb-2 text-base font-medium text-black dark:text-white">Add Notes:</h5>
+              <h5 class="mb-1 text-xs font-medium text-black dark:text-white">Add Notes:</h5>
               <textarea v-model="quoteNotes"
-                class="w-full rounded border-stroke bg-gray-100 py-3 px-4 text-sm text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
-                rows="4" placeholder="Add notes about this quotation..."></textarea>
+                class="w-full rounded border-stroke bg-gray-100 py-2 px-3 text-xs text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-gray-800 dark:text-white"
+                rows="3" placeholder="Add notes about this quotation..."></textarea>
               <div class="flex justify-end mt-2">
                 <button
-                  class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
+                  class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
                   @click="saveNotes">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -201,55 +201,83 @@
           </div>
         </div>
 
-        <!-- Quote Items -->
+        <!-- Villas Section -->
         <div class="md:col-span-2">
           <div
+            class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mb-6">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
+              Villas
+            </h4>
+
+            <div v-if="!quote.villas || quote.villas.length === 0" class="text-center py-6">
+              <p class="text-gray-500 dark:text-gray-400 text-xs">No villas information available.</p>
+            </div>
+
+            <div v-else class="space-y-3">
+              <div v-for="villaItem in quote.villas" :key="villaItem.villa_id" class="p-3 bg-gray-50 dark:bg-gray-800 rounded">
+                <div class="mb-1">
+                  <span class="text-xs font-semibold text-black dark:text-white">- {{ villaItem.villa.name }}</span>
+                  <span class="text-xs text-gray-600 dark:text-gray-400"> - {{ villaItem.villa.capacity }}</span>
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 ml-3 whitespace-pre-line">{{ villaItem.villa.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quote Items -->
+          <div
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+            <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
               Quotation Items
             </h4>
 
-            <div v-if="!quote.items || quote.items.length === 0" class="text-center py-8">
-              <p class="text-gray-500 dark:text-gray-400">No quotation items available.</p>
+            <div v-if="!quote.items || quote.items.length === 0" class="text-center py-6">
+              <p class="text-gray-500 dark:text-gray-400 text-xs">No quotation items available.</p>
             </div>
 
             <div v-else>
               <!-- Items Table -->
-              <div class="overflow-x-auto mb-6">
+              <div class="overflow-x-auto mb-4">
                 <table class="w-full table-auto">
                   <thead>
                     <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                      <th class="min-w-[200px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[150px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Package Name
                       </th>
-                      <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
+                        Pax
+                      </th>
+                      <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Unit Price
                       </th>
-                      <th class="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Discount
                       </th>
-                      <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                      <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                         Line Total
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="item in quote.items" :key="item.id">
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">
-                          {{ item.package_name || `Package #${item.package_id}` }}
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">
+                          {{ item.package?.name || item.package_name || `Package #${item.package_id}` }}
                         </p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">IDR {{ formatPrice(item.unit_price) }}</p>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">{{ item.pax || 0 }}</p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p :class="item.discount > 0 ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'">
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">IDR {{ formatPrice(item.unit_price) }}</p>
+                      </td>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs" :class="item.discount > 0 ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'">
                           IDR {{ formatPrice(item.discount) }}
                         </p>
                       </td>
-                      <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p class="text-black dark:text-white">IDR {{ formatPrice(item.line_total) }}</p>
+                      <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                        <p class="text-xs text-black dark:text-white">IDR {{ formatPrice(item.line_total) }}</p>
                       </td>
                     </tr>
                   </tbody>
@@ -257,19 +285,19 @@
               </div>
 
               <!-- Totals Section -->
-              <div class="border-t border-stroke dark:border-strokedark pt-4">
-                <div class="mb-3 flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Subtotal:</span>
-                  <span class="text-sm font-medium text-black dark:text-white">IDR {{ formatPrice(subtotal) }}</span>
+              <div class="border-t border-stroke dark:border-strokedark pt-3">
+                <div class="mb-2 flex justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Subtotal:</span>
+                  <span class="text-xs font-medium text-black dark:text-white">IDR {{ formatPrice(subtotal) }}</span>
                 </div>
-                <div class="mb-3 flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Total Discount:</span>
-                  <span class="text-sm font-medium text-red-600 dark:text-red-400">IDR
+                <div class="mb-2 flex justify-between">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Total Discount:</span>
+                  <span class="text-xs font-medium text-red-600 dark:text-red-400">IDR
                     {{ formatPrice(totalDiscount) }}</span>
                 </div>
-                <div class="pt-3 border-t border-stroke dark:border-strokedark flex justify-between">
-                  <span class="text-base font-semibold text-black dark:text-white">Total Amount:</span>
-                  <span class="text-base font-semibold text-black dark:text-white">IDR
+                <div class="pt-2 border-t border-stroke dark:border-strokedark flex justify-between">
+                  <span class="text-sm font-semibold text-black dark:text-white">Total Amount:</span>
+                  <span class="text-sm font-semibold text-black dark:text-white">IDR
                     {{ formatPrice(quote.total) }}</span>
                 </div>
               </div>
@@ -281,48 +309,48 @@
       <!-- Quote History -->
       <div
         class="mt-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+        <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
           Quotation History
         </h4>
 
-        <div v-if="quoteHistory.length === 0" class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400">No quotation history available.</p>
+        <div v-if="quoteHistory.length === 0" class="text-center py-6">
+          <p class="text-gray-500 dark:text-gray-400 text-xs">No quotation history available.</p>
         </div>
 
         <div v-else class="overflow-x-auto">
           <table class="w-full table-auto">
             <thead>
               <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Date
                 </th>
-                <th class="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[120px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Action
                 </th>
-                <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   Status
                 </th>
-                <th class="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">
+                <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
                   User
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(history, index) in quoteHistory" :key="index">
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ formatDateTime(history.timestamp) }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ formatDateTime(history.timestamp) }}</p>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ history.action }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ history.action }}</p>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <span class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <span class="inline-flex rounded px-2 py-0.5 text-xs font-medium"
                     :class="getStatusClass(history.status)">
                     {{ capitalizeFirstLetter(history.status) }}
                   </span>
                 </td>
-                <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p class="text-black dark:text-white">{{ history.user }}</p>
+                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
+                  <p class="text-xs text-black dark:text-white">{{ history.user }}</p>
                 </td>
               </tr>
             </tbody>
@@ -357,6 +385,7 @@ export default {
         created_at: '',
         notes: '',
         items: [],
+        villas: [],
         customer_name: '',
         customer_email: ''
       },
@@ -372,13 +401,13 @@ export default {
       if (!this.quote.items || !Array.isArray(this.quote.items)) {
         return 0;
       }
-      return this.quote.items.reduce((sum, item) => sum + (item.unit_price || 0), 0);
+      return this.quote.items.reduce((sum, item) => sum + (parseFloat(item.line_total) || 0), 0);
     },
     totalDiscount() {
       if (!this.quote.items || !Array.isArray(this.quote.items)) {
         return 0;
       }
-      return this.quote.items.reduce((sum, item) => sum + (item.discount || 0), 0);
+      return this.quote.items.reduce((sum, item) => sum + (parseFloat(item.discount) || 0), 0);
     }
   },
   async created() {

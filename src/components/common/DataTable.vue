@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+  <div class="rounded-sm bg-white px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-0 xl:pb-0">
     <!-- Table Header -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <h4 class="text-xl font-semibold text-black dark:text-white">

@@ -87,6 +87,42 @@
       </div>
     </div>
 
+    <!-- Activity History -->
+    <div v-if="invoice?.history && invoice.history.length > 0" class="history-section">
+      <h4 class="history-title">Activity History</h4>
+      <div class="history-table-wrapper">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Event Type</th>
+              <th>Details</th>
+              <th>User</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in invoice.history" :key="item.id">
+              <td class="date-cell">{{ formatHistoryDateTime(item.created_at) }}</td>
+              <td class="event-type-cell">
+                <span class="event-badge" :class="getEventBadgeClass(item.event_category)">
+                  {{ item.event_type }}
+                </span>
+              </td>
+              <td class="metadata-cell">
+                <div v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0" class="metadata-content">
+                  <span v-for="(value, key) in item.event_metadata" :key="key" class="metadata-item">
+                    <strong>{{ formatMetadataKey(key) }}:</strong> {{ value }}
+                  </span>
+                </div>
+                <span v-else class="no-metadata">—</span>
+              </td>
+              <td class="user-cell">User #{{ item.user_id }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Invoice Preview Modal -->
     <InvoicePreviewModal
       v-if="isModalOpen"
@@ -171,10 +207,10 @@ const exportToPdf = async () => {
 
     // Enhanced html2pdf options for better quality
     const opt = {
-      margin: [0.5, 0.5, 0.5, 0.5],
+      margin: [0.5, 0.5, 0.5, 0.5] as [number, number, number, number],
       filename: `invoice-${invoice.value.invoice_number}.pdf`,
       image: {
-        type: 'jpeg',
+        type: 'jpeg' as const,
         quality: 1.0
       },
       html2canvas: {
@@ -189,7 +225,7 @@ const exportToPdf = async () => {
       jsPDF: {
         unit: 'in',
         format: 'letter',
-        orientation: 'portrait',
+        orientation: 'portrait' as const,
         putOnlyUsedFonts: true,
         floatPrecision: 16
       },
@@ -289,6 +325,40 @@ const previewPDF = () => {
 // Close modal
 const closeModal = () => {
   isModalOpen.value = false
+}
+
+// Helper function to format date and time
+const formatHistoryDateTime = (dateString: string) => {
+  if (!dateString) return ''
+
+  const date = new Date(dateString)
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+}
+
+// Helper function to get badge class based on event category
+const getEventBadgeClass = (category: string) => {
+  const categoryLower = (category || '').toLowerCase()
+  if (categoryLower.includes('create')) return 'event-created'
+  if (categoryLower.includes('update') || categoryLower.includes('edit')) return 'event-updated'
+  if (categoryLower.includes('delete')) return 'event-deleted'
+  if (categoryLower.includes('status')) return 'event-status'
+  if (categoryLower.includes('send') || categoryLower.includes('email')) return 'event-sent'
+  return 'event-default'
+}
+
+// Helper function to format metadata keys
+const formatMetadataKey = (key: string) => {
+  return key
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
 }
 
 onMounted(async () => {
@@ -535,5 +605,137 @@ onMounted(async () => {
   body {
     font-size: 12px;
   }
+}
+
+.history-section {
+  max-width: 800px;
+  margin: 20px auto 0;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.history-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.history-table thead {
+  background-color: #f8f9fa;
+}
+
+.history-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.history-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.history-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.date-cell {
+  white-space: nowrap;
+  color: #6c757d;
+  font-size: 13px;
+}
+
+.event-type-cell {
+  white-space: nowrap;
+}
+
+.event-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.event-created {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.event-updated {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.event-deleted {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.event-status {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.event-sent {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.event-default {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.metadata-cell {
+  max-width: 400px;
+}
+
+.metadata-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metadata-item {
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.4;
+}
+
+.metadata-item strong {
+  color: #212529;
+  font-weight: 600;
+}
+
+.no-metadata {
+  color: #adb5bd;
+  font-style: italic;
+}
+
+.user-cell {
+  color: #6c757d;
+  font-size: 13px;
+  white-space: nowrap;
 }
 </style>

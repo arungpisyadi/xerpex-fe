@@ -377,51 +377,47 @@
         </div>
       </div>
 
-      <!-- Invoice History -->
-      <div
+      <!-- Activity History -->
+      <div v-if="invoice.history && invoice.history.length > 0"
         class="mt-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <h4 class="mb-4 text-sm font-semibold text-black dark:text-white">
-          Invoice History
+          Activity History
         </h4>
 
-        <div v-if="invoiceHistory.length === 0" class="text-center py-6">
-          <p class="text-gray-500 dark:text-gray-400 text-xs">No invoice history available.</p>
-        </div>
-
-        <div v-else class="overflow-x-auto">
+        <div class="overflow-x-auto">
           <table class="w-full table-auto">
             <thead>
               <tr class="bg-gray-2 text-left dark:bg-meta-4">
-                <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
-                  Date
-                </th>
                 <th class="min-w-[120px] py-3 px-3 font-medium text-xs text-black dark:text-white">
-                  Action
+                  Date/Time
                 </th>
                 <th class="min-w-[100px] py-3 px-3 font-medium text-xs text-black dark:text-white">
-                  Status
+                  Event Type
                 </th>
-                <th class="min-w-[80px] py-3 px-3 font-medium text-xs text-black dark:text-white">
-                  User
+                <th class="min-w-[200px] py-3 px-3 font-medium text-xs text-black dark:text-white">
+                  Details
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(history, index) in invoiceHistory" :key="index">
+              <tr v-for="item in invoice.history" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                 <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
-                  <p class="text-xs text-black dark:text-white">{{ formatDateTime(history.timestamp) }}</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">{{ formatHistoryDateTime(item.created_at) }}</p>
                 </td>
                 <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
-                  <p class="text-xs text-black dark:text-white">{{ history.action }}</p>
-                </td>
-                <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
-                  <span class="inline-flex rounded px-2 py-0.5 text-xs font-medium"
-                    :class="getStatusClass(history.status)">
-                    {{ capitalizeFirstLetter(history.status) }}
+                  <span class="inline-flex rounded px-2 py-1 text-xs font-medium"
+                    :class="getEventBadgeClass(item.event_category)">
+                    {{ item.event_type }}
                   </span>
                 </td>
                 <td class="border-b border-[#eee] py-3 px-3 dark:border-strokedark">
-                  <p class="text-xs text-black dark:text-white">{{ history.user }}</p>
+                  <div v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0" class="space-y-1">
+                    <div v-for="(value, key) in item.event_metadata" :key="key" class="text-xs">
+                      <span class="font-semibold text-black dark:text-white">{{ formatMetadataKey(key) }}:</span>
+                      <span class="text-gray-600 dark:text-gray-400 ml-1">{{ formatMetadataValue(key, value) }}</span>
+                    </div>
+                  </div>
+                  <span v-else class="text-xs text-gray-400 dark:text-gray-500 italic">—</span>
                 </td>
               </tr>
             </tbody>
@@ -466,7 +462,6 @@ export default {
         check_out: '',
         villa: null
       },
-      invoiceHistory: [],
       invoiceNotes: ''
     };
   },
@@ -537,20 +532,6 @@ export default {
               villa: null
             };
           }
-        }
-
-        // Fetch invoice history with defensive programming
-        try {
-          if (invoiceService && typeof invoiceService.getInvoiceHistory === 'function') {
-            const historyResponse = await invoiceService.getInvoiceHistory(invoiceId);
-            this.invoiceHistory = historyResponse?.items || [];
-          } else {
-            console.warn('getInvoiceHistory method not available');
-            this.invoiceHistory = [];
-          }
-        } catch (historyError) {
-          console.warn('Failed to fetch invoice history:', historyError);
-          this.invoiceHistory = [];
         }
       } catch (error) {
         console.error('Error fetching invoice data:', error);
@@ -667,6 +648,44 @@ export default {
       };
 
       return statusMap[status?.toLowerCase()] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    },
+    formatHistoryDateTime(dateString) {
+      if (!dateString) return '';
+
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    },
+    getEventBadgeClass(category) {
+      const categoryLower = (category || '').toLowerCase();
+      if (categoryLower.includes('create')) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      if (categoryLower.includes('update') || categoryLower.includes('edit')) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      if (categoryLower.includes('delete')) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      if (categoryLower.includes('status')) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      if (categoryLower.includes('send') || categoryLower.includes('email')) return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    },
+    formatMetadataKey(key) {
+      return key
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    },
+    formatMetadataValue(key, value) {
+      // Format currency values
+      if (key === 'total_amount' || key.toLowerCase().includes('amount') || key.toLowerCase().includes('price')) {
+        const num = typeof value === 'string' ? parseFloat(value) : value;
+        if (!isNaN(num)) {
+          return 'IDR ' + this.formatPrice(num);
+        }
+      }
+      return value;
     },
     async updateInvoiceStatus(status) {
       try {

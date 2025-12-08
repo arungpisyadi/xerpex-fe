@@ -1,5 +1,22 @@
 export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'declined' | 'expired';
 
+export interface HistoryItem {
+  id: number;
+  quote_id: number;
+  user_id: number;
+  event_type: string;
+  event_category: string;
+  description: string;
+  event_metadata: {
+    status?: string;
+    quote_number?: string;
+    total_amount?: string;
+    customer_name?: string;
+    [key: string]: any;
+  };
+  created_at: string;
+}
+
 export interface QuoteItem {
   id: number;
   package_id: number;
@@ -25,6 +42,7 @@ export interface Quote {
   customer_name?: string;
   items: QuoteItem[];
   notes?: string;  // Added notes field
+  history?: HistoryItem[];
   customer?: {
     id?: number;
     name?: string;

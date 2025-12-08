@@ -367,6 +367,49 @@
               </div>
             </div>
           </div>
+
+          <!-- History Section -->
+          <div v-if="booking.history && booking.history.length > 0"
+            class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mt-6">
+            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">
+              Activity History
+            </h4>
+
+            <div class="overflow-x-auto">
+              <table class="w-full table-auto">
+                <thead>
+                  <tr class="bg-gray-100 dark:bg-gray-800 text-left">
+                    <th class="py-3 px-4 font-medium text-black dark:text-white whitespace-nowrap">Date/Time</th>
+                    <th class="py-3 px-4 font-medium text-black dark:text-white whitespace-nowrap">Event Type</th>
+                    <th class="py-3 px-4 font-medium text-black dark:text-white">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in booking.history" :key="item.id"
+                    class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                      {{ formatHistoryDateTime(item.created_at) }}
+                    </td>
+                    <td class="py-4 px-4">
+                      <span class="inline-block px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap"
+                        :class="getEventBadgeClass(item.event_category)">
+                        {{ item.event_type }}
+                      </span>
+                    </td>
+                    <td class="py-4 px-4">
+                      <div v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0" class="space-y-1">
+                        <div v-for="(value, key) in item.event_metadata" :key="key" class="text-sm">
+                          <span class="font-semibold text-black dark:text-white">{{ formatMetadataKey(key) }}:</span>
+                          <span class="text-gray-600 dark:text-gray-400 ml-1">{{ formatMetadataValue(key, value) }}</span>
+                        </div>
+                      </div>
+                      <span v-else class="text-sm text-gray-400 dark:text-gray-500 italic">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </template>
@@ -677,6 +720,44 @@ export default {
 
       const statusStr = status && typeof status === 'string' ? status.toLowerCase() : '';
       return statusMap[statusStr] || 'bg-gray-100 text-gray-800 border-gray-400 dark:bg-gray-700 dark:text-gray-300';
+    },
+    formatHistoryDateTime(dateString) {
+      if (!dateString) return '';
+
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    },
+    getEventBadgeClass(category) {
+      const categoryLower = (category || '').toLowerCase();
+      if (categoryLower.includes('create')) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      if (categoryLower.includes('update') || categoryLower.includes('edit')) return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      if (categoryLower.includes('delete')) return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      if (categoryLower.includes('status')) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      if (categoryLower.includes('send') || categoryLower.includes('email')) return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    },
+    formatMetadataKey(key) {
+      return key
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    },
+    formatMetadataValue(key, value) {
+      // Format currency values
+      if (key === 'total_amount' || key.toLowerCase().includes('amount') || key.toLowerCase().includes('price')) {
+        const num = typeof value === 'string' ? parseFloat(value) : value;
+        if (!isNaN(num)) {
+          return 'IDR ' + this.formatPrice(num);
+        }
+      }
+      return value;
     }
   }
 };

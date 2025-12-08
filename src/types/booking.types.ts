@@ -6,6 +6,23 @@ export type BookingStatus =
   | 'completed'
   | 'cancelled';
 
+export interface HistoryItem {
+  id: number;
+  quote_id: number;
+  user_id: number;
+  event_type: string;
+  event_category: string;
+  description: string;
+  event_metadata: {
+    status?: string;
+    quote_number?: string;
+    total_amount?: string;
+    customer_name?: string;
+    [key: string]: any;
+  };
+  created_at: string;
+}
+
 // Package interface for booking packages (similar to invoice items)
 export interface BookingPackage {
   id?: number;
@@ -70,6 +87,7 @@ export interface Booking {
   notes?: string;
   customer_notes?: string;
   internal_notes?: string;
+  history?: HistoryItem[];
   created_at: string;
   updated_at: string;
 }
@@ -204,4 +222,5 @@ export interface BookingDetail {
   sales_person: BookingDetailSalesPerson;
   items: BookingDetailItem[];
   villas: BookingDetailVilla[];
+  history?: HistoryItem[];
 }

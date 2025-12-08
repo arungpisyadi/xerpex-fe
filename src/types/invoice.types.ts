@@ -2,6 +2,23 @@ import type { Payment } from './payment.types';
 
 export type InvoiceStatus = 'draft' | 'sent' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
 
+export interface HistoryItem {
+  id: number;
+  quote_id: number;
+  user_id: number;
+  event_type: string;
+  event_category: string;
+  description: string;
+  event_metadata: {
+    status?: string;
+    quote_number?: string;
+    total_amount?: string;
+    customer_name?: string;
+    [key: string]: any;
+  };
+  created_at: string;
+}
+
 export interface InvoiceItem {
   id: number;
   package_id: number;
@@ -29,6 +46,7 @@ export interface Invoice {
   payments: Payment[];
   payment_terms?: string;
   notes?: string;
+  history?: HistoryItem[];
   check_in?: string;
   check_out?: string;
   villa_ids?: number[];

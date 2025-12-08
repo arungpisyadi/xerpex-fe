@@ -37,7 +37,7 @@
       <page-breadcrumb page-title="Targets" />
     </div>
 
-    <div class=" bg-white px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-0 xl:pb-0">
+    <div class=" bg-white px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-4 xl:pb-0">
       <div class="mb-6">
         <h2 class="text-title-md2 font-bold text-black dark:text-white">
           Targets Management

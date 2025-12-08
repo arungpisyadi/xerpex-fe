@@ -1,3 +1,5 @@
+import type { HistoryItem } from './common.types';
+
 export type BookingStatus =
   | 'pending'
   | 'confirmed'
@@ -6,22 +8,7 @@ export type BookingStatus =
   | 'completed'
   | 'cancelled';
 
-export interface HistoryItem {
-  id: number;
-  quote_id: number;
-  user_id: number;
-  event_type: string;
-  event_category: string;
-  description: string;
-  event_metadata: {
-    status?: string;
-    quote_number?: string;
-    total_amount?: string;
-    customer_name?: string;
-    [key: string]: any;
-  };
-  created_at: string;
-}
+export type { HistoryItem };
 
 // Package interface for booking packages (similar to invoice items)
 export interface BookingPackage {

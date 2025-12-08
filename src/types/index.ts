@@ -1,4 +1,5 @@
 // Export all types from individual files
+export * from './common.types';
 export * from './customer.types';
 export * from './tax.types';
 export * from './package.types';

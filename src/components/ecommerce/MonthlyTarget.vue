@@ -191,7 +191,7 @@ const chartOptions = {
     colors: ['#465FFF'],
   },
   stroke: {
-    lineCap: 'round',
+    lineCap: 'round' as const,
   },
   labels: ['Progress'],
 }

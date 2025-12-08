@@ -354,8 +354,8 @@ const getEventBadgeClass = (category: string) => {
 }
 
 // Helper function to format metadata keys
-const formatMetadataKey = (key: string) => {
-  return key
+const formatMetadataKey = (key: string | number) => {
+  return String(key)
     .split('_')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')

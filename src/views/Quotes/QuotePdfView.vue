@@ -89,7 +89,6 @@ onMounted(async () => {
 <style scoped>
 .pdf-view-container {
   background-color: #f5f5f5;
-  min-height: 100vh;
   padding: 20px 0;
 }
 

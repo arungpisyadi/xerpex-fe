@@ -241,7 +241,7 @@ const downloadPDF = async () => {
     pdfStatus.value = 'Preparing PDF content...'
 
     // Add delay to show status message
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, 3000))
 
     pdfStatus.value = 'Capturing content from iframe...'
 
@@ -271,10 +271,10 @@ const downloadPDF = async () => {
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: {
         scale: 2,
-        useCORS: true,
-        logging: false,
-        letterRendering: true,
-        allowTaint: true,
+        useCORS: false,
+        logging: true,
+        letterRendering: false,
+        allowTaint: false,
         backgroundColor: '#ffffff',
         scrollY: 0,  // Start from top of content
         scrollX: 0,  // Start from left of content

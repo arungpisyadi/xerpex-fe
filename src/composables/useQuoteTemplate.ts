@@ -499,7 +499,7 @@ export function useQuoteTemplate() {
         </div>
     </div>
 
-    <div class="rules-page">
+    <div class="html2pdf__page-break rules-page">
         <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
     </div>
 </body>
@@ -773,8 +773,8 @@ export function useQuoteTemplate() {
         }
 
         .totals-table .total-row {
-            background-color: #000;
-            color: white;
+            background-color: #fff;
+            color: #000;
             font-weight: bold;
             font-size: 13px;
         }

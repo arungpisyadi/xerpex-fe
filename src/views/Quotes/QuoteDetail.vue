@@ -795,10 +795,13 @@ export default {
         }
 
         // Default conversion parameters
+        console.log(this.quote);
+
         const conversionData = {
           payment_terms: '30 days',
-          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
-          notes: this.quote.notes || ''
+          due_date: this.quote.expiry_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+          notes: this.quote.notes || '',
+          issue_date: this.quote.issue_date || new Date(Date.now()).toISOString().split('T')[0]
         };
 
         // Convert quote to invoice

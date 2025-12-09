@@ -42,7 +42,7 @@
         <h2 class="text-title-md2 font-bold text-black dark:text-white">
           Bookings Management
         </h2>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <!-- <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
           <button
             v-if="canCreate"
             class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
@@ -53,7 +53,7 @@
             </svg>
             Create New Booking
           </button>
-        </div>
+        </div> -->
       </div>
 
       <!-- Filters Section -->

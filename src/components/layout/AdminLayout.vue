@@ -4,7 +4,13 @@
     <Backdrop v-if="isAuthenticated" />
     <div
       class="flex-1 transition-all duration-300 ease-in-out"
-      :class="[isAuthenticated && (isExpanded || isHovered) ? 'lg:ml-[290px]' : isAuthenticated ? 'lg:ml-[90px]' : '']"
+      :class="[
+        isAuthenticated && (isExpanded || isHovered)
+          ? 'lg:ml-[290px]'
+          : isAuthenticated
+            ? 'lg:ml-[90px]'
+            : '',
+      ]"
     >
       <app-header v-if="isAuthenticated" />
       <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">

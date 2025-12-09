@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 import type {
   Quote,
   CreateQuoteRequest,
@@ -8,8 +8,8 @@ import type {
   ConvertToInvoiceRequest,
   QuoteActionResponse,
   UpdateQuoteNotesRequest,
-  UpdateQuoteNotesResponse
-} from '../types/quote.types';
+  UpdateQuoteNotesResponse,
+} from '../types/quote.types'
 
 class QuoteService {
   /**
@@ -20,11 +20,11 @@ class QuoteService {
   async getQuotes(params: QuoteFilters = {}): Promise<QuoteListResponse> {
     try {
       // Remove user_id from params as backend handles role-based filtering automatically
-      const { user_id, ...cleanParams } = params as any;
-      const response = await apiClient.get('/quotes', { params: cleanParams });
-      return response.data;
+      const { user_id, ...cleanParams } = params as any
+      const response = await apiClient.get('/quotes', { params: cleanParams })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -35,10 +35,10 @@ class QuoteService {
    */
   async getQuoteById(id: number): Promise<Quote> {
     try {
-      const response = await apiClient.get(`/quotes/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/quotes/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -49,10 +49,10 @@ class QuoteService {
    */
   async createQuote(quoteData: CreateQuoteRequest): Promise<Quote> {
     try {
-      const response = await apiClient.post('/quotes', quoteData);
-      return response.data;
+      const response = await apiClient.post('/quotes', quoteData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -64,10 +64,10 @@ class QuoteService {
    */
   async updateQuote(id: number, quoteData: UpdateQuoteRequest): Promise<Quote> {
     try {
-      const response = await apiClient.put(`/quotes/${id}`, quoteData);
-      return response.data;
+      const response = await apiClient.put(`/quotes/${id}`, quoteData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -78,9 +78,9 @@ class QuoteService {
    */
   async deleteQuote(id: number): Promise<void> {
     try {
-      await apiClient.delete(`/quotes/${id}`);
+      await apiClient.delete(`/quotes/${id}`)
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -91,10 +91,10 @@ class QuoteService {
    */
   async sendQuote(id: number): Promise<QuoteActionResponse> {
     try {
-      const response = await apiClient.post(`/quotes/${id}/send`);
-      return response.data;
+      const response = await apiClient.post(`/quotes/${id}/send`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -105,10 +105,10 @@ class QuoteService {
    */
   async acceptQuote(id: number): Promise<QuoteActionResponse> {
     try {
-      const response = await apiClient.post(`/quotes/${id}/accept`);
-      return response.data;
+      const response = await apiClient.post(`/quotes/${id}/accept`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -119,10 +119,10 @@ class QuoteService {
    */
   async declineQuote(id: number): Promise<QuoteActionResponse> {
     try {
-      const response = await apiClient.post(`/quotes/${id}/decline`);
-      return response.data;
+      const response = await apiClient.post(`/quotes/${id}/decline`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -133,10 +133,10 @@ class QuoteService {
    */
   async reopenQuote(id: number): Promise<QuoteActionResponse> {
     try {
-      const response = await apiClient.post(`/quotes/${id}/reopen`);
-      return response.data;
+      const response = await apiClient.post(`/quotes/${id}/reopen`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -148,11 +148,11 @@ class QuoteService {
    */
   async updateQuoteNotes(id: number, notes: string): Promise<UpdateQuoteNotesResponse> {
     try {
-      const requestData: UpdateQuoteNotesRequest = { notes };
-      const response = await apiClient.patch(`/quotes/${id}/notes`, requestData);
-      return response.data;
+      const requestData: UpdateQuoteNotesRequest = { notes }
+      const response = await apiClient.patch(`/quotes/${id}/notes`, requestData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -164,10 +164,10 @@ class QuoteService {
    */
   async convertToInvoice(id: number, conversionData: ConvertToInvoiceRequest): Promise<any> {
     try {
-      const response = await apiClient.post(`/quotes/${id}/convert-to-invoice`, conversionData);
-      return response.data;
+      const response = await apiClient.post(`/quotes/${id}/convert-to-invoice`, conversionData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -178,12 +178,12 @@ class QuoteService {
    */
   async generatePdf(id: number): Promise<Blob> {
     try {
-      const response = await apiClient.get(`/quotes/${id}/pdf`, { responseType: 'blob' });
-      return response.data;
+      const response = await apiClient.get(`/quotes/${id}/pdf`, { responseType: 'blob' })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new QuoteService();
+export default new QuoteService()

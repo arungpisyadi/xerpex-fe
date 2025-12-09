@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 import type {
   Booking,
   BookingVilla,
@@ -9,8 +9,8 @@ import type {
   BookingActionResponse,
   BookingStatus,
   ExportToInvoiceRequest,
-  ExportToInvoiceResponse
-} from '../types/booking.types';
+  ExportToInvoiceResponse,
+} from '../types/booking.types'
 
 class BookingService {
   /**
@@ -20,10 +20,10 @@ class BookingService {
    */
   async getBookings(params: BookingFilters = {}): Promise<BookingListResponse> {
     try {
-      const response = await apiClient.get('/bookings', { params });
-      return response.data;
+      const response = await apiClient.get('/bookings', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -34,10 +34,10 @@ class BookingService {
    */
   async getBookingById(id: number): Promise<Booking> {
     try {
-      const response = await apiClient.get(`/bookings/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/bookings/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -48,10 +48,10 @@ class BookingService {
    */
   async createBooking(bookingData: CreateBookingRequest): Promise<Booking> {
     try {
-      const response = await apiClient.post('/bookings', bookingData);
-      return response.data;
+      const response = await apiClient.post('/bookings', bookingData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -63,10 +63,10 @@ class BookingService {
    */
   async updateBooking(id: number, bookingData: UpdateBookingRequest): Promise<Booking> {
     try {
-      const response = await apiClient.put(`/bookings/${id}`, bookingData);
-      return response.data;
+      const response = await apiClient.put(`/bookings/${id}`, bookingData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -77,9 +77,9 @@ class BookingService {
    */
   async deleteBooking(id: number): Promise<void> {
     try {
-      await apiClient.delete(`/bookings/${id}`);
+      await apiClient.delete(`/bookings/${id}`)
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -90,10 +90,10 @@ class BookingService {
    */
   async confirmBooking(id: number): Promise<BookingActionResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/confirm`);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/confirm`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -105,10 +105,10 @@ class BookingService {
    */
   async cancelBooking(id: number, reason?: string): Promise<BookingActionResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/cancel`, { reason });
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/cancel`, { reason })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -119,10 +119,10 @@ class BookingService {
    */
   async checkInBooking(id: number): Promise<BookingActionResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/check-in`);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/check-in`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -133,10 +133,10 @@ class BookingService {
    */
   async checkOutBooking(id: number): Promise<BookingActionResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/check-out`);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/check-out`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -147,10 +147,10 @@ class BookingService {
    */
   async completeBooking(id: number): Promise<BookingActionResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/complete`);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/complete`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -162,10 +162,10 @@ class BookingService {
    */
   async updateBookingStatus(id: number, status: BookingStatus): Promise<Booking> {
     try {
-      const response = await apiClient.patch(`/bookings/${id}/status`, { status });
-      return response.data;
+      const response = await apiClient.patch(`/bookings/${id}/status`, { status })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -175,12 +175,15 @@ class BookingService {
    * @param exportData - Export parameters
    * @returns Promise with created invoice details
    */
-  async exportToInvoice(id: number, exportData: ExportToInvoiceRequest): Promise<ExportToInvoiceResponse> {
+  async exportToInvoice(
+    id: number,
+    exportData: ExportToInvoiceRequest,
+  ): Promise<ExportToInvoiceResponse> {
     try {
-      const response = await apiClient.post(`/bookings/${id}/export-to-invoice`, exportData);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/export-to-invoice`, exportData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -192,10 +195,10 @@ class BookingService {
    */
   async updateBookingNotes(id: number, notes: string): Promise<Booking> {
     try {
-      const response = await apiClient.patch(`/bookings/${id}/notes`, { notes });
-      return response.data;
+      const response = await apiClient.patch(`/bookings/${id}/notes`, { notes })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -205,21 +208,24 @@ class BookingService {
    * @param taxRate - Tax rate (default: 0)
    * @returns Object with calculated totals
    */
-  calculateBookingTotals(villas: BookingVilla[], taxRate: number = 0): {
-    subtotal: number;
-    tax_amount: number;
-    total_amount: number;
+  calculateBookingTotals(
+    villas: BookingVilla[],
+    taxRate: number = 0,
+  ): {
+    subtotal: number
+    tax_amount: number
+    total_amount: number
   } {
-    const subtotal = villas.reduce((sum, villa) => sum + villa.line_total, 0);
-    const tax_amount = subtotal * taxRate;
-    const total_amount = subtotal + tax_amount;
+    const subtotal = villas.reduce((sum, villa) => sum + villa.line_total, 0)
+    const tax_amount = subtotal * taxRate
+    const total_amount = subtotal + tax_amount
 
     return {
       subtotal,
       tax_amount,
-      total_amount
-    };
+      total_amount,
+    }
   }
 }
 
-export default new BookingService();
+export default new BookingService()

@@ -10,9 +10,8 @@
         :options="[
           { label: 'Marketing', value: 'marketing' },
           { label: 'Template', value: 'template' },
-          { label: 'Development', value: 'development' }
+          { label: 'Development', value: 'development' },
         ]"
-
       />
     </div>
 

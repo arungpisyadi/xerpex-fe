@@ -1,4 +1,4 @@
-import type { ApiError, ValidationError } from '../types/api.types';
+import type { ApiError, ValidationError } from '../types/api.types'
 
 export class ErrorHandler {
   /**
@@ -8,26 +8,26 @@ export class ErrorHandler {
    */
   static handleApiError(error: any): string {
     if (!error.response) {
-      return 'Network error. Please check your connection.';
+      return 'Network error. Please check your connection.'
     }
 
-    const { status, data } = error.response;
+    const { status, data } = error.response
 
     switch (status) {
       case 400:
-        return this.handleValidationErrors(data);
+        return this.handleValidationErrors(data)
       case 401:
-        return 'Authentication required. Please log in.';
+        return 'Authentication required. Please log in.'
       case 403:
-        return 'You do not have permission to perform this action.';
+        return 'You do not have permission to perform this action.'
       case 404:
-        return 'The requested resource was not found.';
+        return 'The requested resource was not found.'
       case 422:
-        return this.handleValidationErrors(data);
+        return this.handleValidationErrors(data)
       case 500:
-        return 'Internal server error. Please try again later.';
+        return 'Internal server error. Please try again later.'
       default:
-        return data?.detail || 'An unexpected error occurred.';
+        return data?.detail || 'An unexpected error occurred.'
     }
   }
 
@@ -38,19 +38,19 @@ export class ErrorHandler {
    */
   static handleValidationErrors(data: ApiError): string {
     if (typeof data.detail === 'string') {
-      return data.detail;
+      return data.detail
     }
 
     if (Array.isArray(data.detail)) {
-      const errors = data.detail as ValidationError[];
-      const messages = errors.map(err => {
-        const field = err.loc.length > 1 ? err.loc[1] : 'field';
-        return `${field}: ${err.msg}`;
-      });
-      return messages.join(', ');
+      const errors = data.detail as ValidationError[]
+      const messages = errors.map((err) => {
+        const field = err.loc.length > 1 ? err.loc[1] : 'field'
+        return `${field}: ${err.msg}`
+      })
+      return messages.join(', ')
     }
 
-    return 'Validation error occurred.';
+    return 'Validation error occurred.'
   }
 
   /**
@@ -59,19 +59,19 @@ export class ErrorHandler {
    * @returns Object with field names as keys and error messages as values
    */
   static extractFieldErrors(data: ApiError): Record<string, string> {
-    const fieldErrors: Record<string, string> = {};
+    const fieldErrors: Record<string, string> = {}
 
     if (Array.isArray(data.detail)) {
-      const errors = data.detail as ValidationError[];
-      errors.forEach(err => {
+      const errors = data.detail as ValidationError[]
+      errors.forEach((err) => {
         if (err.loc && err.loc.length > 1) {
-          const field = err.loc[1] as string;
-          fieldErrors[field] = err.msg;
+          const field = err.loc[1] as string
+          fieldErrors[field] = err.msg
         }
-      });
+      })
     }
 
-    return fieldErrors;
+    return fieldErrors
   }
 
   /**
@@ -80,7 +80,7 @@ export class ErrorHandler {
    */
   static showError(message: string): void {
     // TODO: Implement with your notification system
-    console.error('Error:', message);
+    console.error('Error:', message)
     // Example: toast.error(message);
   }
 
@@ -90,7 +90,7 @@ export class ErrorHandler {
    */
   static showSuccess(message: string): void {
     // TODO: Implement with your notification system
-    console.log('Success:', message);
+    console.log('Success:', message)
     // Example: toast.success(message);
   }
 
@@ -100,13 +100,13 @@ export class ErrorHandler {
    * @param context - Additional context information
    */
   static logError(error: any, context?: string): void {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] ${context ? `${context}: ` : ''}${error.message || error}`;
+    const timestamp = new Date().toISOString()
+    const logMessage = `[${timestamp}] ${context ? `${context}: ` : ''}${error.message || error}`
 
-    console.error(logMessage);
+    console.error(logMessage)
 
     if (error.stack) {
-      console.error(error.stack);
+      console.error(error.stack)
     }
 
     // TODO: Send to error tracking service in production
@@ -119,14 +119,12 @@ export class ErrorHandler {
  * @param promise - Promise to wrap
  * @returns Tuple of [error, data]
  */
-export async function handleAsync<T>(
-  promise: Promise<T>
-): Promise<[any, T | null]> {
+export async function handleAsync<T>(promise: Promise<T>): Promise<[any, T | null]> {
   try {
-    const data = await promise;
-    return [null, data];
+    const data = await promise
+    return [null, data]
   } catch (error) {
-    return [error, null];
+    return [error, null]
   }
 }
 
@@ -140,24 +138,24 @@ export async function handleAsync<T>(
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  baseDelay: number = 1000
+  baseDelay: number = 1000,
 ): Promise<T> {
-  let lastError: any;
+  let lastError: any
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await fn();
+      return await fn()
     } catch (error) {
-      lastError = error;
+      lastError = error
 
       if (attempt === maxRetries) {
-        break;
+        break
       }
 
-      const delay = baseDelay * Math.pow(2, attempt);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      const delay = baseDelay * Math.pow(2, attempt)
+      await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
 
-  throw lastError;
+  throw lastError
 }

@@ -5,7 +5,10 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loadingBooking" class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-if="loadingBooking"
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <span class="ml-3 text-[#4b5563] dark:text-gray-400">Loading booking...</span>
@@ -13,7 +16,10 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-else-if="error"
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="flex items-center justify-center py-12">
         <div class="text-center">
           <div class="text-[#ef4444] text-lg font-[600] mb-2">{{ error }}</div>
@@ -28,7 +34,10 @@
     </div>
 
     <!-- Edit Form -->
-    <div v-else class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-else
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="mb-[1.5rem] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-title-md2 font-[700] text-black dark:text-white">
@@ -36,7 +45,10 @@
           </h2>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">Status:</span>
-            <span :class="getStatusClass(booking?.status)" class="px-2 py-1 text-xs font-[500] rounded-full">
+            <span
+              :class="getStatusClass(booking?.status)"
+              class="px-2 py-1 text-xs font-[500] rounded-full"
+            >
               {{ booking?.status?.toUpperCase() }}
             </span>
           </div>
@@ -58,13 +70,25 @@
       </div>
 
       <!-- Non-editable Booking Warning -->
-      <div v-if="!isEditable" class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800">
+      <div
+        v-if="!isEditable"
+        class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800"
+      >
         <div class="flex items-center">
-          <svg class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          <svg
+            class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            ></path>
           </svg>
           <span class="text-[#92400e] dark:text-yellow-200 font-[500]">
-            This booking cannot be edited because its status is "{{ booking?.status }}". Only pending and confirmed bookings can be modified.
+            This booking cannot be edited because its status is "{{ booking?.status }}". Only
+            pending and confirmed bookings can be modified.
           </span>
         </div>
       </div>
@@ -154,7 +178,7 @@
             :disabled="!isEditable"
             select-icon="down"
             :classes="{
-              selectIcon: '!opacity-100 !block'
+              selectIcon: '!opacity-100 !block',
             }"
           />
 
@@ -291,60 +315,60 @@
         </div>
 
         <!-- Calculations Summary -->
-        <div class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]">
-          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Booking Summary</h4>
+        <div
+          class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]"
+        >
+          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">
+            Booking Summary
+          </h4>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Number of Nights:</span>
-              <span class="font-[500] text-black dark:text-white">{{ calculations.numNights }} nights</span>
+              <span class="font-[500] text-black dark:text-white"
+                >{{ calculations.numNights }} nights</span
+              >
             </div>
 
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
-              <span class="font-[500] text-black dark:text-white">Rp {{ formatPrice(calculations.subtotal) }}</span>
+              <span class="font-[500] text-black dark:text-white"
+                >Rp {{ formatPrice(calculations.subtotal) }}</span
+              >
             </div>
 
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Tax (10%):</span>
-              <span class="font-[500] text-black dark:text-white">Rp {{ formatPrice(calculations.tax_amount) }}</span>
+              <span class="font-[500] text-black dark:text-white"
+                >Rp {{ formatPrice(calculations.tax_amount) }}</span
+              >
             </div>
 
-            <hr class="border-[#d1d5db] dark:border-gray-600">
+            <hr class="border-[#d1d5db] dark:border-gray-600" />
 
             <div class="flex justify-between text-lg font-[700]">
               <span class="text-black dark:text-white">Total:</span>
-              <span class="text-black dark:text-white">Rp {{ formatPrice(calculations.total) }}</span>
+              <span class="text-black dark:text-white"
+                >Rp {{ formatPrice(calculations.total) }}</span
+              >
             </div>
           </div>
         </div>
 
         <!-- Form Actions - Editable -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-if="isEditable">
-          <FormKit
-            type="button"
-            @click="$router.push('/bookings')"
-            :disabled="loading"
-          >
+          <FormKit type="button" @click="$router.push('/bookings')" :disabled="loading">
             Cancel
           </FormKit>
 
-          <FormKit
-            type="submit"
-            :disabled="loading || !isFormValid"
-          >
+          <FormKit type="submit" :disabled="loading || !isFormValid">
             {{ loading ? 'Updating...' : 'Update Booking' }}
           </FormKit>
         </div>
 
         <!-- Form Actions - Read-only -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-else>
-          <FormKit
-            type="button"
-            @click="$router.push('/bookings')"
-          >
-            Back to Bookings
-          </FormKit>
+          <FormKit type="button" @click="$router.push('/bookings')"> Back to Bookings </FormKit>
         </div>
       </FormKit>
     </div>
@@ -376,11 +400,7 @@ const route = useRoute()
 const bookingId = computed(() => route.params.id as string)
 
 // Composables
-const {
-  customers,
-  loading: invoicingLoading,
-  fetchCustomers
-} = useInvoicing()
+const { customers, loading: invoicingLoading, fetchCustomers } = useInvoicing()
 
 // Reactive state
 const loading = ref(false)
@@ -405,14 +425,14 @@ const bookingForm = ref({
       unit_price: 0,
       pax: 1,
       discount: 0,
-      line_total: 0
-    }
+      line_total: 0,
+    },
   ],
   subtotal: 0,
   tax_amount: 0,
   total_amount: 0,
   notes: '',
-  customer_notes: ''
+  customer_notes: '',
 })
 
 // Computed properties
@@ -423,7 +443,7 @@ const customerOptions = computed(() => {
 
   return customers.value.map((customer: Customer) => ({
     label: `${customer.name} - ${customer.email || 'No email'}`,
-    value: customer.id
+    value: customer.id,
   }))
 })
 
@@ -434,7 +454,7 @@ const villaOptions = computed(() => {
 
   return villas.value.map((villa: any) => ({
     label: villa.name,
-    value: villa.id
+    value: villa.id,
   }))
 })
 
@@ -446,7 +466,7 @@ const packageOptions = computed(() => {
   return packages.value.map((pkg: Package) => ({
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
-    cost_per_pax: pkg.cost_per_pax
+    cost_per_pax: pkg.cost_per_pax,
   }))
 })
 
@@ -459,8 +479,8 @@ const salespersonOptions = computed(() => {
     { label: 'Select a salesperson', value: '', attrs: { disabled: true } },
     ...salespeople.value.map((sp: User) => ({
       label: sp.full_name || `User #${sp.id}`,
-      value: sp.id
-    }))
+      value: sp.id,
+    })),
   ]
 })
 
@@ -477,16 +497,13 @@ const calculations = computed(() => {
   const total = subtotal + tax_amount
 
   // Calculate number of nights
-  const numNights = calculateNumNights(
-    bookingForm.value.check_in,
-    bookingForm.value.check_out
-  )
+  const numNights = calculateNumNights(bookingForm.value.check_in, bookingForm.value.check_out)
 
   return {
     subtotal,
     tax_amount,
     total,
-    numNights
+    numNights,
   }
 })
 
@@ -504,10 +521,8 @@ const isFormValid = computed(() => {
   if (!form.packages || form.packages.length === 0) return false
 
   // Check if all packages have required fields
-  return form.packages.every(pkg =>
-    pkg.package_id &&
-    Number(pkg.unit_price) >= 0 &&
-    Number(pkg.pax) > 0
+  return form.packages.every(
+    (pkg) => pkg.package_id && Number(pkg.unit_price) >= 0 && Number(pkg.pax) > 0,
   )
 })
 
@@ -539,7 +554,7 @@ const getStatusClass = (status: string | undefined) => {
 const onPackageSelect = (value: number | undefined, node: any) => {
   if (!value) return
 
-  const selectedPackage = packages.value.find(p => p.id === value)
+  const selectedPackage = packages.value.find((p) => p.id === value)
   if (selectedPackage && node?.parent?.value) {
     // Auto-populate unit_price from package cost_per_pax
     node.parent.value.unit_price = selectedPackage.cost_per_pax || 0
@@ -600,7 +615,9 @@ const loadBookingData = async () => {
       villaIds = booking.value.villa_ids
     } else if (booking.value?.villas && Array.isArray(booking.value.villas)) {
       // Legacy/API structure with nested villas
-      villaIds = (booking.value.villas as any[]).map((v: any) => v.villa_id || v.villa?.id).filter(Boolean)
+      villaIds = (booking.value.villas as any[])
+        .map((v: any) => v.villa_id || v.villa?.id)
+        .filter(Boolean)
     }
 
     // Extract packages/items - handle both structures
@@ -624,33 +641,38 @@ const loadBookingData = async () => {
     // Pre-populate form with booking data
     bookingForm.value = {
       customer_id: booking.value?.customer_id?.toString() || '',
-      booking_date: booking.value?.booking_date || (booking.value as any)?.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+      booking_date:
+        booking.value?.booking_date ||
+        (booking.value as any)?.created_at?.split('T')[0] ||
+        new Date().toISOString().split('T')[0],
       check_in: booking.value?.check_in || booking.value?.earliest_check_in || '',
       check_out: booking.value?.check_out || booking.value?.latest_check_out || '',
       villa_ids: villaIds,
       salesmen_id: salesPersonId?.toString() || '',
-      packages: packagesData.length > 0
-        ? packagesData.map(pkg => ({
-            package_id: pkg.package_id?.toString() || '',
-            unit_price: Number(pkg.unit_price) || 0,
-            pax: Number(pkg.pax) || 1,
-            discount: Number(pkg.discount) || 0,
-            line_total: Number(pkg.line_total) || 0
-          }))
-        : [
-            {
-              package_id: '',
-              unit_price: 0,
-              pax: 1,
-              discount: 0,
-              line_total: 0
-            }
-          ],
+      packages:
+        packagesData.length > 0
+          ? packagesData.map((pkg) => ({
+              package_id: pkg.package_id?.toString() || '',
+              unit_price: Number(pkg.unit_price) || 0,
+              pax: Number(pkg.pax) || 1,
+              discount: Number(pkg.discount) || 0,
+              line_total: Number(pkg.line_total) || 0,
+            }))
+          : [
+              {
+                package_id: '',
+                unit_price: 0,
+                pax: 1,
+                discount: 0,
+                line_total: 0,
+              },
+            ],
       subtotal: Number(booking.value?.subtotal) || 0,
       tax_amount: Number(booking.value?.tax_amount) || 0,
-      total_amount: Number(booking.value?.total_amount) || Number((booking.value as any)?.total) || 0,
+      total_amount:
+        Number(booking.value?.total_amount) || Number((booking.value as any)?.total) || 0,
       notes: booking.value?.notes || '',
-      customer_notes: booking.value?.customer_notes || ''
+      customer_notes: booking.value?.customer_notes || '',
     }
 
     // console.log('Form populated with values:', {
@@ -660,7 +682,6 @@ const loadBookingData = async () => {
     //   salesmen_id: bookingForm.value.salesmen_id,
     //   packagesCount: bookingForm.value.packages.length
     // })
-
   } catch (err: any) {
     console.error('Error loading booking:', err)
     if (err.response?.status === 404) {
@@ -690,20 +711,22 @@ const submitBooking = async () => {
       booking_date: bookingForm.value.booking_date,
       check_in: bookingForm.value.check_in,
       check_out: bookingForm.value.check_out,
-      villas: bookingForm.value.villa_ids.map(id => Number(id)),
-      sales_person_id: bookingForm.value.salesmen_id ? Number(bookingForm.value.salesmen_id) : undefined,
-      items: bookingForm.value.packages.map(pkg => ({
+      villas: bookingForm.value.villa_ids.map((id) => Number(id)),
+      sales_person_id: bookingForm.value.salesmen_id
+        ? Number(bookingForm.value.salesmen_id)
+        : undefined,
+      items: bookingForm.value.packages.map((pkg) => ({
         package_id: Number(pkg.package_id),
         unit_price: Number(pkg.unit_price),
         pax: Number(pkg.pax),
         discount: Number(pkg.discount),
-        line_total: Number(pkg.line_total) || 0
+        line_total: Number(pkg.line_total) || 0,
       })),
       subtotal: calculations.value.subtotal,
-      tax_total: 0.00,
+      tax_total: 0.0,
       total_amount: calculations.value.total,
       notes: bookingForm.value.notes || undefined,
-      customer_notes: bookingForm.value.customer_notes || undefined
+      customer_notes: bookingForm.value.customer_notes || undefined,
     }
 
     // console.log('Booking update payload before API call:', JSON.stringify(bookingData, null, 2))
@@ -715,7 +738,6 @@ const submitBooking = async () => {
 
     // Redirect to booking detail
     router.push(`/bookings/${bookingId.value}`)
-
   } catch (error) {
     handleError(error, 'updateBooking')
   } finally {
@@ -724,20 +746,24 @@ const submitBooking = async () => {
 }
 
 // Watchers
-watch(() => bookingForm.value.packages, (newPackages) => {
-  // Update line_total for each package when values change
-  newPackages.forEach(pkg => {
-    const unitPrice = Number(pkg.unit_price) || 0
-    const pax = Number(pkg.pax) || 1
-    const discount = Number(pkg.discount) || 0
-    pkg.line_total = Math.max(0, (unitPrice * pax) - discount)
-  })
+watch(
+  () => bookingForm.value.packages,
+  (newPackages) => {
+    // Update line_total for each package when values change
+    newPackages.forEach((pkg) => {
+      const unitPrice = Number(pkg.unit_price) || 0
+      const pax = Number(pkg.pax) || 1
+      const discount = Number(pkg.discount) || 0
+      pkg.line_total = Math.max(0, unitPrice * pax - discount)
+    })
 
-  // Update overall totals
-  bookingForm.value.subtotal = calculations.value.subtotal
-  bookingForm.value.tax_amount = calculations.value.tax_amount
-  bookingForm.value.total_amount = calculations.value.total
-}, { deep: true })
+    // Update overall totals
+    bookingForm.value.subtotal = calculations.value.subtotal
+    bookingForm.value.tax_amount = calculations.value.tax_amount
+    bookingForm.value.total_amount = calculations.value.total
+  },
+  { deep: true },
+)
 
 // Lifecycle
 onMounted(async () => {
@@ -748,7 +774,7 @@ onMounted(async () => {
       loadVillas(),
       loadPackages(),
       loadSalespeople(),
-      loadBookingData()
+      loadBookingData(),
     ])
   } catch (error) {
     handleError(error, 'loadData')
@@ -786,7 +812,7 @@ const loadVillas = async () => {
 
     const response = await villaService.getVillas({ active_only: true })
     console.log('Villa service response:', response)
-    villas.value = Array.isArray(response) ? response : (response.villas || [])
+    villas.value = Array.isArray(response) ? response : response.villas || []
     console.log('Villas loaded successfully:', villas.value.length, 'villas')
   } catch (error: any) {
     console.error('Error loading villas:', error)
@@ -810,7 +836,7 @@ const loadPackages = async () => {
 
     const response = await packageService.getPackages({ active_only: true })
     console.log('Package service response:', response)
-    packages.value = Array.isArray(response) ? response : (response.packages || [])
+    packages.value = Array.isArray(response) ? response : response.packages || []
     console.log('Packages loaded successfully:', packages.value.length, 'packages')
   } catch (error: any) {
     console.error('Error loading packages:', error)
@@ -851,7 +877,7 @@ const triggerDatePicker = (event: Event) => {
 
 <style scoped>
 /* Additional custom styles if needed */
-.formkit-outer[data-type="repeater"] {
+.formkit-outer[data-type='repeater'] {
   @apply max-w-none;
 }
 
@@ -864,25 +890,25 @@ const triggerDatePicker = (event: Event) => {
 }
 
 /* Ensure consistent height and alignment for repeater form fields */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-outer {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-outer {
   @apply flex flex-col justify-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-input {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-input {
   @apply min-h-[2.75rem] flex items-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-wrapper {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-wrapper {
   @apply flex items-center;
 }
 
 /* Align labels consistently */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-label {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-label {
   @apply mb-[0.5rem] block text-[0.875rem] font-[500];
 }
 
 /* Ensure help text doesn't affect alignment */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-help {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-help {
   @apply mt-[0.25rem] text-[0.75rem];
 }
 </style>

@@ -1,41 +1,41 @@
 // Common API response types
 export interface ApiResponse<T = any> {
-  data?: T;
-  message?: string;
-  success?: boolean;
+  data?: T
+  message?: string
+  success?: boolean
 }
 
 export interface PaginatedResponse<T = any> {
-  items: T[];
-  total: number;
-  skip: number;
-  limit: number;
+  items: T[]
+  total: number
+  skip: number
+  limit: number
 }
 
 export interface ApiError {
-  detail: string | ValidationError[];
-  status?: number;
+  detail: string | ValidationError[]
+  status?: number
 }
 
 export interface ValidationError {
-  loc: (string | number)[];
-  msg: string;
-  type: string;
+  loc: (string | number)[]
+  msg: string
+  type: string
 }
 
 // Common query parameters
 export interface PaginationParams {
-  skip?: number;
-  limit?: number;
+  skip?: number
+  limit?: number
 }
 
 export interface SearchParams {
-  search?: string;
+  search?: string
 }
 
 export interface DateRangeParams {
-  from_date?: string;
-  to_date?: string;
+  from_date?: string
+  to_date?: string
 }
 
 // HTTP status codes
@@ -59,12 +59,12 @@ export const API_ENDPOINTS = {
   QUOTES: '/quotes',
   INVOICES: '/invoices',
   PAYMENTS: '/payments',
-} as const;
+} as const
 
 // Workflow states
 export interface WorkflowState {
-  currentStep: string;
-  data: Record<string, any>;
-  errors: Record<string, string>;
-  loading: boolean;
+  currentStep: string
+  data: Record<string, any>
+  errors: Record<string, string>
+  loading: boolean
 }

@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class PackageService {
   /**
@@ -15,10 +15,10 @@ class PackageService {
    */
   async getPackages(params = {}) {
     try {
-      const response = await apiClient.get('/packages', { params });
-      return response.data;
+      const response = await apiClient.get('/packages', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -29,10 +29,10 @@ class PackageService {
    */
   async getPackageById(id) {
     try {
-      const response = await apiClient.get(`/packages/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/packages/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -50,10 +50,10 @@ class PackageService {
    */
   async createPackage(packageData) {
     try {
-      const response = await apiClient.post('/packages', packageData);
-      return response.data;
+      const response = await apiClient.post('/packages', packageData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -65,10 +65,10 @@ class PackageService {
    */
   async updatePackage(id, packageData) {
     try {
-      const response = await apiClient.put(`/packages/${id}`, packageData);
-      return response.data;
+      const response = await apiClient.put(`/packages/${id}`, packageData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -79,10 +79,10 @@ class PackageService {
    */
   async deletePackage(id) {
     try {
-      const response = await apiClient.delete(`/packages/${id}`);
-      return response.data;
+      const response = await apiClient.delete(`/packages/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -92,10 +92,10 @@ class PackageService {
    */
   async getCategories() {
     try {
-      const response = await apiClient.get('/packages/meta/categories');
-      return response.data;
+      const response = await apiClient.get('/packages/meta/categories')
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -105,12 +105,12 @@ class PackageService {
    */
   async getTypes() {
     try {
-      const response = await apiClient.get('/packages/meta/types');
-      return response.data;
+      const response = await apiClient.get('/packages/meta/types')
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new PackageService();
+export default new PackageService()

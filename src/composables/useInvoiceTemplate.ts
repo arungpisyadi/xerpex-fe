@@ -1,14 +1,14 @@
-import { computed } from 'vue';
-import type { Invoice } from '../types/invoice.types';
-import { useGlobalCompanySettings } from './useCompanySettings';
-import { formatIDR } from '../utils/number-formatter';
+import { computed } from 'vue'
+import type { Invoice } from '../types/invoice.types'
+import { useGlobalCompanySettings } from './useCompanySettings'
+import { formatIDR } from '../utils/number-formatter'
 
 /**
  * Centralized Invoice Template Service
  * Provides consistent HTML generation for invoices across all components
  */
 export function useInvoiceTemplate() {
-  const { getInvoiceDisplaySettings, getInvoiceDisplaySettingsSync } = useGlobalCompanySettings();
+  const { getInvoiceDisplaySettings, getInvoiceDisplaySettingsSync } = useGlobalCompanySettings()
 
   /**
    * Generate consistent invoice HTML for preview display
@@ -17,34 +17,37 @@ export function useInvoiceTemplate() {
    * @returns HTML string for invoice display
    */
   const generatePreviewHTML = (invoiceData: Invoice, companyData?: any): string => {
-    console.log('[useInvoiceTemplate] Generating preview HTML for invoice:', invoiceData?.invoice_number);
+    console.log(
+      '[useInvoiceTemplate] Generating preview HTML for invoice:',
+      invoiceData?.invoice_number,
+    )
 
     if (!invoiceData) {
-      console.error('[useInvoiceTemplate] Invoice data is null or undefined:', invoiceData);
+      console.error('[useInvoiceTemplate] Invoice data is null or undefined:', invoiceData)
       return `
         <div style="padding: 20px; text-align: center; background: #f8f9fa; border-radius: 8px;">
           <h3 style="color: #dc3545;">Invoice data is incomplete</h3>
           <p>Please check if the invoice data was loaded correctly.</p>
         </div>
-      `;
+      `
     }
 
     // Use provided company data or get sync version with fallbacks
-    const settings = companyData || getInvoiceDisplaySettingsSync();
-    console.log('[useInvoiceTemplate] Using company settings:', settings);
+    const settings = companyData || getInvoiceDisplaySettingsSync()
+    console.log('[useInvoiceTemplate] Using company settings:', settings)
     // Add robust data handling with fallbacks
-    const items = Array.isArray(invoiceData.items) ? invoiceData.items : [];
-    const total = Number(invoiceData.total || 0);
-    const taxTotal = Number(invoiceData.tax_total || 0);
-    const customer = (invoiceData as any).customer || {};
-    const villas = Array.isArray((invoiceData as any).villas) ? (invoiceData as any).villas : [];
+    const items = Array.isArray(invoiceData.items) ? invoiceData.items : []
+    const total = Number(invoiceData.total || 0)
+    const taxTotal = Number(invoiceData.tax_total || 0)
+    const customer = (invoiceData as any).customer || {}
+    const villas = Array.isArray((invoiceData as any).villas) ? (invoiceData as any).villas : []
 
     console.log('[useInvoiceTemplate] Processing invoice data:', {
       invoice_number: invoiceData.invoice_number,
       items_count: items.length,
       total,
-      taxTotal
-    });
+      taxTotal,
+    })
 
     return `
 <!DOCTYPE html>
@@ -253,8 +256,8 @@ export function useInvoiceTemplate() {
         }
 
         .totals-table .total-row {
-            background-color: #007bff;
-            color: white;
+            background-color: #fff;
+            color: #000;
             font-weight: 700;
             font-size: 16px;
         }
@@ -362,11 +365,19 @@ export function useInvoiceTemplate() {
             </div>
             <div class="villa-details">
                 <h3>Villas:</h3>
-                ${villas.length > 0 ? villas.map((v: any) => `
+                ${
+                  villas.length > 0
+                    ? villas
+                        .map(
+                          (v: any) => `
                     <div class="villa-item">
                         <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
                     </div>
-                `).join('') : '<p>No villas assigned</p>'}
+                `,
+                        )
+                        .join('')
+                    : '<p>No villas assigned</p>'
+                }
             </div>
         </div>
 
@@ -382,7 +393,11 @@ export function useInvoiceTemplate() {
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map((item: any) => `
+                ${
+                  items.length > 0
+                    ? items
+                        .map(
+                          (item: any) => `
                     <tr>
                         <td>${item.package?.name || item.package_name || 'N/A'}</td>
                         <td>${item.package?.description || 'No description available'}</td>
@@ -391,11 +406,15 @@ export function useInvoiceTemplate() {
                         <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
-                `).join('') : `
+                `,
+                        )
+                        .join('')
+                    : `
                     <tr>
                         <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
-                `}
+                `
+                }
             </tbody>
         </table>
 
@@ -405,12 +424,16 @@ export function useInvoiceTemplate() {
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
                 </tr>
-                ${taxTotal > 0 ? `
+                ${
+                  taxTotal > 0
+                    ? `
                 <tr>
                     <td class="label">Tax:</td>
                     <td>${formatIDR(taxTotal)}</td>
                 </tr>
-                ` : ''}
+                `
+                    : ''
+                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
                     <td>${formatIDR(total)}</td>
@@ -418,19 +441,27 @@ export function useInvoiceTemplate() {
             </table>
         </div>
 
-        ${invoiceData.payment_terms ? `
+        ${
+          invoiceData.payment_terms
+            ? `
             <div class="payment-terms">
                 <h4>Payment Terms:</h4>
                 <p>${invoiceData.payment_terms}</p>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
 
-        ${invoiceData.notes ? `
+        ${
+          invoiceData.notes
+            ? `
             <div class="notes">
                 <h4>Notes:</h4>
                 <p>${invoiceData.notes}</p>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <div class="payment-info" style="margin-bottom: 25px; background-color: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #007bff;">
             <p style="font-style: italic; color: #333; margin: 0; line-height: 1.6;">
@@ -451,8 +482,8 @@ export function useInvoiceTemplate() {
     </div>
 </body>
 </html>
-    `;
-  };
+    `
+  }
 
   /**
    * Generate print-optimized invoice HTML
@@ -461,22 +492,25 @@ export function useInvoiceTemplate() {
    * @returns HTML string optimized for printing
    */
   const generatePrintHTML = (invoiceData: Invoice, companyData?: any): string => {
-    console.log('[useInvoiceTemplate] Generating print HTML for invoice:', invoiceData?.invoice_number);
+    console.log(
+      '[useInvoiceTemplate] Generating print HTML for invoice:',
+      invoiceData?.invoice_number,
+    )
 
     if (!invoiceData) {
-      console.error('[useInvoiceTemplate] Invoice data is null or undefined:', invoiceData);
-      return '<div style="padding: 20px; text-align: center;"><h3>Invoice data is incomplete</h3></div>';
+      console.error('[useInvoiceTemplate] Invoice data is null or undefined:', invoiceData)
+      return '<div style="padding: 20px; text-align: center;"><h3>Invoice data is incomplete</h3></div>'
     }
 
     // Use provided company data or get sync version with fallbacks
-    const settings = companyData || getInvoiceDisplaySettingsSync();
-    console.log('[useInvoiceTemplate] Using company settings for print:', settings);
+    const settings = companyData || getInvoiceDisplaySettingsSync()
+    console.log('[useInvoiceTemplate] Using company settings for print:', settings)
     // Add robust data handling with fallbacks
-    const items = Array.isArray(invoiceData.items) ? invoiceData.items : [];
-    const total = Number(invoiceData.total || 0);
-    const taxTotal = Number(invoiceData.tax_total || 0);
-    const customer = (invoiceData as any).customer || {};
-    const villas = Array.isArray((invoiceData as any).villas) ? (invoiceData as any).villas : [];
+    const items = Array.isArray(invoiceData.items) ? invoiceData.items : []
+    const total = Number(invoiceData.total || 0)
+    const taxTotal = Number(invoiceData.tax_total || 0)
+    const customer = (invoiceData as any).customer || {}
+    const villas = Array.isArray((invoiceData as any).villas) ? (invoiceData as any).villas : []
 
     return `
 <!DOCTYPE html>
@@ -688,8 +722,8 @@ export function useInvoiceTemplate() {
         }
 
         .totals-table .total-row {
-            background-color: #000;
-            color: white;
+            background-color: #fff;
+            color: #000;
             font-weight: bold;
             font-size: 13px;
         }
@@ -832,11 +866,19 @@ export function useInvoiceTemplate() {
             </div>
             <div class="villa-details">
                 <h3>Villas:</h3>
-                ${villas.length > 0 ? villas.map((v: any) => `
+                ${
+                  villas.length > 0
+                    ? villas
+                        .map(
+                          (v: any) => `
                     <div class="villa-item">
                         <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
                     </div>
-                `).join('') : '<p>No villas assigned</p>'}
+                `,
+                        )
+                        .join('')
+                    : '<p>No villas assigned</p>'
+                }
             </div>
         </div>
 
@@ -852,7 +894,11 @@ export function useInvoiceTemplate() {
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map((item: any) => `
+                ${
+                  items.length > 0
+                    ? items
+                        .map(
+                          (item: any) => `
                     <tr>
                         <td>${item.package?.name || item.package_name || 'N/A'}</td>
                         <td>${item.package?.description || 'No description available'}</td>
@@ -861,11 +907,15 @@ export function useInvoiceTemplate() {
                         <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
-                `).join('') : `
+                `,
+                        )
+                        .join('')
+                    : `
                     <tr>
                         <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
-                `}
+                `
+                }
             </tbody>
         </table>
 
@@ -875,12 +925,16 @@ export function useInvoiceTemplate() {
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
                 </tr>
-                ${taxTotal > 0 ? `
+                ${
+                  taxTotal > 0
+                    ? `
                 <tr>
                     <td class="label">Tax:</td>
                     <td>${formatIDR(taxTotal)}</td>
                 </tr>
-                ` : ''}
+                `
+                    : ''
+                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
                     <td>${formatIDR(total)}</td>
@@ -888,19 +942,27 @@ export function useInvoiceTemplate() {
             </table>
         </div>
 
-        ${invoiceData.payment_terms ? `
+        ${
+          invoiceData.payment_terms
+            ? `
             <div class="payment-terms">
                 <h4>Payment Terms:</h4>
                 <p>${invoiceData.payment_terms}</p>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
 
-        ${invoiceData.notes ? `
+        ${
+          invoiceData.notes
+            ? `
             <div class="notes">
                 <h4>Notes:</h4>
                 <p>${invoiceData.notes}</p>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
 
         <div class="payment-info" style="margin-bottom: 20px; background-color: #f8f9fa; padding: 15px; border: 1px solid #ddd; border-left: 3px solid #000;">
             <p style="font-style: italic; color: #333; margin: 0; line-height: 1.4; font-size: 11px;">
@@ -921,8 +983,8 @@ export function useInvoiceTemplate() {
     </div>
 </body>
 </html>
-    `;
-  };
+    `
+  }
 
   /**
    * Validate invoice data before template generation
@@ -931,17 +993,17 @@ export function useInvoiceTemplate() {
    */
   const validateInvoiceData = (invoiceData: any): invoiceData is Invoice => {
     if (!invoiceData) {
-      console.error('Invoice data is null or undefined');
-      return false;
+      console.error('Invoice data is null or undefined')
+      return false
     }
 
     if (!invoiceData.invoice_number) {
-      console.error('Invoice number is missing');
-      return false;
+      console.error('Invoice number is missing')
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   /**
    * Create blob URL for invoice preview
@@ -950,30 +1012,36 @@ export function useInvoiceTemplate() {
    * @returns Blob URL string
    */
   const createPreviewBlobUrl = async (invoiceData: Invoice, companyData?: any): Promise<string> => {
-    console.log('[useInvoiceTemplate] Creating preview blob URL for invoice:', invoiceData?.invoice_number);
+    console.log(
+      '[useInvoiceTemplate] Creating preview blob URL for invoice:',
+      invoiceData?.invoice_number,
+    )
 
     if (!validateInvoiceData(invoiceData)) {
-      console.error('[useInvoiceTemplate] Invalid invoice data, cannot create blob URL');
-      return '';
+      console.error('[useInvoiceTemplate] Invalid invoice data, cannot create blob URL')
+      return ''
     }
 
     try {
       // Get company data if not provided
-      const settings = companyData || await getInvoiceDisplaySettings();
-      const htmlContent = generatePreviewHTML(invoiceData, settings);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
+      const settings = companyData || (await getInvoiceDisplaySettings())
+      const htmlContent = generatePreviewHTML(invoiceData, settings)
+      const blob = new Blob([htmlContent], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
 
-      console.log('[useInvoiceTemplate] Successfully created blob URL:', url.substring(0, 50) + '...');
-      return url;
+      console.log(
+        '[useInvoiceTemplate] Successfully created blob URL:',
+        url.substring(0, 50) + '...',
+      )
+      return url
     } catch (error) {
-      console.error('[useInvoiceTemplate] Failed to create blob URL:', error);
+      console.error('[useInvoiceTemplate] Failed to create blob URL:', error)
       // Fallback to sync version if async fails
-      const htmlContent = generatePreviewHTML(invoiceData);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      return URL.createObjectURL(blob);
+      const htmlContent = generatePreviewHTML(invoiceData)
+      const blob = new Blob([htmlContent], { type: 'text/html' })
+      return URL.createObjectURL(blob)
     }
-  };
+  }
 
   return {
     // Template generation methods
@@ -986,6 +1054,6 @@ export function useInvoiceTemplate() {
 
     // Company settings access
     getInvoiceDisplaySettings,
-    getInvoiceDisplaySettingsSync
-  };
+    getInvoiceDisplaySettingsSync,
+  }
 }

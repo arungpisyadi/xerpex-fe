@@ -33,6 +33,6 @@
 
 <script>
 export default {
-  name: 'PackageIcon'
+  name: 'PackageIcon',
 }
 </script>

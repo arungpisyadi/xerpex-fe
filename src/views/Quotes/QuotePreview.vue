@@ -4,9 +4,7 @@
       <!-- Preview Header -->
       <div class="preview-header">
         <div class="header-left">
-          <button @click="goBack" class="back-button">
-            ← Back to Quotation
-          </button>
+          <button @click="goBack" class="back-button">← Back to Quotation</button>
           <h2 class="preview-title">Quotation Preview</h2>
         </div>
         <div class="header-right">
@@ -22,7 +20,7 @@
             @click="printQuote"
             :disabled="pdfGenerating"
             class="download-button"
-            :class="{ 'loading': pdfGenerating }"
+            :class="{ loading: pdfGenerating }"
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
@@ -45,7 +43,10 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading || loadingDetails.quote || loadingDetails.settings" class="loading-container">
+      <div
+        v-if="loading || loadingDetails.quote || loadingDetails.settings"
+        class="loading-container"
+      >
         <div class="spinner"></div>
         <div class="loading-details">
           <p v-if="loadingDetails.quote">Loading quotation data...</p>
@@ -100,7 +101,8 @@
           class="pdf-preview-iframe"
           ref="previewFrame"
           @load="onIframeLoad"
-          title="Quotation Preview">
+          title="Quotation Preview"
+        >
         </iframe>
       </div>
     </div>
@@ -138,7 +140,7 @@ const loadingDetails = ref({
   template: false,
   quoteCompleted: false,
   settingsCompleted: false,
-  templateCompleted: false
+  templateCompleted: false,
 })
 
 // Enhanced error handling
@@ -220,7 +222,6 @@ const printQuote = () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Print failed:', error)
     pdfStatus.value = 'Error: Failed to open print dialog'
@@ -241,12 +242,13 @@ const downloadPDF = async () => {
     pdfStatus.value = 'Preparing PDF content...'
 
     // Add delay to show status message
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
     pdfStatus.value = 'Capturing content from iframe...'
 
     // Get the iframe's document
-    const iframeDoc = previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
+    const iframeDoc =
+      previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
 
     if (!iframeDoc) {
       throw new Error('Unable to access iframe content')
@@ -276,15 +278,15 @@ const downloadPDF = async () => {
         letterRendering: false,
         allowTaint: false,
         backgroundColor: '#ffffff',
-        scrollY: 0,  // Start from top of content
-        scrollX: 0,  // Start from left of content
-        windowHeight: scrollHeight  // Capture full scrollable height
+        scrollY: 0, // Start from top of content
+        scrollX: 0, // Start from left of content
+        windowHeight: scrollHeight, // Capture full scrollable height
       },
       jsPDF: {
         unit: 'mm',
         format: 'a4',
-        orientation: 'portrait' as const
-      }
+        orientation: 'portrait' as const,
+      },
     }
 
     // Generate and download PDF from iframe content
@@ -295,7 +297,6 @@ const downloadPDF = async () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('PDF download failed:', error)
 
@@ -340,7 +341,7 @@ const loadQuoteData = async (quoteId: number) => {
     template: false,
     quoteCompleted: false,
     settingsCompleted: true, // We don't load settings here anymore
-    templateCompleted: true // Template is loaded via the route
+    templateCompleted: true, // Template is loaded via the route
   }
 
   try {
@@ -364,11 +365,10 @@ const loadQuoteData = async (quoteId: number) => {
       itemsCount: quote.items?.length || 0,
       total: quote.total,
       status: quote.status,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
     console.log('[QuotePreview] All steps completed successfully!')
-
   } catch (err) {
     console.error('[QuotePreview] Failed to load quote:', err)
 
@@ -379,7 +379,7 @@ const loadQuoteData = async (quoteId: number) => {
       template: false,
       quoteCompleted: false,
       settingsCompleted: false,
-      templateCompleted: false
+      templateCompleted: false,
     }
 
     // Set appropriate error messages
@@ -395,7 +395,7 @@ const loadQuoteData = async (quoteId: number) => {
       error: err instanceof Error ? err.message : String(err),
       stack: err instanceof Error ? err.stack : undefined,
       timestamp: new Date().toISOString(),
-      loadingState: { ...loadingDetails.value }
+      loadingState: { ...loadingDetails.value },
     }
   } finally {
     loading.value = false
@@ -441,7 +441,7 @@ onMounted(async () => {
   padding: 20px 30px;
   background-color: #fff;
   border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
@@ -667,7 +667,7 @@ onMounted(async () => {
   background-color: #fff;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
 }
 
@@ -761,13 +761,17 @@ onMounted(async () => {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex: 1;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive design */

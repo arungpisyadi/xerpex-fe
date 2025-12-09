@@ -1,11 +1,11 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 import type {
   Customer,
   CreateCustomerRequest,
   UpdateCustomerRequest,
   CustomerListResponse,
-  CustomerFilters
-} from '../types/customer.types';
+  CustomerFilters,
+} from '../types/customer.types'
 
 class CustomerService {
   /**
@@ -16,11 +16,11 @@ class CustomerService {
   async getCustomers(params: CustomerFilters = {}): Promise<CustomerListResponse> {
     try {
       // Remove user_id from params as backend handles role-based filtering automatically
-      const { user_id, ...cleanParams } = params as any;
-      const response = await apiClient.get('/customers', { params: cleanParams });
-      return response.data;
+      const { user_id, ...cleanParams } = params as any
+      const response = await apiClient.get('/customers', { params: cleanParams })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -31,10 +31,10 @@ class CustomerService {
    */
   async getCustomerById(id: number): Promise<Customer> {
     try {
-      const response = await apiClient.get(`/customers/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/customers/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -45,10 +45,10 @@ class CustomerService {
    */
   async createCustomer(customerData: CreateCustomerRequest): Promise<Customer> {
     try {
-      const response = await apiClient.post('/customers', customerData);
-      return response.data;
+      const response = await apiClient.post('/customers', customerData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -60,10 +60,10 @@ class CustomerService {
    */
   async updateCustomer(id: number, customerData: UpdateCustomerRequest): Promise<Customer> {
     try {
-      const response = await apiClient.put(`/customers/${id}`, customerData);
-      return response.data;
+      const response = await apiClient.put(`/customers/${id}`, customerData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -74,9 +74,9 @@ class CustomerService {
    */
   async deleteCustomer(id: number): Promise<void> {
     try {
-      await apiClient.delete(`/customers/${id}`);
+      await apiClient.delete(`/customers/${id}`)
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -87,10 +87,10 @@ class CustomerService {
    */
   async activateCustomer(id: number): Promise<Customer> {
     try {
-      const response = await apiClient.post(`/customers/${id}/activate`);
-      return response.data;
+      const response = await apiClient.post(`/customers/${id}/activate`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -101,12 +101,12 @@ class CustomerService {
    */
   async deactivateCustomer(id: number): Promise<Customer> {
     try {
-      const response = await apiClient.post(`/customers/${id}/deactivate`);
-      return response.data;
+      const response = await apiClient.post(`/customers/${id}/deactivate`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new CustomerService();
+export default new CustomerService()

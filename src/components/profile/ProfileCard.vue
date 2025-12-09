@@ -17,7 +17,9 @@
             <div
               class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left"
             >
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ userData?.role || 'Staff' }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ userData?.role || 'Staff' }}
+              </p>
               <!-- <div class="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div> -->
               <!-- <p class="text-sm text-gray-500 dark:text-gray-400">Arizona, United States</p> -->
             </div>
@@ -175,7 +177,7 @@ const editForm = ref({
   full_name: '',
   email: '',
   phone: '',
-  bio: ''
+  bio: '',
 })
 
 // Function to fetch user data from backend
@@ -199,8 +201,8 @@ watch(isProfileInfoModal, (newValue) => {
     editForm.value = {
       full_name: userData.value.full_name || '',
       email: userData.value.email || '',
-      phone: '',  // Phone not in User type, will need to add
-      bio: ''     // Bio not in User type, will need to add
+      phone: '', // Phone not in User type, will need to add
+      bio: '', // Bio not in User type, will need to add
     }
   }
 })
@@ -212,7 +214,7 @@ const saveProfile = async () => {
       full_name: editForm.value.full_name,
       email: editForm.value.email,
       phone: editForm.value.phone,
-      bio: editForm.value.bio
+      bio: editForm.value.bio,
     })
 
     // Refresh user data after update

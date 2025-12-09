@@ -10,7 +10,9 @@
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Full Name</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ userData?.full_name || 'User' }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ userData?.full_name || 'User' }}
+              </p>
             </div>
 
             <div>
@@ -24,12 +26,16 @@
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Phone</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ userData?.phone || 'N/A' }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ userData?.phone || 'N/A' }}
+              </p>
             </div>
 
             <div>
               <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Role</p>
-              <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ userData?.role || 'Staff' }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-white/90">
+                {{ userData?.role || 'Staff' }}
+              </p>
             </div>
           </div>
         </div>
@@ -209,7 +215,7 @@ watch(isProfileInfoModal, (newValue) => {
     editForm.value = {
       full_name: userData.value.full_name || '',
       email: userData.value.email || '',
-      phone: userData.value.phone || '',  // Phone not in User type, will need to add
+      phone: userData.value.phone || '', // Phone not in User type, will need to add
     }
   }
 })
@@ -220,7 +226,7 @@ const saveProfile = async () => {
     await authService.updatePersonalInfo({
       full_name: editForm.value.full_name,
       email: editForm.value.email,
-      phone: editForm.value.phone
+      phone: editForm.value.phone,
     })
 
     // Refresh user data after update

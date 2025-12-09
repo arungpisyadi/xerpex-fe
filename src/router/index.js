@@ -9,7 +9,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { left: 0, top: 0 }
   },
-  routes: erpRoutes
+  routes: erpRoutes,
 })
 
 // Navigation guard for authentication and permissions
@@ -18,21 +18,21 @@ router.beforeEach((to, from, next) => {
   document.title = `XerpeX ERP - ${to.meta.title || 'Dashboard'}`
 
   // Check if route requires authentication
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     // Check if user is authenticated
     if (!authService.isAuthenticated()) {
       // Store redirect in localStorage as backup
-      localStorage.setItem('pendingRedirect', to.fullPath);
+      localStorage.setItem('pendingRedirect', to.fullPath)
       next({
         path: '/signin',
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       })
       return
     }
 
     // Check permissions if route has module/action metadata
-    const routeWithPermission = to.matched.find(record =>
-      record.meta.module && record.meta.action
+    const routeWithPermission = to.matched.find(
+      (record) => record.meta.module && record.meta.action,
     )
 
     if (routeWithPermission) {
@@ -51,8 +51,8 @@ router.beforeEach((to, from, next) => {
             path: '/',
             query: {
               error: 'insufficient_permissions',
-              attempted: to.path
-            }
+              attempted: to.path,
+            },
           })
         } else {
           // If trying to access dashboard but no permission, show error
@@ -63,15 +63,15 @@ router.beforeEach((to, from, next) => {
     }
 
     // Backward compatibility: Check if route requires admin access (legacy)
-    if (to.matched.some(record => record.meta.requiresAdmin)) {
+    if (to.matched.some((record) => record.meta.requiresAdmin)) {
       if (!authService.isAdmin()) {
         // User is not admin, redirect to dashboard
         next({
           path: '/',
           query: {
             error: 'admin_required',
-            attempted: to.path
-          }
+            attempted: to.path,
+          },
         })
         return
       }

@@ -19,7 +19,7 @@
               @click="downloadPDF"
               :disabled="pdfGenerating"
               class="download-button"
-              :class="{ 'loading': pdfGenerating }"
+              :class="{ loading: pdfGenerating }"
             >
               <span v-if="pdfGenerating">Generating PDF...</span>
               <span v-else>📄 Download PDF</span>
@@ -34,7 +34,10 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="loading || loadingDetails.invoice || loadingDetails.settings" class="loading-container">
+        <div
+          v-if="loading || loadingDetails.invoice || loadingDetails.settings"
+          class="loading-container"
+        >
           <div class="spinner"></div>
           <div class="loading-details">
             <p v-if="loadingDetails.invoice">Loading invoice data...</p>
@@ -89,7 +92,8 @@
             class="pdf-preview-iframe"
             ref="previewFrame"
             @load="onIframeLoad"
-            title="Invoice Preview">
+            title="Invoice Preview"
+          >
           </iframe>
         </div>
       </div>
@@ -115,7 +119,8 @@ const props = defineProps<Props>()
 const emit = defineEmits(['close'])
 
 // Centralized services
-const { generatePreviewHTML, generatePrintHTML, validateInvoiceData, createPreviewBlobUrl } = useInvoiceTemplate()
+const { generatePreviewHTML, generatePrintHTML, validateInvoiceData, createPreviewBlobUrl } =
+  useInvoiceTemplate()
 const { currentInvoice, loading, error, getInvoice } = useInvoiceData()
 const { getInvoiceDisplaySettings, initializeSettings } = useGlobalCompanySettings()
 
@@ -131,7 +136,7 @@ const loadingDetails = ref({
   template: false,
   invoiceCompleted: false,
   settingsCompleted: false,
-  templateCompleted: false
+  templateCompleted: false,
 })
 
 // Enhanced error handling
@@ -204,7 +209,6 @@ const printInvoice = () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Print failed:', error)
     pdfStatus.value = 'Error: Failed to open print dialog'
@@ -213,7 +217,6 @@ const printInvoice = () => {
     }, 5000)
   }
 }
-
 
 // Methods
 const onIframeLoad = () => {
@@ -237,7 +240,6 @@ const downloadPDF = async () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('PDF download failed:', error)
     pdfStatus.value = 'Error: Failed to download PDF. Please try again.'
@@ -270,7 +272,7 @@ const loadInvoiceData = async (invoiceId: number) => {
     template: false,
     invoiceCompleted: false,
     settingsCompleted: false,
-    templateCompleted: false
+    templateCompleted: false,
   }
 
   try {
@@ -331,11 +333,10 @@ const loadInvoiceData = async (invoiceId: number) => {
       itemsCount: invoice.items?.length || 0,
       total: invoice.total,
       blobSize: blob.size,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
     console.log('[InvoicePreviewModal] All steps completed successfully!')
-
   } catch (err) {
     console.error('[InvoicePreviewModal] Failed to load invoice:', err)
 
@@ -346,7 +347,7 @@ const loadInvoiceData = async (invoiceId: number) => {
       template: false,
       invoiceCompleted: false,
       settingsCompleted: false,
-      templateCompleted: false
+      templateCompleted: false,
     }
 
     // Set appropriate error messages
@@ -362,7 +363,7 @@ const loadInvoiceData = async (invoiceId: number) => {
       error: err instanceof Error ? err.message : String(err),
       stack: err instanceof Error ? err.stack : undefined,
       timestamp: new Date().toISOString(),
-      loadingState: { ...loadingDetails.value }
+      loadingState: { ...loadingDetails.value },
     }
   }
 }
@@ -375,24 +376,30 @@ const retryLoad = async () => {
 }
 
 // Watch for prop changes
-watch(() => props.invoiceId, (newId) => {
-  if (newId && props.isOpen) {
-    loadInvoiceData(newId)
-  }
-})
-
-watch(() => props.isOpen, (isOpen) => {
-  if (isOpen && props.invoiceId) {
-    loadInvoiceData(props.invoiceId)
-  } else if (!isOpen) {
-    // Reset state when modal closes
-    pdfStatus.value = ''
-    if (previewUrl.value) {
-      URL.revokeObjectURL(previewUrl.value)
-      previewUrl.value = ''
+watch(
+  () => props.invoiceId,
+  (newId) => {
+    if (newId && props.isOpen) {
+      loadInvoiceData(newId)
     }
-  }
-})
+  },
+)
+
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (isOpen && props.invoiceId) {
+      loadInvoiceData(props.invoiceId)
+    } else if (!isOpen) {
+      // Reset state when modal closes
+      pdfStatus.value = ''
+      if (previewUrl.value) {
+        URL.revokeObjectURL(previewUrl.value)
+        previewUrl.value = ''
+      }
+    }
+  },
+)
 
 // Cleanup
 onBeforeUnmount(() => {
@@ -423,7 +430,7 @@ onBeforeUnmount(() => {
   padding: 20px 30px;
   background-color: #fff;
   border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
@@ -670,7 +677,7 @@ onBeforeUnmount(() => {
   background-color: #fff;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
 }
 
@@ -770,13 +777,17 @@ onBeforeUnmount(() => {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex: 1;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive design */

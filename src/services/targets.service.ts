@@ -1,106 +1,106 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 // TypeScript interfaces based on API schemas
 
 export interface MonthlyTarget {
-  month: number;
-  target_amount: number;
-  carried_over: number;
-  adjusted_target: number;
+  month: number
+  target_amount: number
+  carried_over: number
+  adjusted_target: number
 }
 
 export interface MonthlyAchievement {
-  month: number;
-  achieved_amount: number;
-  target_amount: number;
-  percentage: number;
+  month: number
+  achieved_amount: number
+  target_amount: number
+  percentage: number
 }
 
 export interface MyPerformance {
-  user_id: number;
-  year: number;
-  monthly_targets: MonthlyTarget[];
-  monthly_achievements: MonthlyAchievement[];
-  total_achievement: number;
-  achievement_percentage: number;
+  user_id: number
+  year: number
+  monthly_targets: MonthlyTarget[]
+  monthly_achievements: MonthlyAchievement[]
+  total_achievement: number
+  achievement_percentage: number
 }
 
 export interface CompanyPerformance {
-  year: number;
-  total_yearly_target: number;
-  total_achievement: number;
-  achievement_percentage: number;
+  year: number
+  total_yearly_target: number
+  total_achievement: number
+  achievement_percentage: number
 }
 
 export interface ChartDataset {
-  label: string;
-  data: number[];
-  backgroundColor: string;
-  borderColor: string;
+  label: string
+  data: number[]
+  backgroundColor: string
+  borderColor: string
 }
 
 export interface ChartData {
-  labels: string[];
-  datasets: ChartDataset[];
+  labels: string[]
+  datasets: ChartDataset[]
 }
 
 export interface UserPerformance {
-  user_id: number;
-  username: string;
-  full_name: string | null;
-  target_amount: number;
-  achieved_amount: number;
-  achievement_percentage: number;
-  months_with_data: number;
+  user_id: number
+  username: string
+  full_name: string | null
+  target_amount: number
+  achieved_amount: number
+  achievement_percentage: number
+  months_with_data: number
 }
 
 export interface UserPerformances {
-  year: number;
-  chart_data: ChartData;
-  users: UserPerformance[];
-  total_users: number;
-  generated_at: string;
+  year: number
+  chart_data: ChartData
+  users: UserPerformance[]
+  total_users: number
+  generated_at: string
 }
 
 export interface MonthlyData {
-  month: number;
-  month_name: string;
-  target_amount: number;
-  achieved_amount: number;
-  achievement_percentage: number;
-  carried_over_amount: number;
+  month: number
+  month_name: string
+  target_amount: number
+  achieved_amount: number
+  achievement_percentage: number
+  carried_over_amount: number
 }
 
 export interface ChartDataPoint {
-  month: number;
-  month_name: string;
-  target: number;
-  achievement: number;
+  month: number
+  month_name: string
+  target: number
+  achievement: number
 }
 
 export interface YtdMetrics {
-  ytd_target: number;
-  ytd_achievement: number;
-  ytd_percentage: number;
+  ytd_target: number
+  ytd_achievement: number
+  ytd_percentage: number
 }
 
 export interface TopPerformer {
-  user_id: number;
-  username: string;
-  full_name: string | null;
-  total_achievement: number;
-  achievement_percentage: number;
+  user_id: number
+  username: string
+  full_name: string | null
+  total_achievement: number
+  achievement_percentage: number
 }
 
 export interface TargetsOverview {
-  total_yearly_target: number;
-  current_month_achievement: number;
-  achievement_percentage: number;
-  monthly_data: MonthlyData[];
-  chart_data: ChartDataPoint[];
-  ytd_metrics: YtdMetrics;
-  active_users_count: number;
-  top_performers: TopPerformer[];
+  total_yearly_target: number
+  current_month_achievement: number
+  achievement_percentage: number
+  monthly_data: MonthlyData[]
+  chart_data: ChartDataPoint[]
+  ytd_metrics: YtdMetrics
+  active_users_count: number
+  top_performers: TopPerformer[]
 }
 
 export class TargetsService {
@@ -110,9 +110,9 @@ export class TargetsService {
    * @returns Promise<MyPerformance>
    */
   static async getMyPerformance(year?: number): Promise<MyPerformance> {
-    const params = year ? `?year=${year}` : '';
-    const response = await apiClient.get(`/targets/my-performance${params}`);
-    return response.data;
+    const params = year ? `?year=${year}` : ''
+    const response = await apiClient.get(`/targets/my-performance${params}`)
+    return response.data
   }
 
   /**
@@ -121,9 +121,9 @@ export class TargetsService {
    * @returns Promise<CompanyPerformance>
    */
   static async getCompanyPerformance(year?: number): Promise<CompanyPerformance> {
-    const params = year ? `?year=${year}` : '';
-    const response = await apiClient.get(`/targets/company-performance${params}`);
-    return response.data;
+    const params = year ? `?year=${year}` : ''
+    const response = await apiClient.get(`/targets/company-performance${params}`)
+    return response.data
   }
 
   /**
@@ -133,12 +133,12 @@ export class TargetsService {
    * @returns Promise<UserPerformances>
    */
   static async getUserPerformances(year: number, userId?: number): Promise<UserPerformances> {
-    let params = `?year=${year}`;
+    let params = `?year=${year}`
     if (userId) {
-      params += `&user_id=${userId}`;
+      params += `&user_id=${userId}`
     }
-    const response = await apiClient.get(`/targets/user-performances${params}`);
-    return response.data;
+    const response = await apiClient.get(`/targets/user-performances${params}`)
+    return response.data
   }
 
   /**
@@ -146,8 +146,8 @@ export class TargetsService {
    * @returns Promise<TargetsOverview>
    */
   static async getTargetsOverview(): Promise<TargetsOverview> {
-    const response = await apiClient.get('/admin/targets/overview');
-    return response.data;
+    const response = await apiClient.get('/admin/targets/overview')
+    return response.data
   }
 
   /**
@@ -155,9 +155,9 @@ export class TargetsService {
    * @returns Promise<any[]>
    */
   static async getSalesUsers(): Promise<any[]> {
-    const response = await apiClient.get('/users', { params: { role: 'sales' } });
+    const response = await apiClient.get('/users', { params: { role: 'sales' } })
     // Assuming response.data is an array of users
-    return Array.isArray(response.data) ? response.data : [];
+    return Array.isArray(response.data) ? response.data : []
   }
 
   /**
@@ -165,8 +165,8 @@ export class TargetsService {
    * @returns Promise<number>
    */
   static async getSalesUsersCount(): Promise<number> {
-    const users = await this.getSalesUsers();
-    return users.length;
+    const users = await this.getSalesUsers()
+    return users.length
   }
 
   /**
@@ -174,8 +174,8 @@ export class TargetsService {
    * @returns Promise<any[]>
    */
   static async getAllTargets(): Promise<any[]> {
-    const response = await apiClient.get('/admin/targets');
-    return response.data;
+    const response = await apiClient.get('/admin/targets')
+    return response.data
   }
 
   /**
@@ -184,8 +184,8 @@ export class TargetsService {
    * @returns Promise<any>
    */
   static async createTarget(targetData: any): Promise<any> {
-    const response = await apiClient.post('/admin/targets', targetData);
-    return response.data;
+    const response = await apiClient.post('/admin/targets', targetData)
+    return response.data
   }
 
   /**
@@ -195,7 +195,7 @@ export class TargetsService {
    * @returns Promise<any>
    */
   static async updateTarget(targetId: number, targetData: any): Promise<any> {
-    const response = await apiClient.put(`/admin/targets/${targetId}`, targetData);
-    return response.data;
+    const response = await apiClient.put(`/admin/targets/${targetId}`, targetData)
+    return response.data
   }
 }

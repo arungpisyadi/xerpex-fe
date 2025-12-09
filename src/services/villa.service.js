@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class VillaService {
   /**
@@ -10,10 +10,10 @@ class VillaService {
    */
   async getVillas(params = {}) {
     try {
-      const response = await apiClient.get('/villas', { params });
-      return response.data;
+      const response = await apiClient.get('/villas', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -24,10 +24,10 @@ class VillaService {
    */
   async getVillaById(id) {
     try {
-      const response = await apiClient.get(`/villas/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/villas/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -38,10 +38,10 @@ class VillaService {
    */
   async createVilla(villaData) {
     try {
-      const response = await apiClient.post('/villas', villaData);
-      return response.data;
+      const response = await apiClient.post('/villas', villaData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -53,10 +53,10 @@ class VillaService {
    */
   async updateVilla(id, villaData) {
     try {
-      const response = await apiClient.put(`/villas/${id}`, villaData);
-      return response.data;
+      const response = await apiClient.put(`/villas/${id}`, villaData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -67,10 +67,10 @@ class VillaService {
    */
   async deleteVilla(id) {
     try {
-      const response = await apiClient.delete(`/villas/${id}`);
-      return response.data;
+      const response = await apiClient.delete(`/villas/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -81,10 +81,10 @@ class VillaService {
    */
   async createVillaAvailability(availabilityData) {
     try {
-      const response = await apiClient.post('/villas/availability', availabilityData);
-      return response.data;
+      const response = await apiClient.post('/villas/availability', availabilityData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -97,10 +97,10 @@ class VillaService {
    */
   async updateVillaAvailability(id, date, availabilityData) {
     try {
-      const response = await apiClient.put(`/villas/${id}/availability/${date}`, availabilityData);
-      return response.data;
+      const response = await apiClient.put(`/villas/${id}/availability/${date}`, availabilityData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -111,10 +111,10 @@ class VillaService {
    */
   async checkAvailability(checkData) {
     try {
-      const response = await apiClient.post('/villas/check-availability', checkData);
-      return response.data;
+      const response = await apiClient.post('/villas/check-availability', checkData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -127,13 +127,13 @@ class VillaService {
   async getAvailableVillas(checkIn, checkOut) {
     try {
       const response = await apiClient.get('/villas/available', {
-        params: { check_in: checkIn, check_out: checkOut }
-      });
-      return response.data;
+        params: { check_in: checkIn, check_out: checkOut },
+      })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new VillaService();
+export default new VillaService()

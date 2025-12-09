@@ -64,7 +64,6 @@ const loadQuoteData = async (quoteId: number) => {
 
     // Generate print HTML
     htmlContent.value = generatePrintHTML(quote, companySettings)
-
   } catch (err) {
     console.error('[QuotePdfView] Failed to load quote:', err)
     error.value = err instanceof Error ? err.message : 'Failed to load quote'
@@ -144,8 +143,12 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media print {

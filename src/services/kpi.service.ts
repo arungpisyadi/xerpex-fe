@@ -1,35 +1,35 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 // TypeScript interfaces for KPI API responses
 export interface KpiMetrics {
-  count: number;
-  growth: number;
+  count: number
+  growth: number
 }
 
 export interface MonthlyRevenueData {
-  labels: string[];
+  labels: string[]
   datasets: {
-    label: string;
-    data: number[];
-    backgroundColor: string;
-    borderColor: string;
-  }[];
+    label: string
+    data: number[]
+    backgroundColor: string
+    borderColor: string
+  }[]
 }
 
 export interface CurrentMonthPerformance {
-  target: number;
-  current_achievement: number;
-  achievement_percentage: number;
-  today_sales: number;
-  growth: number;
+  target: number
+  current_achievement: number
+  achievement_percentage: number
+  today_sales: number
+  growth: number
 }
 
 export interface CurrentYearPerformance {
-  target: number;
-  current_achievement: number;
-  achievement_percentage: number;
-  today_sales: number;
-  growth: number;
+  target: number
+  current_achievement: number
+  achievement_percentage: number
+  today_sales: number
+  growth: number
 }
 
 export class KpiService {
@@ -38,8 +38,8 @@ export class KpiService {
    * @returns Promise<KpiMetrics>
    */
   static async getCustomersKpi(): Promise<KpiMetrics> {
-    const response = await apiClient.get('/kpi/customers');
-    return response.data;
+    const response = await apiClient.get('/kpi/customers')
+    return response.data
   }
 
   /**
@@ -47,8 +47,8 @@ export class KpiService {
    * @returns Promise<KpiMetrics>
    */
   static async getBookingsKpi(): Promise<KpiMetrics> {
-    const response = await apiClient.get('/kpi/bookings');
-    return response.data;
+    const response = await apiClient.get('/kpi/bookings')
+    return response.data
   }
 
   /**
@@ -56,8 +56,8 @@ export class KpiService {
    * @returns Promise<KpiMetrics>
    */
   static async getSurveysKpi(): Promise<KpiMetrics> {
-    const response = await apiClient.get('/kpi/surveys');
-    return response.data;
+    const response = await apiClient.get('/kpi/surveys')
+    return response.data
   }
 
   /**
@@ -65,8 +65,8 @@ export class KpiService {
    * @returns Promise<KpiMetrics>
    */
   static async getQuotesKpi(): Promise<KpiMetrics> {
-    const response = await apiClient.get('/kpi/quotes');
-    return response.data;
+    const response = await apiClient.get('/kpi/quotes')
+    return response.data
   }
 
   /**
@@ -75,9 +75,9 @@ export class KpiService {
    * @returns Promise<MonthlyRevenueData>
    */
   static async getMonthlyRevenue(year?: number): Promise<MonthlyRevenueData> {
-    const params = year ? `?year=${year}` : '';
-    const response = await apiClient.get(`/kpi/monthly_revenue${params}`);
-    return response.data;
+    const params = year ? `?year=${year}` : ''
+    const response = await apiClient.get(`/kpi/monthly_revenue${params}`)
+    return response.data
   }
 
   /**
@@ -85,8 +85,8 @@ export class KpiService {
    * @returns Promise<CurrentMonthPerformance>
    */
   static async getCurrentMonthPerformance(): Promise<CurrentMonthPerformance> {
-    const response = await apiClient.get('/kpi/current_month_performance');
-    return response.data;
+    const response = await apiClient.get('/kpi/current_month_performance')
+    return response.data
   }
 
   /**
@@ -94,7 +94,7 @@ export class KpiService {
    * @returns Promise<CurrentYearPerformance>
    */
   static async getCurrentYearPerformance(): Promise<CurrentYearPerformance> {
-    const response = await apiClient.get('/kpi/current_year_performance');
-    return response.data;
+    const response = await apiClient.get('/kpi/current_year_performance')
+    return response.data
   }
 }

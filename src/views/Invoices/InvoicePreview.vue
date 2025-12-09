@@ -4,9 +4,7 @@
       <!-- Preview Header -->
       <div class="preview-header">
         <div class="header-left">
-          <button @click="goBack" class="back-button">
-            ← Back to Invoice
-          </button>
+          <button @click="goBack" class="back-button">← Back to Invoice</button>
           <h2 class="preview-title">Invoice Preview</h2>
         </div>
         <div class="header-right">
@@ -22,7 +20,7 @@
             @click="printInvoice"
             :disabled="pdfGenerating"
             class="download-button"
-            :class="{ 'loading': pdfGenerating }"
+            :class="{ loading: pdfGenerating }"
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
@@ -45,7 +43,10 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading || loadingDetails.invoice || loadingDetails.settings" class="loading-container">
+      <div
+        v-if="loading || loadingDetails.invoice || loadingDetails.settings"
+        class="loading-container"
+      >
         <div class="spinner"></div>
         <div class="loading-details">
           <p v-if="loadingDetails.invoice">Loading invoice data...</p>
@@ -100,7 +101,8 @@
           class="pdf-preview-iframe"
           ref="previewFrame"
           @load="onIframeLoad"
-          title="Invoice Preview">
+          title="Invoice Preview"
+        >
         </iframe>
       </div>
     </div>
@@ -137,7 +139,7 @@ const loadingDetails = ref({
   template: false,
   invoiceCompleted: false,
   settingsCompleted: false,
-  templateCompleted: false
+  templateCompleted: false,
 })
 
 // Enhanced error handling
@@ -219,7 +221,6 @@ const printInvoice = () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Print failed:', error)
     pdfStatus.value = 'Error: Failed to open print dialog'
@@ -240,7 +241,7 @@ const downloadPDF = async () => {
     pdfStatus.value = 'Connecting to server...'
 
     // Add delay to show status message
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Try backend PDF first
     await invoiceService.downloadInvoice(currentInvoice.value.id)
@@ -249,7 +250,6 @@ const downloadPDF = async () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Backend PDF download failed, trying client-side generation:', error)
 
@@ -257,12 +257,13 @@ const downloadPDF = async () => {
     try {
       pdfStatus.value = 'Server unavailable - Generating PDF locally...'
 
-      await new Promise(resolve => setTimeout(resolve, 300))
+      await new Promise((resolve) => setTimeout(resolve, 300))
 
       pdfStatus.value = 'Capturing content from iframe...'
 
       // Get the iframe's document
-      const iframeDoc = previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
+      const iframeDoc =
+        previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
 
       if (!iframeDoc) {
         throw new Error('Unable to access iframe content')
@@ -292,18 +293,18 @@ const downloadPDF = async () => {
           letterRendering: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          scrollY: 0,  // Start from top of content
-          scrollX: 0,  // Start from left of content
-          windowHeight: scrollHeight  // Capture full scrollable height
+          scrollY: 0, // Start from top of content
+          scrollX: 0, // Start from left of content
+          windowHeight: scrollHeight, // Capture full scrollable height
         },
         jsPDF: {
           unit: 'mm',
           format: 'a4',
-          orientation: 'portrait' as const
+          orientation: 'portrait' as const,
         },
         pagebreak: {
-          mode: ['css', 'legacy']  // Use CSS page-break properties
-        }
+          mode: ['css', 'legacy'], // Use CSS page-break properties
+        },
       }
 
       // Generate and download PDF from iframe content
@@ -314,11 +315,11 @@ const downloadPDF = async () => {
       setTimeout(() => {
         pdfStatus.value = ''
       }, 3000)
-
     } catch (clientError) {
       console.error('Client-side PDF generation also failed:', clientError)
 
-      const errorMessage = clientError instanceof Error ? clientError.message : 'Unknown error occurred'
+      const errorMessage =
+        clientError instanceof Error ? clientError.message : 'Unknown error occurred'
 
       // Provide user feedback based on error type
       if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
@@ -326,7 +327,8 @@ const downloadPDF = async () => {
       } else if (errorMessage.includes('iframe')) {
         pdfStatus.value = 'Error: Unable to access content. Please try printing instead.'
       } else {
-        pdfStatus.value = 'Error: All PDF generation methods failed. Please try printing as an alternative.'
+        pdfStatus.value =
+          'Error: All PDF generation methods failed. Please try printing as an alternative.'
       }
 
       setTimeout(() => {
@@ -358,7 +360,7 @@ const loadInvoiceData = async (invoiceId: number) => {
     template: false,
     invoiceCompleted: false,
     settingsCompleted: true, // We don't load settings here anymore
-    templateCompleted: true // Template is loaded via the route
+    templateCompleted: true, // Template is loaded via the route
   }
 
   try {
@@ -382,11 +384,10 @@ const loadInvoiceData = async (invoiceId: number) => {
       itemsCount: invoice.items?.length || 0,
       total: invoice.total,
       status: invoice.status,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
     console.log('[InvoicePreview] All steps completed successfully!')
-
   } catch (err) {
     console.error('[InvoicePreview] Failed to load invoice:', err)
 
@@ -397,7 +398,7 @@ const loadInvoiceData = async (invoiceId: number) => {
       template: false,
       invoiceCompleted: false,
       settingsCompleted: false,
-      templateCompleted: false
+      templateCompleted: false,
     }
 
     // Set appropriate error messages
@@ -413,7 +414,7 @@ const loadInvoiceData = async (invoiceId: number) => {
       error: err instanceof Error ? err.message : String(err),
       stack: err instanceof Error ? err.stack : undefined,
       timestamp: new Date().toISOString(),
-      loadingState: { ...loadingDetails.value }
+      loadingState: { ...loadingDetails.value },
     }
   } finally {
     loading.value = false
@@ -458,7 +459,7 @@ onMounted(async () => {
   padding: 20px 30px;
   background-color: #fff;
   border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
@@ -684,7 +685,7 @@ onMounted(async () => {
   background-color: #fff;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
 }
 
@@ -778,13 +779,17 @@ onMounted(async () => {
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex: 1;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive design */

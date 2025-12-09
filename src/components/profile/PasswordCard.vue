@@ -7,7 +7,9 @@
 
           <div class="grid grid-cols-1 gap-4">
             <div>
-              <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Current Password</p>
+              <p class="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                Current Password
+              </p>
               <p class="text-sm font-medium text-gray-800 dark:text-white/90">••••••••</p>
             </div>
           </div>
@@ -146,7 +148,7 @@ const isPasswordModal = ref(false)
 const passwordForm = reactive({
   currentPassword: '',
   newPassword: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 const savePassword = async () => {
@@ -174,7 +176,7 @@ const savePassword = async () => {
     // Call the new updatePassword endpoint
     await authService.updatePassword({
       current_password: passwordForm.currentPassword,
-      new_password: passwordForm.newPassword
+      new_password: passwordForm.newPassword,
     })
 
     console.log('Password updated successfully')

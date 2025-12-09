@@ -4,11 +4,11 @@
       <page-breadcrumb page-title="Create Invoice" />
     </div>
 
-    <div class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="mb-[1.5rem] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 class="text-title-md2 font-[700] text-black dark:text-white">
-          Create New Invoice
-        </h2>
+        <h2 class="text-title-md2 font-[700] text-black dark:text-white">Create New Invoice</h2>
         <div class="flex gap-[1rem]">
           <button
             @click="$router.push('/invoices')"
@@ -94,7 +94,7 @@
               help="Select one or more villas"
               select-icon="down"
               :classes="{
-                selectIcon: '!opacity-100 !block'
+                selectIcon: '!opacity-100 !block',
               }"
             />
           </div>
@@ -242,31 +242,35 @@
         </div>
 
         <!-- Calculations Summary -->
-        <div class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]">
-          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Invoice Summary</h4>
+        <div
+          class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]"
+        >
+          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">
+            Invoice Summary
+          </h4>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
-              <span class="font-[500] text-black dark:text-white">Rp {{ formatPrice(calculations.subtotal) }}</span>
+              <span class="font-[500] text-black dark:text-white"
+                >Rp {{ formatPrice(calculations.subtotal) }}</span
+              >
             </div>
 
-            <hr class="border-[#d1d5db] dark:border-gray-600">
+            <hr class="border-[#d1d5db] dark:border-gray-600" />
 
             <div class="flex justify-between text-lg font-[700]">
               <span class="text-black dark:text-white">Total:</span>
-              <span class="text-black dark:text-white">Rp {{ formatPrice(calculations.total) }}</span>
+              <span class="text-black dark:text-white"
+                >Rp {{ formatPrice(calculations.total) }}</span
+              >
             </div>
           </div>
         </div>
 
         <!-- Form Actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]">
-          <FormKit
-            type="button"
-            @click="$router.push('/invoices')"
-            :disabled="loading"
-          >
+          <FormKit type="button" @click="$router.push('/invoices')" :disabled="loading">
             Cancel
           </FormKit>
 
@@ -279,10 +283,7 @@
             {{ loading ? 'Saving...' : 'Save as Draft' }}
           </FormKit>
 
-          <FormKit
-            type="submit"
-            :disabled="loading || !isFormValid"
-          >
+          <FormKit type="submit" :disabled="loading || !isFormValid">
             {{ loading ? 'Creating...' : 'Create Invoice' }}
           </FormKit>
         </div>
@@ -312,12 +313,7 @@ import { handleError } from '../../utils/errorHandler'
 const router = useRouter()
 
 // Composables
-const {
-  customers,
-  loading: invoicingLoading,
-  fetchCustomers,
-  createInvoice
-} = useInvoicing()
+const { customers, loading: invoicingLoading, fetchCustomers, createInvoice } = useInvoicing()
 
 // Reactive state
 const loading = ref(false)
@@ -332,7 +328,7 @@ const paymentTermsOptions = [
   { label: 'Net 45 days', value: 'Net 45' },
   { label: 'Net 60 days', value: 'Net 60' },
   { label: 'Due on receipt', value: 'Due on receipt' },
-  { label: 'Cash on delivery', value: 'COD' }
+  { label: 'Cash on delivery', value: 'COD' },
 ]
 
 // Status options
@@ -342,7 +338,7 @@ const statusOptions = [
   { label: 'Partially Paid', value: 'partially_paid' },
   { label: 'Paid', value: 'paid' },
   { label: 'Overdue', value: 'overdue' },
-  { label: 'Cancelled', value: 'cancelled' }
+  { label: 'Cancelled', value: 'cancelled' },
 ]
 
 // Form data structure
@@ -362,9 +358,9 @@ const invoiceForm = ref({
       unit_price: 0,
       pax: 1,
       discount: 0,
-      line_total: 0
-    }
-  ]
+      line_total: 0,
+    },
+  ],
 })
 
 // Computed properties
@@ -375,7 +371,7 @@ const customerOptions = computed(() => {
 
   return customers.value.map((customer: Customer) => ({
     label: `${customer.name} - ${customer.email || 'No email'}`,
-    value: customer.id
+    value: customer.id,
   }))
 })
 
@@ -388,7 +384,7 @@ const packageOptions = computed(() => {
   return packages.value.map((pkg: Package) => ({
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
-    cost_per_pax: pkg.cost_per_pax
+    cost_per_pax: pkg.cost_per_pax,
   }))
 })
 
@@ -399,7 +395,7 @@ const salesUserOptions = computed(() => {
 
   return salesUsers.value.map((user: User) => ({
     label: user.full_name,
-    value: user.id
+    value: user.id,
   }))
 })
 
@@ -410,7 +406,7 @@ const villaOptions = computed(() => {
 
   return villas.value.map((villa: any) => ({
     label: villa.name,
-    value: villa.id
+    value: villa.id,
   }))
 })
 
@@ -426,7 +422,7 @@ const calculations = computed(() => {
 
   return {
     subtotal,
-    total
+    total,
   }
 })
 
@@ -446,10 +442,8 @@ const isFormValid = computed(() => {
   if (!form.items || form.items.length === 0) return false
 
   // Check if all items have required fields
-  return form.items.every(item =>
-    item.package_id &&
-    Number(item.unit_price) >= 0 &&
-    Number(item.discount) >= 0
+  return form.items.every(
+    (item) => item.package_id && Number(item.unit_price) >= 0 && Number(item.discount) >= 0,
   )
 })
 
@@ -457,7 +451,7 @@ const isFormValid = computed(() => {
 const onPackageSelect = (value: number | undefined, node: any) => {
   if (!value) return
 
-  const selectedPackage = packages.value.find(pkg => pkg.id === value)
+  const selectedPackage = packages.value.find((pkg) => pkg.id === value)
   if (selectedPackage && node?.parent?.value) {
     // Auto-populate unit_price from package cost_per_pax
     node.parent.value.unit_price = selectedPackage.cost_per_pax
@@ -498,7 +492,7 @@ const formatDate = (date: Date): string => {
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
@@ -528,14 +522,17 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
       sales_person_id: Number(invoiceForm.value.sales_person_id),
       check_in: invoiceForm.value.check_in || undefined,
       check_out: invoiceForm.value.check_out || undefined,
-      villa_ids: invoiceForm.value.villa_ids.length > 0 ? invoiceForm.value.villa_ids.map(id => Number(id)) : undefined,
-      items: invoiceForm.value.items.map(item => ({
+      villa_ids:
+        invoiceForm.value.villa_ids.length > 0
+          ? invoiceForm.value.villa_ids.map((id) => Number(id))
+          : undefined,
+      items: invoiceForm.value.items.map((item) => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
         pax: Number(item.pax) || 1,
         discount: Number(item.discount),
-        line_total: Number(item.line_total)
-      }))
+        line_total: Number(item.line_total),
+      })),
     }
 
     // Create the invoice
@@ -545,7 +542,6 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
 
     // Redirect to invoices list
     router.push('/invoices')
-
   } catch (error) {
     handleError(error, 'submitInvoice')
   } finally {
@@ -554,30 +550,38 @@ const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
 }
 
 // Watchers
-watch(() => invoiceForm.value.items, (newItems) => {
-  // Update line_total for each item when unit_price, pax, or discount changes
-  newItems.forEach(item => {
-    const unitPrice = Number(item.unit_price) || 0
-    const pax = Number(item.pax) || 1
-    const discount = Number(item.discount) || 0
-    item.line_total = Math.max(0, (unitPrice * pax) - discount)
-  })
-}, { deep: true })
+watch(
+  () => invoiceForm.value.items,
+  (newItems) => {
+    // Update line_total for each item when unit_price, pax, or discount changes
+    newItems.forEach((item) => {
+      const unitPrice = Number(item.unit_price) || 0
+      const pax = Number(item.pax) || 1
+      const discount = Number(item.discount) || 0
+      item.line_total = Math.max(0, unitPrice * pax - discount)
+    })
+  },
+  { deep: true },
+)
 
 // Auto-calculate due date when payment terms change
-watch(() => invoiceForm.value.payment_terms, () => {
-  if (invoiceForm.value.payment_terms) {
-    calculateDueDate()
-  }
-})
+watch(
+  () => invoiceForm.value.payment_terms,
+  () => {
+    if (invoiceForm.value.payment_terms) {
+      calculateDueDate()
+    }
+  },
+)
 
 // Watch for date changes to load available villas
-watch([() => invoiceForm.value.check_in, () => invoiceForm.value.check_out],
+watch(
+  [() => invoiceForm.value.check_in, () => invoiceForm.value.check_out],
   async ([checkIn, checkOut]) => {
     if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
       await loadAvailableVillas(checkIn, checkOut)
     }
-  }
+  },
 )
 
 const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
@@ -619,11 +623,7 @@ const triggerDatePicker = (event: Event) => {
 onMounted(async () => {
   try {
     // Load customers, packages, and sales users for the dropdowns
-    await Promise.all([
-      fetchCustomers({ active_only: true }),
-      loadPackages(),
-      fetchSalesUsers()
-    ])
+    await Promise.all([fetchCustomers({ active_only: true }), loadPackages(), fetchSalesUsers()])
 
     // Set default due date
     calculateDueDate()
@@ -644,7 +644,7 @@ const loadPackages = async () => {
 
     const response = await packageService.getPackages({ active_only: true })
     console.log('Package service response:', response)
-    packages.value = Array.isArray(response) ? response : (response.packages || [])
+    packages.value = Array.isArray(response) ? response : response.packages || []
     console.log('Packages loaded successfully:', packages.value.length, 'packages')
   } catch (error: any) {
     console.error('Error loading packages:', error)
@@ -672,8 +672,8 @@ const fetchSalesUsers = async () => {
 
     // Filter users by sales role and active status
     const allUsers = Array.isArray(response) ? response : response.users
-    salesUsers.value = allUsers.filter((user: User) =>
-      user.role === 'sales' && user.is_active !== false
+    salesUsers.value = allUsers.filter(
+      (user: User) => user.role === 'sales' && user.is_active !== false,
     )
 
     console.log('Sales users loaded successfully:', salesUsers.value.length, 'sales users')
@@ -691,7 +691,7 @@ const fetchSalesUsers = async () => {
 
 <style scoped>
 /* Additional custom styles if needed */
-.formkit-outer[data-type="repeater"] {
+.formkit-outer[data-type='repeater'] {
   @apply max-w-none;
 }
 
@@ -704,25 +704,25 @@ const fetchSalesUsers = async () => {
 }
 
 /* Ensure consistent height and alignment for repeater form fields */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-outer {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-outer {
   @apply flex flex-col justify-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-input {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-input {
   @apply min-h-[2.75rem] flex items-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-wrapper {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-wrapper {
   @apply flex items-center;
 }
 
 /* Align labels consistently */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-label {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-label {
   @apply mb-[0.5rem] block text-[0.875rem] font-[500];
 }
 
 /* Ensure help text doesn't affect alignment */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-help {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-help {
   @apply mt-[0.25rem] text-[0.75rem];
 }
 </style>

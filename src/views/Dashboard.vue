@@ -10,9 +10,13 @@
     <div v-else class="grid grid-cols-12 gap-4 md:gap-6">
       <!-- Top metrics cards -->
       <div class="col-span-12 xl:col-span-3">
-        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div
+          class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
+        >
           <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+            <div
+              class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"
+            >
               <UserCircleIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">Customers</span>
@@ -22,10 +26,12 @@
               <h4 class="text-title-md font-bold text-black dark:text-white">
                 {{ customerCount }}
               </h4>
-              <span :class="[
-                'text-sm font-medium',
-                customerGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
-              ]">
+              <span
+                :class="[
+                  'text-sm font-medium',
+                  customerGrowth >= 0 ? 'text-meta-3' : 'text-meta-5',
+                ]"
+              >
                 {{ customerGrowth >= 0 ? '+' : '' }}{{ customerGrowth }}%
               </span>
             </div>
@@ -34,9 +40,13 @@
       </div>
 
       <div class="col-span-12 xl:col-span-3">
-        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div
+          class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
+        >
           <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+            <div
+              class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"
+            >
               <BoxIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">Bookings</span>
@@ -46,10 +56,12 @@
               <h4 class="text-title-md font-bold text-black dark:text-white">
                 {{ bookingsCount }}
               </h4>
-              <span :class="[
-                'text-sm font-medium',
-                bookingsGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
-              ]">
+              <span
+                :class="[
+                  'text-sm font-medium',
+                  bookingsGrowth >= 0 ? 'text-meta-3' : 'text-meta-5',
+                ]"
+              >
                 {{ bookingsGrowth >= 0 ? '+' : '' }}{{ bookingsGrowth }}%
               </span>
             </div>
@@ -58,9 +70,13 @@
       </div>
 
       <div class="col-span-12 xl:col-span-3">
-        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div
+          class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
+        >
           <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+            <div
+              class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"
+            >
               <SurveyIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">Surveys</span>
@@ -70,10 +86,9 @@
               <h4 class="text-title-md font-bold text-black dark:text-white">
                 {{ surveysCount }}
               </h4>
-              <span :class="[
-                'text-sm font-medium',
-                surveysGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
-              ]">
+              <span
+                :class="['text-sm font-medium', surveysGrowth >= 0 ? 'text-meta-3' : 'text-meta-5']"
+              >
                 {{ surveysGrowth >= 0 ? '+' : '' }}{{ surveysGrowth }}%
               </span>
             </div>
@@ -82,9 +97,13 @@
       </div>
 
       <div class="col-span-12 xl:col-span-3">
-        <div class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div
+          class="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark"
+        >
           <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+            <div
+              class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4"
+            >
               <DocsIcon class="fill-primary dark:fill-white w-6 h-6" />
             </div>
             <span class="text-sm text-gray-500 dark:text-gray-400">Quotations</span>
@@ -94,10 +113,9 @@
               <h4 class="text-title-md font-bold text-black dark:text-white">
                 {{ quotesCount }}
               </h4>
-              <span :class="[
-                'text-sm font-medium',
-                quotesGrowth >= 0 ? 'text-meta-3' : 'text-meta-5'
-              ]">
+              <span
+                :class="['text-sm font-medium', quotesGrowth >= 0 ? 'text-meta-3' : 'text-meta-5']"
+              >
                 {{ quotesGrowth >= 0 ? '+' : '' }}{{ quotesGrowth }}%
               </span>
             </div>
@@ -107,13 +125,13 @@
 
       <!-- Monthly Revenue Bar Chart -->
       <div class="col-span-12 xl:col-span-4">
-        <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+        <div
+          class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
+        >
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
               <div class="flex min-w-47.5">
-                <h4 class="text-xl font-semibold text-black dark:text-white">
-                  Monthly Revenue
-                </h4>
+                <h4 class="text-xl font-semibold text-black dark:text-white">Monthly Revenue</h4>
               </div>
             </div>
             <div class="flex">
@@ -134,13 +152,13 @@
 
       <!-- This Month Target Chart -->
       <div class="col-span-12 xl:col-span-4">
-        <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+        <div
+          class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
+        >
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mb-3">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
               <div class="flex min-w-47.5">
-                <h4 class="text-xl font-semibold text-black dark:text-white">
-                  This Month Target
-                </h4>
+                <h4 class="text-xl font-semibold text-black dark:text-white">This Month Target</h4>
               </div>
             </div>
             <div class="flex">
@@ -154,7 +172,11 @@
 
           <div>
             <div id="monthlyTargetChart" class="mx-auto flex justify-center">
-              <radial-chart-one :percentage="currentMonthPerformance?.performance_percentage || 0" :growth="currentMonthPerformance?.growth_percentage || 0" :earnings="currentMonthPerformance?.current_revenue || 0" />
+              <radial-chart-one
+                :percentage="currentMonthPerformance?.performance_percentage || 0"
+                :growth="currentMonthPerformance?.growth_percentage || 0"
+                :earnings="currentMonthPerformance?.current_revenue || 0"
+              />
             </div>
           </div>
 
@@ -189,13 +211,13 @@
 
       <!-- Yearly Target Chart -->
       <div class="col-span-12 xl:col-span-4">
-        <div class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+        <div
+          class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
+        >
           <div class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap mb-3">
             <div class="flex w-full flex-wrap gap-3 sm:gap-5">
               <div class="flex min-w-47.5">
-                <h4 class="text-xl font-semibold text-black dark:text-white">
-                  Yearly Target
-                </h4>
+                <h4 class="text-xl font-semibold text-black dark:text-white">Yearly Target</h4>
               </div>
             </div>
             <div class="flex">
@@ -209,7 +231,11 @@
 
           <div>
             <div id="yearlyTargetChart" class="mx-auto flex justify-center">
-              <radial-chart-one :percentage="currentYearPerformance?.performance_percentage || 0" :growth="currentYearPerformance?.growth || 0" :earnings="currentYearPerformance?.current_revenue || 0" />
+              <radial-chart-one
+                :percentage="currentYearPerformance?.performance_percentage || 0"
+                :growth="currentYearPerformance?.growth || 0"
+                :earnings="currentYearPerformance?.current_revenue || 0"
+              />
             </div>
           </div>
 
@@ -282,102 +308,119 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import AdminLayout from '../components/layout/AdminLayout.vue';
-import BarChartOne from '../components/charts/BarChart/BarChartOne.vue';
-import LineChartOne from '../components/charts/LineChart/LineChartOne.vue';
-import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue';
-import { TargetsService } from '../services/targets.service';
-import { KpiService } from '../services/kpi.service';
-import { formatNumber, formatCurrency } from '../utils/number-formatter';
+import { ref, onMounted } from 'vue'
+import AdminLayout from '../components/layout/AdminLayout.vue'
+import BarChartOne from '../components/charts/BarChart/BarChartOne.vue'
+import LineChartOne from '../components/charts/LineChart/LineChartOne.vue'
+import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue'
+import { TargetsService } from '../services/targets.service'
+import { KpiService } from '../services/kpi.service'
+import { formatNumber, formatCurrency } from '../utils/number-formatter'
 import {
   UserCircleIcon,
   BoxIcon,
   CalenderIcon as CalendarIcon,
   DocsIcon,
   SurveyIcon,
-  HorizontalDots
-} from '../icons';
+  HorizontalDots,
+} from '../icons'
 
 // Reactive data for API responses
 // const targetsOverview = ref(null);
-const userPerformances = ref(null);
-const companyPerformance = ref(null);
-const loading = ref(true);
-const error = ref(null);
+const userPerformances = ref(null)
+const companyPerformance = ref(null)
+const loading = ref(true)
+const error = ref(null)
 
 // New reactive variables for dashboard data
 const monthlyRevenueData = ref({
   labels: [],
   datasets: [],
-});
-const currentMonthPerformance = ref(null);
-const currentYearPerformance = ref(null);
+})
+const currentMonthPerformance = ref(null)
+const currentYearPerformance = ref(null)
 
 // Indonesian month names mapping
 const indonesianMonths = {
-  1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
-  5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
-  9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember'
-};
+  1: 'Januari',
+  2: 'Februari',
+  3: 'Maret',
+  4: 'April',
+  5: 'Mei',
+  6: 'Juni',
+  7: 'Juli',
+  8: 'Agustus',
+  9: 'September',
+  10: 'Oktober',
+  11: 'November',
+  12: 'Desember',
+}
 
 // Current month name in Indonesian
 const getCurrentMonthName = () => {
-  const currentMonth = new Date().getMonth() + 1;
-  return indonesianMonths[currentMonth];
-};
+  const currentMonth = new Date().getMonth() + 1
+  return indonesianMonths[currentMonth]
+}
 
 // Metrics derived from API data
-const customerCount = ref(0);
-const customerGrowth = ref(0);
-const bookingsCount = ref(0);
-const bookingsGrowth = ref(0);
-const surveysCount = ref(0);
-const surveysGrowth = ref(0);
-const quotesCount = ref(0);
-const quotesGrowth = ref(0);
+const customerCount = ref(0)
+const customerGrowth = ref(0)
+const bookingsCount = ref(0)
+const bookingsGrowth = ref(0)
+const surveysCount = ref(0)
+const surveysGrowth = ref(0)
+const quotesCount = ref(0)
+const quotesGrowth = ref(0)
 
 // Monthly Sales Chart data (from userPerformances)
 const monthlySalesData = ref({
   labels: [],
   datasets: [],
-});
+})
 
 // Fetch dashboard data
 onMounted(async () => {
   try {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear()
 
     // Fetch KPI data using the new KPI service with proper authorization
-    const [customersData, bookingsData, surveysData, quotesData, monthlyRevenue, currentMonthPerf, currentYearPerf] = await Promise.all([
+    const [
+      customersData,
+      bookingsData,
+      surveysData,
+      quotesData,
+      monthlyRevenue,
+      currentMonthPerf,
+      currentYearPerf,
+    ] = await Promise.all([
       KpiService.getCustomersKpi(),
       KpiService.getBookingsKpi(),
       KpiService.getSurveysKpi(),
       KpiService.getQuotesKpi(),
       KpiService.getMonthlyRevenue(currentYear),
       KpiService.getCurrentMonthPerformance(),
-      KpiService.getCurrentYearPerformance()
-    ]);
+      KpiService.getCurrentYearPerformance(),
+    ])
 
-    monthlyRevenueData.value = monthlyRevenue.monthly_data;
-    currentMonthPerformance.value = currentMonthPerf;
-    currentYearPerformance.value = currentYearPerf;
+    monthlyRevenueData.value = monthlyRevenue.monthly_data
+    currentMonthPerformance.value = currentMonthPerf
+    currentYearPerformance.value = currentYearPerf
 
     // Update KPI metrics from new endpoints
     // console.log(customersData);
-    customerCount.value = customersData.previous_month_total || 0;
-    customerGrowth.value = customersData.growth_percentage || 0;
-    bookingsCount.value = bookingsData.previous_month_total || 0;
-    bookingsGrowth.value = bookingsData.growth_percentage || 0;
-    surveysCount.value = surveysData.previous_month_total || 0;
-    surveysGrowth.value = surveysData.growth_percentage || 0;
-    quotesCount.value = quotesData.previous_month_total || 0;
-    quotesGrowth.value = quotesData.growth_percentage || 0;
+    customerCount.value = customersData.previous_month_total || 0
+    customerGrowth.value = customersData.growth_percentage || 0
+    bookingsCount.value = bookingsData.previous_month_total || 0
+    bookingsGrowth.value = bookingsData.growth_percentage || 0
+    surveysCount.value = surveysData.previous_month_total || 0
+    surveysGrowth.value = surveysData.growth_percentage || 0
+    quotesCount.value = quotesData.previous_month_total || 0
+    quotesGrowth.value = quotesData.growth_percentage || 0
 
-    loading.value = false;
+    loading.value = false
   } catch (err) {
-    error.value = err.message || 'Failed to load dashboard data';
-    loading.value = false;
+    error.value = err.message || 'Failed to load dashboard data'
+    loading.value = false
   }
-});
+})
 </script>

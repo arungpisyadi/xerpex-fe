@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class SettingsService {
   /**
@@ -7,8 +7,8 @@ class SettingsService {
    */
   async getGeneralSettings() {
     try {
-      const response = await apiClient.get('/settings/general');
-      const data = response.data;
+      const response = await apiClient.get('/settings/general')
+      const data = response.data
 
       // Transform snake_case to camelCase for frontend
       const transformedData = {
@@ -19,13 +19,13 @@ class SettingsService {
         bankName: data.bank_name || '',
         bankAccountHolderName: data.bank_account_holder_name || '',
         bankAccountNumber: data.bank_account_number || '',
-        bankSwiftNumber: data.bank_swift_number || ''
-      };
+        bankSwiftNumber: data.bank_swift_number || '',
+      }
 
-      return transformedData;
+      return transformedData
     } catch (error) {
-      console.error('Error in getGeneralSettings:', error);
-      throw error;
+      console.error('Error in getGeneralSettings:', error)
+      throw error
     }
   }
 
@@ -45,13 +45,13 @@ class SettingsService {
         bank_name: settingsData.bankName,
         bank_account_holder_name: settingsData.bankAccountHolderName,
         bank_account_number: settingsData.bankAccountNumber,
-        bank_swift_number: settingsData.bankSwiftNumber
-      };
+        bank_swift_number: settingsData.bankSwiftNumber,
+      }
 
-      const response = await apiClient.put('/settings/general', apiData);
-      return response.data;
+      const response = await apiClient.put('/settings/general', apiData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -62,12 +62,12 @@ class SettingsService {
    */
   async createGeneralSettings(settingsData) {
     try {
-      const response = await apiClient.post('/settings/general', settingsData);
-      return response.data;
+      const response = await apiClient.post('/settings/general', settingsData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new SettingsService();
+export default new SettingsService()

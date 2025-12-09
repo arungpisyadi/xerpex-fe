@@ -33,7 +33,9 @@
       <div class="customer-details">
         <h3>Bill To:</h3>
         <div class="customer-info">
-          <p><strong>{{ quote.customer_name || 'N/A' }}</strong></p>
+          <p>
+            <strong>{{ quote.customer_name || 'N/A' }}</strong>
+          </p>
         </div>
       </div>
 
@@ -65,7 +67,10 @@
 
       <!-- Footer -->
       <div class="footer">
-        <p>Thank you for your business! This quotation is valid until {{ quote.expiry_date || 'expiry date' }}.</p>
+        <p>
+          Thank you for your business! This quotation is valid until
+          {{ quote.expiry_date || 'expiry date' }}.
+        </p>
         <p>Terms and Conditions: Payment due within 30 days. All prices are in USD.</p>
       </div>
     </div>
@@ -94,13 +99,17 @@ const exportToPdf = () => {
     filename: `quotation-${quote.value.quote_number}.pdf`,
     image: { type: 'jpeg' as const, quality: 0.98 },
     html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
   }
-  html2pdf().set(opt).from(element).outputPdf().then((pdf: any) => {
-    const blob = new Blob([pdf], { type: 'application/pdf' })
-    const url = URL.createObjectURL(blob)
-    window.open(url, '_blank')
-  })
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .outputPdf()
+    .then((pdf: any) => {
+      const blob = new Blob([pdf], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+      window.open(url, '_blank')
+    })
 }
 
 onMounted(async () => {
@@ -114,9 +123,9 @@ onMounted(async () => {
     const token = localStorage.getItem('token')
     const response = await axios.get(`http://127.0.0.1:8001/api/v1/quotes/${quoteId}`, {
       headers: {
-        'Authorization': token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json'
-      }
+        Authorization: token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json',
+      },
     })
     quote.value = response.data
   } catch (err: any) {
@@ -134,7 +143,9 @@ onMounted(async () => {
 
 const totalDiscount = computed(() => {
   if (!quote.value || !quote.value.items) return '0.00'
-  return quote.value.items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0).toFixed(2)
+  return quote.value.items
+    .reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0)
+    .toFixed(2)
 })
 </script>
 
@@ -239,7 +250,8 @@ const totalDiscount = computed(() => {
   page-break-inside: avoid;
 }
 
-.items-table th, .items-table td {
+.items-table th,
+.items-table td {
   border: 1px solid #ccc;
   padding: 12px;
   text-align: left;
@@ -315,7 +327,8 @@ const totalDiscount = computed(() => {
     font-size: 36pt;
   }
 
-  .items-table th, .items-table td {
+  .items-table th,
+  .items-table td {
     padding: 8pt;
     font-size: 11pt;
   }

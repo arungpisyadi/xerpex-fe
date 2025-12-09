@@ -101,12 +101,7 @@
                   >
                 </div>
               </div>
-              <FormKit
-                type="form"
-                @submit="handleSubmit"
-                :actions="false"
-
-              >
+              <FormKit type="form" @submit="handleSubmit" :actions="false">
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <!-- First Name -->
                   <FormKit
@@ -115,7 +110,6 @@
                     label="First Name"
                     placeholder="Enter your first name"
                     validation="required"
-
                   />
                   <!-- Last Name -->
                   <FormKit
@@ -124,7 +118,6 @@
                     label="Last Name"
                     placeholder="Enter your last name"
                     validation="required"
-
                   />
                 </div>
                 <!-- Email -->
@@ -134,7 +127,6 @@
                   label="Email"
                   placeholder="Enter your email"
                   validation="required|email"
-
                 />
                 <!-- Password -->
                 <FormKit
@@ -143,31 +135,18 @@
                   label="Password"
                   placeholder="Enter your password"
                   validation="required|length:6"
-
                 />
                 <!-- Terms and Conditions Checkbox -->
-                <FormKit
-                  type="checkbox"
-                  name="agreeToTerms"
-                  validation="required"
-
-                >
+                <FormKit type="checkbox" name="agreeToTerms" validation="required">
                   <template #label>
                     By creating an account means you agree to the
-                    <span class="text-gray-800 dark:text-white/90">
-                      Terms and Conditions,
-                    </span>
+                    <span class="text-gray-800 dark:text-white/90"> Terms and Conditions, </span>
                     and our
                     <span class="text-gray-800 dark:text-white"> Privacy Policy </span>
                   </template>
                 </FormKit>
                 <!-- Submit Button -->
-                <FormKit
-                  type="submit"
-
-                >
-                  Sign Up
-                </FormKit>
+                <FormKit type="submit"> Sign Up </FormKit>
               </FormKit>
               <div class="mt-5">
                 <p
@@ -191,7 +170,12 @@
             <common-grid-shape />
             <div class="flex flex-col items-center max-w-xs">
               <router-link to="/" class="block mb-4">
-                <img width="{231}" height="{48}" src="/images/logo/xerpex-auth-logo.svg" alt="Xerpex" />
+                <img
+                  width="{231}"
+                  height="{48}"
+                  src="/images/logo/xerpex-auth-logo.svg"
+                  alt="Xerpex"
+                />
               </router-link>
               <p class="text-center text-gray-400 dark:text-white/60">
                 XerpexSys - Modern Admin Dashboard

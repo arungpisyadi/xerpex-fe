@@ -1,5 +1,6 @@
 <template>
-  <aside :class="[
+  <aside
+    :class="[
       'fixed mt-16 lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200 flex flex-col',
       {
         'lg:w-[290px]': isExpanded || isMobileOpen || isHovered,
@@ -8,13 +9,28 @@
         '-translate-x-full': !isMobileOpen,
         'lg:translate-x-0': true,
       },
-    ]" @mouseenter="!isExpanded && (isHovered = true)" @mouseleave="isHovered = false">
+    ]"
+    @mouseenter="!isExpanded && (isHovered = true)"
+    @mouseleave="isHovered = false"
+  >
     <div class="py-8 hidden md:flex justify-start flex-shrink-0">
       <router-link to="/" class="flex items-cente block">
-        <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/xerpex-logo.svg"
-          alt="Xerpex" width="150" height="40" />
-        <img v-if="isExpanded || isHovered || isMobileOpen" class="hidden dark:block"
-          src="/images/logo/xerpex-logo-dark.svg" alt="Xerpex" width="150" height="40" />
+        <img
+          v-if="isExpanded || isHovered || isMobileOpen"
+          class="dark:hidden"
+          src="/images/logo/xerpex-logo.svg"
+          alt="Xerpex"
+          width="150"
+          height="40"
+        />
+        <img
+          v-if="isExpanded || isHovered || isMobileOpen"
+          class="hidden dark:block"
+          src="/images/logo/xerpex-logo-dark.svg"
+          alt="Xerpex"
+          width="150"
+          height="40"
+        />
         <img v-else src="/images/logo/xerpex-icon.svg" alt="Xerpex" width="32" height="32" />
         <span class="text-3xl ml-2">XerpexSys</span>
       </router-link>
@@ -35,27 +51,36 @@
                 <!-- Section divider -->
                 <div v-if="item.isSectionDivider" class="pt-2 pb-1">
                   <div class="border-t border-gray-200 dark:border-gray-700"></div>
-                  <div v-if="isExpanded || isHovered || isMobileOpen" class="text-[10px] uppercase text-gray-400 mt-2 px-2 tracking-wider">
+                  <div
+                    v-if="isExpanded || isHovered || isMobileOpen"
+                    class="text-[10px] uppercase text-gray-400 mt-2 px-2 tracking-wider"
+                  >
                     {{ item.sectionName }}
                   </div>
                 </div>
 
                 <!-- Regular menu item -->
-                <router-link v-else :to="item.path" :class="[
+                <router-link
+                  v-else
+                  :to="item.path"
+                  :class="[
                     'menu-item group justify-start',
                     {
                       'menu-item-active': isActive(item.path),
                       'menu-item-inactive': !isActive(item.path),
                     },
-                  ]">
-                  <span :class="[
-                      isActive(item.path)
-                        ? 'menu-item-icon-active'
-                        : 'menu-item-icon-inactive',
-                    ]">
+                  ]"
+                >
+                  <span
+                    :class="[
+                      isActive(item.path) ? 'menu-item-icon-active' : 'menu-item-icon-inactive',
+                    ]"
+                  >
                     <component :is="item.icon" />
                   </span>
-                  <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{ item.name }}</span>
+                  <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
+                    item.name
+                  }}</span>
                 </router-link>
               </li>
             </ul>
@@ -67,8 +92,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 import {
   GridIcon,
@@ -83,150 +108,159 @@ import {
   BarChartIcon,
   UserGroupIcon,
   DollarBillIcon,
-} from "../../icons";
-import { useSidebar } from "@/composables/useSidebar";
-import { usePermissions } from "@/composables/usePermissions";
-import { SystemModule, PermissionAction } from "@/types/permissions.types";
+} from '../../icons'
+import { useSidebar } from '@/composables/useSidebar'
+import { usePermissions } from '@/composables/usePermissions'
+import { SystemModule, PermissionAction } from '@/types/permissions.types'
 
-const route = useRoute();
+const route = useRoute()
 
-const { isExpanded, isMobileOpen, isHovered } = useSidebar();
+const { isExpanded, isMobileOpen, isHovered } = useSidebar()
 
-import authService from '@/services/auth.service';
-const isAdmin = computed(() => authService.isAdmin());
+import authService from '@/services/auth.service'
+const isAdmin = computed(() => authService.isAdmin())
 
 // Use permissions composable
-const {
-  canPerform,
-  forceRefreshPermissions,
-  permissionContext
-} = usePermissions();
+const { canPerform, forceRefreshPermissions, permissionContext } = usePermissions()
 
 // Ensure permissions are refreshed on mount and auth state changes
 onMounted(() => {
-  forceRefreshPermissions();
-});
+  forceRefreshPermissions()
+})
 
-watch(() => permissionContext.isAuthenticated, (newAuth, oldAuth) => {
-  if (newAuth !== oldAuth) {
-    forceRefreshPermissions();
-  }
-});
+watch(
+  () => permissionContext.isAuthenticated,
+  (newAuth, oldAuth) => {
+    if (newAuth !== oldAuth) {
+      forceRefreshPermissions()
+    }
+  },
+)
 
 // Menu item to SystemModule mapping
 const menuModuleMap = {
-  "Users": SystemModule.USER,
-  "Villas": SystemModule.VILLAS,
-  "Packages": SystemModule.PACKAGES,
-  "Bookings": SystemModule.BOOKINGS,
-  "Surveys": SystemModule.SURVEYS,
-  "Customers": SystemModule.CUSTOMERS,
-  "Quotations": SystemModule.QUOTES,
-  "Invoices": SystemModule.INVOICES,
-  "Payments": SystemModule.PAYMENTS,
-  "General": SystemModule.SETTINGS_GENERAL,
-  "Targets": SystemModule.SETTINGS_TARGETS,
-};
+  Users: SystemModule.USER,
+  Villas: SystemModule.VILLAS,
+  Packages: SystemModule.PACKAGES,
+  Bookings: SystemModule.BOOKINGS,
+  Surveys: SystemModule.SURVEYS,
+  Customers: SystemModule.CUSTOMERS,
+  Quotations: SystemModule.QUOTES,
+  Invoices: SystemModule.INVOICES,
+  Payments: SystemModule.PAYMENTS,
+  General: SystemModule.SETTINGS_GENERAL,
+  Targets: SystemModule.SETTINGS_TARGETS,
+}
 
 // XerpeX ERP navigation structure with permission-based filtering
 const menuGroups = computed(() => {
-  const flatItems = [];
+  const flatItems = []
 
   // Dashboard
   flatItems.push({
     icon: GridIcon,
-    name: "Dashboard",
-    path: "/",
-  });
+    name: 'Dashboard',
+    path: '/',
+  })
 
   // Users
   if (canPerform(SystemModule.USER, PermissionAction.VIEW)) {
     flatItems.push({
       icon: UserCircleIcon,
-      name: "Users",
-      path: "/users",
+      name: 'Users',
+      path: '/users',
       module: SystemModule.USER,
-    });
+    })
   }
 
   // Villas
   if (canPerform(SystemModule.VILLAS, PermissionAction.VIEW)) {
     flatItems.push({
       icon: HomeIcon,
-      name: "Villas",
-      path: "/villas",
+      name: 'Villas',
+      path: '/villas',
       module: SystemModule.VILLAS,
-    });
+    })
   }
 
   // Packages
   if (canPerform(SystemModule.PACKAGES, PermissionAction.VIEW)) {
     flatItems.push({
       icon: PackageIcon,
-      name: "Packages",
-      path: "/packages",
+      name: 'Packages',
+      path: '/packages',
       module: SystemModule.PACKAGES,
-    });
+    })
   }
 
   // Surveys
   if (canPerform(SystemModule.SURVEYS, PermissionAction.VIEW)) {
     flatItems.push({
       icon: SurveyIcon,
-      name: "Surveys",
-      path: "/surveys",
+      name: 'Surveys',
+      path: '/surveys',
       module: SystemModule.SURVEYS,
-    });
+    })
   }
 
   // Revenues section - check if any revenue items are visible
   const revenueItems = [
-    { name: "Customers", path: "/customers", module: SystemModule.CUSTOMERS, icon: UserGroupIcon },
-    { name: "Quotations", path: "/quotes", module: SystemModule.QUOTES, icon: DocsIcon },
-    { name: "Invoices", path: "/invoices", module: SystemModule.INVOICES, icon: DocsIcon },
-    { name: "Payments", path: "/payments", module: SystemModule.PAYMENTS, icon: DollarBillIcon },
-    { name: "Bookings", path: "/bookings", module: SystemModule.BOOKINGS, icon: CalenderIcon },
-  ].filter(item => canPerform(item.module, PermissionAction.VIEW));
+    { name: 'Customers', path: '/customers', module: SystemModule.CUSTOMERS, icon: UserGroupIcon },
+    { name: 'Quotations', path: '/quotes', module: SystemModule.QUOTES, icon: DocsIcon },
+    { name: 'Invoices', path: '/invoices', module: SystemModule.INVOICES, icon: DocsIcon },
+    { name: 'Payments', path: '/payments', module: SystemModule.PAYMENTS, icon: DollarBillIcon },
+    { name: 'Bookings', path: '/bookings', module: SystemModule.BOOKINGS, icon: CalenderIcon },
+  ].filter((item) => canPerform(item.module, PermissionAction.VIEW))
 
   if (revenueItems.length > 0) {
     // Add section divider
     flatItems.push({
       isSectionDivider: true,
-      sectionName: "Revenues",
-    });
+      sectionName: 'Revenues',
+    })
 
     // Add revenue items
-    revenueItems.forEach(item => {
-      flatItems.push(item);
-    });
+    revenueItems.forEach((item) => {
+      flatItems.push(item)
+    })
   }
 
   // Settings section - check if any settings items are visible
   const settingsItems = [
-    { name: "General", path: "/settings", module: SystemModule.SETTINGS_GENERAL, icon: SettingsIcon },
-    { name: "Targets", path: "/targets", module: SystemModule.SETTINGS_TARGETS, icon: BarChartIcon },
-  ].filter(item => canPerform(item.module, PermissionAction.VIEW));
+    {
+      name: 'General',
+      path: '/settings',
+      module: SystemModule.SETTINGS_GENERAL,
+      icon: SettingsIcon,
+    },
+    {
+      name: 'Targets',
+      path: '/targets',
+      module: SystemModule.SETTINGS_TARGETS,
+      icon: BarChartIcon,
+    },
+  ].filter((item) => canPerform(item.module, PermissionAction.VIEW))
 
   if (settingsItems.length > 0) {
     // Add section divider
     flatItems.push({
       isSectionDivider: true,
-      sectionName: "Settings",
-    });
+      sectionName: 'Settings',
+    })
 
     // Add settings items
-    settingsItems.forEach(item => {
-      flatItems.push(item);
-    });
+    settingsItems.forEach((item) => {
+      flatItems.push(item)
+    })
   }
 
   return [
     {
-      title: "Main",
+      title: 'Main',
       items: flatItems,
-    }
-  ];
-});
+    },
+  ]
+})
 
-const isActive = (path) => route.path === path;
+const isActive = (path) => route.path === path
 </script>

@@ -77,9 +77,7 @@ const fetchUserData = async () => {
   }
 }
 
-const menuItems = [
-  { href: '/profile', icon: UserCircleIcon, text: 'Edit profile' }
-]
+const menuItems = [{ href: '/profile', icon: UserCircleIcon, text: 'Edit profile' }]
 
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value

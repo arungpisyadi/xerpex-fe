@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class BookingService {
   /**
@@ -10,10 +10,10 @@ class BookingService {
    */
   async getBookings(params = {}) {
     try {
-      const response = await apiClient.get('/bookings', { params });
-      return response.data;
+      const response = await apiClient.get('/bookings', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -24,10 +24,10 @@ class BookingService {
    */
   async getBookingById(id) {
     try {
-      const response = await apiClient.get(`/bookings/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/bookings/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -38,10 +38,10 @@ class BookingService {
    */
   async getBookingDetails(id) {
     try {
-      const response = await apiClient.get(`/bookings/${id}/details`);
-      return response.data;
+      const response = await apiClient.get(`/bookings/${id}/details`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -52,10 +52,10 @@ class BookingService {
    */
   async createBooking(bookingData) {
     try {
-      const response = await apiClient.post('/bookings', bookingData);
-      return response.data;
+      const response = await apiClient.post('/bookings', bookingData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -67,10 +67,10 @@ class BookingService {
    */
   async updateBooking(id, bookingData) {
     try {
-      const response = await apiClient.put(`/bookings/${id}`, bookingData);
-      return response.data;
+      const response = await apiClient.put(`/bookings/${id}`, bookingData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -81,10 +81,10 @@ class BookingService {
    */
   async deleteBooking(id) {
     try {
-      const response = await apiClient.delete(`/bookings/${id}`);
-      return response.data;
+      const response = await apiClient.delete(`/bookings/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -96,10 +96,10 @@ class BookingService {
    */
   async updateBookingStatus(id, statusData) {
     try {
-      const response = await apiClient.patch(`/bookings/${id}/status`, statusData);
-      return response.data;
+      const response = await apiClient.patch(`/bookings/${id}/status`, statusData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -111,10 +111,10 @@ class BookingService {
    */
   async addVillaToBooking(id, villaData) {
     try {
-      const response = await apiClient.post(`/bookings/${id}/villas`, villaData);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/villas`, villaData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -126,10 +126,10 @@ class BookingService {
    */
   async removeVillaFromBooking(bookingId, villaId) {
     try {
-      const response = await apiClient.delete(`/bookings/${bookingId}/villas/${villaId}`);
-      return response.data;
+      const response = await apiClient.delete(`/bookings/${bookingId}/villas/${villaId}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -141,10 +141,10 @@ class BookingService {
    */
   async addPackageToBooking(id, packageData) {
     try {
-      const response = await apiClient.post(`/bookings/${id}/packages`, packageData);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/packages`, packageData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -156,10 +156,10 @@ class BookingService {
    */
   async removePackageFromBooking(bookingId, packageId) {
     try {
-      const response = await apiClient.delete(`/bookings/${bookingId}/packages/${packageId}`);
-      return response.data;
+      const response = await apiClient.delete(`/bookings/${bookingId}/packages/${packageId}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -171,10 +171,10 @@ class BookingService {
    */
   async addAddonToBooking(id, addonData) {
     try {
-      const response = await apiClient.post(`/bookings/${id}/addons`, addonData);
-      return response.data;
+      const response = await apiClient.post(`/bookings/${id}/addons`, addonData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -186,12 +186,12 @@ class BookingService {
    */
   async removeAddonFromBooking(bookingId, addonId) {
     try {
-      const response = await apiClient.delete(`/bookings/${bookingId}/addons/${addonId}`);
-      return response.data;
+      const response = await apiClient.delete(`/bookings/${bookingId}/addons/${addonId}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new BookingService();
+export default new BookingService()

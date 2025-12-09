@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 import type {
   Tax,
   CreateTaxRequest,
@@ -6,8 +6,8 @@ import type {
   TaxListResponse,
   TaxFilters,
   TaxCalculationRequest,
-  TaxCalculationResponse
-} from '../types/tax.types';
+  TaxCalculationResponse,
+} from '../types/tax.types'
 
 class TaxService {
   /**
@@ -17,10 +17,10 @@ class TaxService {
    */
   async getTaxes(params: TaxFilters = {}): Promise<TaxListResponse> {
     try {
-      const response = await apiClient.get('/taxes', { params });
-      return response.data;
+      const response = await apiClient.get('/taxes', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -31,10 +31,10 @@ class TaxService {
    */
   async getTaxById(id: number): Promise<Tax> {
     try {
-      const response = await apiClient.get(`/taxes/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/taxes/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -45,10 +45,10 @@ class TaxService {
    */
   async createTax(taxData: CreateTaxRequest): Promise<Tax> {
     try {
-      const response = await apiClient.post('/taxes', taxData);
-      return response.data;
+      const response = await apiClient.post('/taxes', taxData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -60,10 +60,10 @@ class TaxService {
    */
   async updateTax(id: number, taxData: UpdateTaxRequest): Promise<Tax> {
     try {
-      const response = await apiClient.put(`/taxes/${id}`, taxData);
-      return response.data;
+      const response = await apiClient.put(`/taxes/${id}`, taxData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -74,9 +74,9 @@ class TaxService {
    */
   async deleteTax(id: number): Promise<void> {
     try {
-      await apiClient.delete(`/taxes/${id}`);
+      await apiClient.delete(`/taxes/${id}`)
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -87,12 +87,12 @@ class TaxService {
    */
   async calculateTaxes(calculationData: TaxCalculationRequest): Promise<TaxCalculationResponse> {
     try {
-      const response = await apiClient.post('/taxes/calculate', calculationData);
-      return response.data;
+      const response = await apiClient.post('/taxes/calculate', calculationData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new TaxService();
+export default new TaxService()

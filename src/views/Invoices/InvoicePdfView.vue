@@ -24,7 +24,8 @@ import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
 
 // Disable Vue DevTools for this component
 if (typeof window !== 'undefined') {
-  const devtools = (window as any).__VUE_DEVTOOLS_GLOBAL_HOOK__
+  const devtools = (window as Window & { __VUE_DEVTOOLS_GLOBAL_HOOK__?: { enabled: boolean } })
+    .__VUE_DEVTOOLS_GLOBAL_HOOK__
   if (devtools) {
     devtools.enabled = false
   }
@@ -46,10 +47,32 @@ const loadInvoiceData = async (invoiceId: number) => {
     error.value = ''
 
     // Load invoice data
-    const invoice = await invoiceService.getInvoice(invoiceId)
+    const response = await invoiceService.getInvoice(invoiceId)
 
-    if (!invoice) {
+    if (!response) {
       throw new Error('Invoice not found')
+    }
+
+    // Handle flexible response formats - API might return { data: invoice } or invoice directly
+    let invoice: Invoice
+
+    if (response && typeof response === 'object') {
+      // If response has a data property, use it
+      if ('data' in response && response.data) {
+        invoice = response.data as Invoice
+      }
+      // If response looks like an invoice directly (has invoice_number)
+      else if ('invoice_number' in response) {
+        invoice = response as unknown as Invoice
+      }
+      // If response is wrapped differently
+      else if ('invoice' in response) {
+        invoice = (response as { invoice: Invoice }).invoice
+      } else {
+        throw new Error('Invoice data not found in API response - unknown response format')
+      }
+    } else {
+      throw new Error('Invalid API response format received')
     }
 
     // Validate invoice data
@@ -64,8 +87,7 @@ const loadInvoiceData = async (invoiceId: number) => {
 
     // Generate print HTML
     htmlContent.value = generatePrintHTML(invoice, companySettings)
-
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('[InvoicePdfView] Failed to load invoice:', err)
     error.value = err instanceof Error ? err.message : 'Failed to load invoice'
   } finally {
@@ -144,8 +166,12 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media print {

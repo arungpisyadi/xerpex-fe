@@ -8,7 +8,6 @@
         label="Description"
         placeholder="Enter a description..."
         rows="6"
-
       />
     </div>
 
@@ -21,7 +20,6 @@
         placeholder="Enter a description..."
         rows="6"
         disabled
-
       />
     </div>
 
@@ -35,9 +33,8 @@
         rows="6"
         validation="required"
         :validation-messages="{
-          required: 'Please enter a message in the textarea.'
+          required: 'Please enter a message in the textarea.',
         }"
-
       />
     </div>
   </div>

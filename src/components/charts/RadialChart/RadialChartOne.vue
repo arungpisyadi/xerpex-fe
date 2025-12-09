@@ -13,16 +13,16 @@ import VueApexCharts from 'vue3-apexcharts'
 const props = defineProps({
   percentage: {
     type: Number,
-    default: 75.55
+    default: 75.55,
   },
   growth: {
     type: Number,
-    default: 10
+    default: 10,
   },
   earnings: {
     type: Number,
-    default: 3287
-  }
+    default: 3287,
+  },
 })
 
 const series = ref([props.percentage])
@@ -52,8 +52,8 @@ const chartOptions = ref({
           left: 0,
           color: '#999',
           opacity: 1,
-          blur: 2
-        }
+          blur: 2,
+        },
       },
       dataLabels: {
         name: {
@@ -65,10 +65,10 @@ const chartOptions = ref({
           fontWeight: 600,
           formatter: function (val) {
             return val + '%'
-          }
-        }
-      }
-    }
+          },
+        },
+      },
+    },
   },
   fill: {
     type: 'gradient',
@@ -80,11 +80,11 @@ const chartOptions = ref({
       inverseColors: true,
       opacityFrom: 1,
       opacityTo: 1,
-      stops: [0, 100]
-    }
+      stops: [0, 100],
+    },
   },
   stroke: {
-    lineCap: 'round'
+    lineCap: 'round',
   },
   colors: ['#465FFF'],
 })

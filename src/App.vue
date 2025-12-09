@@ -13,71 +13,71 @@
 </template>
 
 <script>
-import { computed, ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import XerpexSidebar from './components/layout/XerpexSidebar.vue';
-import ThemeProvider from './components/layout/ThemeProvider.vue';
-import { useSidebarProvider } from './composables/useSidebar';
-import { authService } from './services';
+import { computed, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import XerpexSidebar from './components/layout/XerpexSidebar.vue'
+import ThemeProvider from './components/layout/ThemeProvider.vue'
+import { useSidebarProvider } from './composables/useSidebar'
+import { authService } from './services'
 
 export default {
   components: {
     XerpexSidebar,
-    ThemeProvider
+    ThemeProvider,
   },
   setup() {
     // Initialize the sidebar provider
-    useSidebarProvider();
+    useSidebarProvider()
 
     // Authentication state
-    const isAuthenticated = ref(false);
+    const isAuthenticated = ref(false)
 
     // Route state
-    const route = useRoute();
+    const route = useRoute()
 
     // Check if current route requires fullscreen layout
     const isFullScreen = computed(() => {
-      return route.meta?.fullScreen === true;
-    });
+      return route.meta?.fullScreen === true
+    })
 
     // Check authentication status
     const checkAuth = async () => {
       try {
         // Check if user is logged in (has valid token)
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token')
         if (token) {
           // Verify token validity with the server
-          const user = await authService.getCurrentUser();
-          isAuthenticated.value = !!user;
+          const user = await authService.getCurrentUser()
+          isAuthenticated.value = !!user
         } else {
-          isAuthenticated.value = false;
+          isAuthenticated.value = false
         }
       } catch (error) {
-        console.error('Authentication check failed:', error);
-        isAuthenticated.value = false;
+        console.error('Authentication check failed:', error)
+        isAuthenticated.value = false
       }
-    };
+    }
 
     // Check auth on component mount
     onMounted(() => {
-      checkAuth();
+      checkAuth()
 
       // Listen for auth events
       window.addEventListener('auth:login', () => {
-        isAuthenticated.value = true;
-      });
+        isAuthenticated.value = true
+      })
 
       window.addEventListener('auth:logout', () => {
-        isAuthenticated.value = false;
-      });
-    });
+        isAuthenticated.value = false
+      })
+    })
 
     return {
       isAuthenticated,
-      isFullScreen
-    };
-  }
-};
+      isFullScreen,
+    }
+  },
+}
 </script>
 
 <style>

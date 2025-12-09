@@ -3,12 +3,7 @@
   <div v-else-if="error">{{ error }}</div>
   <div v-else-if="invoice">
     <div class="pdf-controls">
-      <button
-        @click="previewPDF"
-        class="preview-button"
-      >
-        📄 Preview PDF
-      </button>
+      <button @click="previewPDF" class="preview-button">📄 Preview PDF</button>
       <button
         @click="printInvoice"
         :disabled="loading || !invoice"
@@ -21,7 +16,7 @@
         @click="exportToPdf"
         :disabled="pdfGenerating"
         class="generate-pdf-button"
-        :class="{ 'loading': pdfGenerating }"
+        :class="{ loading: pdfGenerating }"
       >
         <span v-if="pdfGenerating">Generating PDF...</span>
         <span v-else>Generate PDF (Direct)</span>
@@ -70,7 +65,9 @@
         </tbody>
       </table>
       <div class="totals">
-        <div style="font-style: italic"><strong>Total Discount:</strong> {{ totalDiscount.toFixed(2) }}</div>
+        <div style="font-style: italic">
+          <strong>Total Discount:</strong> {{ totalDiscount.toFixed(2) }}
+        </div>
         <div><strong>Tax:</strong> {{ invoice.tax_total }}</div>
         <div><strong>Total:</strong> {{ invoice.total }}</div>
       </div>
@@ -109,8 +106,15 @@
                 </span>
               </td>
               <td class="metadata-cell">
-                <div v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0" class="metadata-content">
-                  <span v-for="(value, key) in item.event_metadata" :key="key" class="metadata-item">
+                <div
+                  v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0"
+                  class="metadata-content"
+                >
+                  <span
+                    v-for="(value, key) in item.event_metadata"
+                    :key="key"
+                    class="metadata-item"
+                  >
                     <strong>{{ formatMetadataKey(key) }}:</strong> {{ value }}
                   </span>
                 </div>
@@ -148,7 +152,8 @@ const router = useRouter()
 const invoiceRef = ref<HTMLElement | null>(null)
 
 // Centralized services
-const { generatePrintHTML: templateGeneratePrintHTML, getInvoiceDisplaySettingsSync } = useInvoiceTemplate()
+const { generatePrintHTML: templateGeneratePrintHTML, getInvoiceDisplaySettingsSync } =
+  useInvoiceTemplate()
 const { currentInvoice: invoice, loading, error, getInvoice } = useInvoiceData()
 
 // PDF generation state
@@ -211,7 +216,7 @@ const exportToPdf = async () => {
       filename: `invoice-${invoice.value.invoice_number}.pdf`,
       image: {
         type: 'jpeg' as const,
-        quality: 1.0
+        quality: 1.0,
       },
       html2canvas: {
         scale: 3,
@@ -220,16 +225,16 @@ const exportToPdf = async () => {
         allowTaint: false,
         backgroundColor: '#ffffff',
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
       },
       jsPDF: {
         unit: 'in',
         format: 'letter',
         orientation: 'portrait' as const,
         putOnlyUsedFonts: true,
-        floatPrecision: 16
+        floatPrecision: 16,
       },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
     }
 
     // Generate and download PDF
@@ -239,7 +244,6 @@ const exportToPdf = async () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Client-side PDF generation failed:', error)
     pdfStatus.value = 'Error: Failed to generate PDF. Please try again.'
@@ -301,7 +305,6 @@ const printInvoice = () => {
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
-
   } catch (error) {
     console.error('Print failed:', error)
     pdfStatus.value = 'Error: Failed to open print dialog'
@@ -310,7 +313,6 @@ const printInvoice = () => {
     }, 5000)
   }
 }
-
 
 // Open PDF preview modal
 const previewPDF = () => {
@@ -338,7 +340,7 @@ const formatHistoryDateTime = (dateString: string) => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
   })
 }
 
@@ -357,7 +359,7 @@ const getEventBadgeClass = (category: string) => {
 const formatMetadataKey = (key: string | number) => {
   return String(key)
     .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 }
 
@@ -372,7 +374,7 @@ onMounted(async () => {
     // Check backend availability in parallel with loading invoice
     const [_, isBackendAvailable] = await Promise.all([
       getInvoice(Number(invoiceId)),
-      checkBackendAvailability()
+      checkBackendAvailability(),
     ])
 
     backendAvailable.value = isBackendAvailable
@@ -383,7 +385,6 @@ onMounted(async () => {
         pdfStatus.value = ''
       }, 3000)
     }
-
   } catch (err) {
     // If invoice loading fails, still check backend for PDF functionality
     backendAvailable.value = await checkBackendAvailability()
@@ -400,7 +401,9 @@ onMounted(async () => {
   flex-wrap: wrap;
 }
 
-.preview-button, .print-invoice-button, .generate-pdf-button {
+.preview-button,
+.print-invoice-button,
+.generate-pdf-button {
   background-color: #007bff;
   color: white;
   border: none;
@@ -503,8 +506,12 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  0% { transform: translateY(-50%) rotate(0deg); }
-  100% { transform: translateY(-50%) rotate(360deg); }
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }
 
 .invoice-container {
@@ -564,7 +571,8 @@ onMounted(async () => {
   margin-bottom: 20px;
 }
 
-.items-table th, .items-table td {
+.items-table th,
+.items-table td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: left;

@@ -5,16 +5,16 @@
  */
 export function formatNumber(value: number | string | null | undefined): string {
   if (value === null || value === undefined || value === '') {
-    return '0';
+    return '0'
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const num = typeof value === 'string' ? parseFloat(value) : value
 
   if (isNaN(num)) {
-    return '0';
+    return '0'
   }
 
-  return num.toLocaleString('en-US');
+  return num.toLocaleString('en-US')
 }
 
 /**
@@ -24,19 +24,23 @@ export function formatNumber(value: number | string | null | undefined): string 
  * @param showSymbol - Whether to show currency symbol (default: true)
  * @returns Formatted currency string
  */
-export function formatCurrency(value: number | string | null | undefined, currency: string = 'Rp', showSymbol: boolean = true): string {
+export function formatCurrency(
+  value: number | string | null | undefined,
+  currency: string = 'Rp',
+  showSymbol: boolean = true,
+): string {
   if (value === null || value === undefined || value === '') {
-    return showSymbol ? `${currency} 0` : '0';
+    return showSymbol ? `${currency} 0` : '0'
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const num = typeof value === 'string' ? parseFloat(value) : value
 
   if (isNaN(num)) {
-    return showSymbol ? `${currency} 0` : '0';
+    return showSymbol ? `${currency} 0` : '0'
   }
 
-  const formatted = num.toLocaleString('en-US');
-  return showSymbol ? `${currency} ${formatted}` : formatted;
+  const formatted = num.toLocaleString('en-US')
+  return showSymbol ? `${currency} ${formatted}` : formatted
 }
 
 /**
@@ -46,26 +50,26 @@ export function formatCurrency(value: number | string | null | undefined, curren
  */
 export function formatLargeNumber(value: number | string | null | undefined): string {
   if (value === null || value === undefined || value === '') {
-    return '0';
+    return '0'
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const num = typeof value === 'string' ? parseFloat(value) : value
 
   if (isNaN(num)) {
-    return '0';
+    return '0'
   }
 
   if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(1) + 'B';
+    return (num / 1000000000).toFixed(1) + 'B'
   }
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
+    return (num / 1000000).toFixed(1) + 'M'
   }
   if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
+    return (num / 1000).toFixed(1) + 'K'
   }
 
-  return num.toString();
+  return num.toString()
 }
 
 /**
@@ -75,18 +79,23 @@ export function formatLargeNumber(value: number | string | null | undefined): st
  * @param showSymbol - Whether to show currency symbol (default: true)
  * @returns Formatted IDR currency string
  */
-export function formatIDR(value: number | string | null | undefined, showSymbol: boolean = true): string {
+export function formatIDR(
+  value: number | string | null | undefined,
+  showSymbol: boolean = true,
+): string {
   if (value === null || value === undefined || value === '') {
-    return showSymbol ? 'Rp 0' : '0';
+    return showSymbol ? 'Rp 0' : '0'
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const num = typeof value === 'string' ? parseFloat(value) : value
 
   if (isNaN(num)) {
-    return showSymbol ? 'Rp 0' : '0';
+    return showSymbol ? 'Rp 0' : '0'
   }
 
   // Convert to Indonesian format with dots as thousand separators
-  const formatted = Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  return showSymbol ? `Rp ${formatted}` : formatted;
+  const formatted = Math.round(num)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return showSymbol ? `Rp ${formatted}` : formatted
 }

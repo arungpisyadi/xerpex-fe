@@ -1,23 +1,23 @@
-import type { Customer, CreateCustomerRequest } from '../types/customer.types';
-import type { Tax, CreateTaxRequest } from '../types/tax.types';
-import type { Quote, CreateQuoteRequest } from '../types/quote.types';
-import type { Invoice, CreateInvoiceRequest } from '../types/invoice.types';
-import type { Payment, CreatePaymentRequest } from '../types/payment.types';
+import type { Customer, CreateCustomerRequest } from '../types/customer.types'
+import type { Tax, CreateTaxRequest } from '../types/tax.types'
+import type { Quote, CreateQuoteRequest } from '../types/quote.types'
+import type { Invoice, CreateInvoiceRequest } from '../types/invoice.types'
+import type { Payment, CreatePaymentRequest } from '../types/payment.types'
 
 export interface ValidationRule {
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  min?: number;
-  max?: number;
-  pattern?: RegExp;
-  email?: boolean;
-  phone?: boolean;
-  custom?: (value: any) => string | null;
+  required?: boolean
+  minLength?: number
+  maxLength?: number
+  min?: number
+  max?: number
+  pattern?: RegExp
+  email?: boolean
+  phone?: boolean
+  custom?: (value: any) => string | null
 }
 
 export interface ValidationErrors {
-  [key: string]: string;
+  [key: string]: string
 }
 
 export class FormValidator {
@@ -31,57 +31,57 @@ export class FormValidator {
   static validateField(value: any, rules: ValidationRule, fieldName: string): string | null {
     // Required validation
     if (rules.required && (value === null || value === undefined || value === '')) {
-      return `${fieldName} is required`;
+      return `${fieldName} is required`
     }
 
     // Skip other validations if field is empty and not required
     if (!rules.required && (value === null || value === undefined || value === '')) {
-      return null;
+      return null
     }
 
     // String validations
     if (typeof value === 'string') {
       if (rules.minLength && value.length < rules.minLength) {
-        return `${fieldName} must be at least ${rules.minLength} characters`;
+        return `${fieldName} must be at least ${rules.minLength} characters`
       }
 
       if (rules.maxLength && value.length > rules.maxLength) {
-        return `${fieldName} must not exceed ${rules.maxLength} characters`;
+        return `${fieldName} must not exceed ${rules.maxLength} characters`
       }
 
       if (rules.pattern && !rules.pattern.test(value)) {
-        return `${fieldName} format is invalid`;
+        return `${fieldName} format is invalid`
       }
 
       if (rules.email && !this.isValidEmail(value)) {
-        return `${fieldName} must be a valid email address`;
+        return `${fieldName} must be a valid email address`
       }
 
       if (rules.phone && !this.isValidPhone(value)) {
-        return `${fieldName} must be a valid phone number`;
+        return `${fieldName} must be a valid phone number`
       }
     }
 
     // Number validations
     if (typeof value === 'number') {
       if (rules.min !== undefined && value < rules.min) {
-        return `${fieldName} must be at least ${rules.min}`;
+        return `${fieldName} must be at least ${rules.min}`
       }
 
       if (rules.max !== undefined && value > rules.max) {
-        return `${fieldName} must not exceed ${rules.max}`;
+        return `${fieldName} must not exceed ${rules.max}`
       }
     }
 
     // Custom validation
     if (rules.custom) {
-      const customError = rules.custom(value);
+      const customError = rules.custom(value)
       if (customError) {
-        return customError;
+        return customError
       }
     }
 
-    return null;
+    return null
   }
 
   /**
@@ -91,16 +91,16 @@ export class FormValidator {
    * @returns Validation errors object
    */
   static validateObject(data: any, rules: Record<string, ValidationRule>): ValidationErrors {
-    const errors: ValidationErrors = {};
+    const errors: ValidationErrors = {}
 
-    Object.keys(rules).forEach(field => {
-      const error = this.validateField(data[field], rules[field], field);
+    Object.keys(rules).forEach((field) => {
+      const error = this.validateField(data[field], rules[field], field)
       if (error) {
-        errors[field] = error;
+        errors[field] = error
       }
-    });
+    })
 
-    return errors;
+    return errors
   }
 
   /**
@@ -109,8 +109,8 @@ export class FormValidator {
    * @returns True if valid
    */
   static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
   }
 
   /**
@@ -119,8 +119,8 @@ export class FormValidator {
    * @returns True if valid
    */
   static isValidPhone(phone: string): boolean {
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
+    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))
   }
 
   /**
@@ -136,10 +136,10 @@ export class FormValidator {
       address: { maxLength: 500 },
       city: { maxLength: 100 },
       country: { maxLength: 100 },
-      billing_address: { maxLength: 500 }
-    };
+      billing_address: { maxLength: 500 },
+    }
 
-    return this.validateObject(data, rules);
+    return this.validateObject(data, rules)
   }
 
   /**
@@ -156,14 +156,14 @@ export class FormValidator {
         max: 100,
         custom: (value) => {
           if (typeof value !== 'number' || isNaN(value)) {
-            return 'Percentage must be a valid number';
+            return 'Percentage must be a valid number'
           }
-          return null;
-        }
-      }
-    };
+          return null
+        },
+      },
+    }
 
-    return this.validateObject(data, rules);
+    return this.validateObject(data, rules)
   }
 
   /**
@@ -181,31 +181,31 @@ export class FormValidator {
         required: true,
         custom: (items) => {
           if (!Array.isArray(items) || items.length === 0) {
-            return 'At least one item is required';
+            return 'At least one item is required'
           }
-          return null;
-        }
-      }
-    };
+          return null
+        },
+      },
+    }
 
-    const errors = this.validateObject(data, rules);
+    const errors = this.validateObject(data, rules)
 
     // Validate quote items
     if (data.items && Array.isArray(data.items)) {
       data.items.forEach((item, index) => {
         if (!item.package_id) {
-          errors[`items.${index}.package_id`] = 'Package is required';
+          errors[`items.${index}.package_id`] = 'Package is required'
         }
         if (!item.unit_price || item.unit_price <= 0) {
-          errors[`items.${index}.unit_price`] = 'Unit price must be greater than 0';
+          errors[`items.${index}.unit_price`] = 'Unit price must be greater than 0'
         }
         if (item.discount < 0) {
-          errors[`items.${index}.discount`] = 'Discount cannot be negative';
+          errors[`items.${index}.discount`] = 'Discount cannot be negative'
         }
-      });
+      })
     }
 
-    return errors;
+    return errors
   }
 
   /**
@@ -224,21 +224,21 @@ export class FormValidator {
         required: true,
         custom: (items) => {
           if (!Array.isArray(items) || items.length === 0) {
-            return 'At least one item is required';
+            return 'At least one item is required'
           }
-          return null;
-        }
-      }
-    };
+          return null
+        },
+      },
+    }
 
-    const errors = this.validateObject(data, rules);
+    const errors = this.validateObject(data, rules)
 
     // Validate due date is after issue date
     if (data.issue_date && data.due_date) {
-      const issueDate = new Date(data.issue_date);
-      const dueDate = new Date(data.due_date);
+      const issueDate = new Date(data.issue_date)
+      const dueDate = new Date(data.due_date)
       if (dueDate <= issueDate) {
-        errors.due_date = 'Due date must be after issue date';
+        errors.due_date = 'Due date must be after issue date'
       }
     }
 
@@ -246,18 +246,18 @@ export class FormValidator {
     if (data.items && Array.isArray(data.items)) {
       data.items.forEach((item, index) => {
         if (!item.package_id) {
-          errors[`items.${index}.package_id`] = 'Package is required';
+          errors[`items.${index}.package_id`] = 'Package is required'
         }
         if (!item.unit_price || item.unit_price <= 0) {
-          errors[`items.${index}.unit_price`] = 'Unit price must be greater than 0';
+          errors[`items.${index}.unit_price`] = 'Unit price must be greater than 0'
         }
         if (item.discount < 0) {
-          errors[`items.${index}.discount`] = 'Discount cannot be negative';
+          errors[`items.${index}.discount`] = 'Discount cannot be negative'
         }
-      });
+      })
     }
 
-    return errors;
+    return errors
   }
 
   /**
@@ -272,23 +272,23 @@ export class FormValidator {
       payment_method: { required: true },
       payment_date: { required: true },
       reference_number: { maxLength: 100 },
-      notes: { maxLength: 500 }
-    };
+      notes: { maxLength: 500 },
+    }
 
-    const errors = this.validateObject(data, rules);
+    const errors = this.validateObject(data, rules)
 
     // Validate payment date is not in the future
     if (data.payment_date) {
-      const paymentDate = new Date(data.payment_date);
-      const today = new Date();
-      today.setHours(23, 59, 59, 999); // End of today
+      const paymentDate = new Date(data.payment_date)
+      const today = new Date()
+      today.setHours(23, 59, 59, 999) // End of today
 
       if (paymentDate > today) {
-        errors.payment_date = 'Payment date cannot be in the future';
+        errors.payment_date = 'Payment date cannot be in the future'
       }
     }
 
-    return errors;
+    return errors
   }
 
   /**
@@ -297,7 +297,7 @@ export class FormValidator {
    * @returns True if no errors
    */
   static isValid(errors: ValidationErrors): boolean {
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).length === 0
   }
 
   /**
@@ -306,8 +306,8 @@ export class FormValidator {
    * @returns First error message or null
    */
   static getFirstError(errors: ValidationErrors): string | null {
-    const keys = Object.keys(errors);
-    return keys.length > 0 ? errors[keys[0]] : null;
+    const keys = Object.keys(errors)
+    return keys.length > 0 ? errors[keys[0]] : null
   }
 }
 
@@ -319,12 +319,12 @@ export class FormValidator {
  */
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
-  let timeout: number;
+  let timeout: number
 
   return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait) as any;
-  };
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait) as any
+  }
 }

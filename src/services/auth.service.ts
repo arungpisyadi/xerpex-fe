@@ -1,65 +1,65 @@
-import apiClient from './api.service';
-import { handleError } from '../utils/errorHandler';
+import apiClient from './api.service'
+import { handleError } from '../utils/errorHandler'
 
 export interface User {
-  id: number;
-  email: string;
-  full_name: string;
-  role: 'admin' | 'finance' | 'manager' | 'survey-admin' | 'survey' | 'staff' | 'sales';
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  phone?: string;
-  bio?: string;
+  id: number
+  email: string
+  full_name: string
+  role: 'admin' | 'finance' | 'manager' | 'survey-admin' | 'survey' | 'staff' | 'sales'
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  phone?: string
+  bio?: string
 }
 
 export interface UpdatePersonalInfoRequest {
-  full_name?: string;
-  email?: string;
-  phone?: string;
-  bio?: string;
+  full_name?: string
+  email?: string
+  phone?: string
+  bio?: string
 }
 
 export interface UpdatePasswordRequest {
-  current_password: string;
-  new_password: string;
+  current_password: string
+  new_password: string
 }
 
 export interface LoginRequest {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
 export interface LoginResponse {
-  access_token: string;
-  token_type: string;
-  user: User;
-  success?: boolean;
-  error?: string;
-  details?: string;
+  access_token: string
+  token_type: string
+  user: User
+  success?: boolean
+  error?: string
+  details?: string
 }
 
 export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-  role?: 'user';
+  name: string
+  email: string
+  password: string
+  role?: 'user'
 }
 
 class AuthService {
-  private currentUser: User | null = null;
-  private token: string | null = null;
+  private currentUser: User | null = null
+  private token: string | null = null
 
   constructor() {
     // Initialize from localStorage
-    this.token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
+    this.token = localStorage.getItem('token')
+    const userStr = localStorage.getItem('user')
     if (userStr) {
       try {
-        this.currentUser = JSON.parse(userStr);
+        this.currentUser = JSON.parse(userStr)
       } catch (error) {
-        console.error('Error parsing user from localStorage:', error);
-        this.clearAuth();
+        console.error('Error parsing user from localStorage:', error)
+        this.clearAuth()
       }
     }
   }
@@ -71,21 +71,21 @@ class AuthService {
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      const response = await apiClient.post('/auth/login', credentials);
-      const { access_token, token_type, user } = response.data;
+      const response = await apiClient.post('/auth/login', credentials)
+      const { access_token, token_type, user } = response.data
 
       // Store authentication data
-      this.token = access_token;
-      this.currentUser = user;
-      localStorage.setItem('token', access_token);
-      localStorage.setItem('user', JSON.stringify(user));
+      this.token = access_token
+      this.currentUser = user
+      localStorage.setItem('token', access_token)
+      localStorage.setItem('user', JSON.stringify(user))
 
       // Dispatch auth event for App.vue to listen
-      window.dispatchEvent(new CustomEvent('auth:login'));
+      window.dispatchEvent(new CustomEvent('auth:login'))
 
-      return response.data;
+      return response.data
     } catch (error) {
-      throw handleError(error, 'login');
+      throw handleError(error, 'login')
     }
   }
 
@@ -96,10 +96,10 @@ class AuthService {
    */
   async register(userData: RegisterRequest): Promise<User> {
     try {
-      const response = await apiClient.post('/auth/register', userData);
-      return response.data;
+      const response = await apiClient.post('/auth/register', userData)
+      return response.data
     } catch (error) {
-      throw handleError(error, 'register');
+      throw handleError(error, 'register')
     }
   }
 
@@ -109,15 +109,15 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       if (this.token) {
-        await apiClient.post('/auth/logout');
+        await apiClient.post('/auth/logout')
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout error:', error)
     } finally {
-      this.clearAuth();
+      this.clearAuth()
 
       // Dispatch auth event for App.vue to listen
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent('auth:logout'))
     }
   }
 
@@ -127,12 +127,12 @@ class AuthService {
    */
   async getProfile(): Promise<User> {
     try {
-      const response = await apiClient.get('/auth/profile');
-      this.currentUser = response.data;
-      localStorage.setItem('user', JSON.stringify(response.data));
-      return response.data;
+      const response = await apiClient.get('/auth/profile')
+      this.currentUser = response.data
+      localStorage.setItem('user', JSON.stringify(response.data))
+      return response.data
     } catch (error) {
-      throw handleError(error, 'getProfile');
+      throw handleError(error, 'getProfile')
     }
   }
 
@@ -143,12 +143,12 @@ class AuthService {
    */
   async updateProfile(userData: Partial<User>): Promise<User> {
     try {
-      const response = await apiClient.put('/auth/profile', userData);
-      this.currentUser = response.data;
-      localStorage.setItem('user', JSON.stringify(response.data));
-      return response.data;
+      const response = await apiClient.put('/auth/profile', userData)
+      this.currentUser = response.data
+      localStorage.setItem('user', JSON.stringify(response.data))
+      return response.data
     } catch (error) {
-      throw handleError(error, 'updateProfile');
+      throw handleError(error, 'updateProfile')
     }
   }
 
@@ -159,12 +159,12 @@ class AuthService {
    */
   async updatePersonalInfo(personalInfo: UpdatePersonalInfoRequest): Promise<User> {
     try {
-      const response = await apiClient.put('/auth/profile/personal-info', personalInfo);
-      this.currentUser = response.data;
-      localStorage.setItem('user', JSON.stringify(response.data));
-      return response.data;
+      const response = await apiClient.put('/auth/profile/personal-info', personalInfo)
+      this.currentUser = response.data
+      localStorage.setItem('user', JSON.stringify(response.data))
+      return response.data
     } catch (error) {
-      throw handleError(error, 'updatePersonalInfo');
+      throw handleError(error, 'updatePersonalInfo')
     }
   }
 
@@ -175,9 +175,9 @@ class AuthService {
    */
   async updatePassword(passwordData: UpdatePasswordRequest): Promise<void> {
     try {
-      await apiClient.put('/auth/profile/password', passwordData);
+      await apiClient.put('/auth/profile/password', passwordData)
     } catch (error) {
-      throw handleError(error, 'updatePassword');
+      throw handleError(error, 'updatePassword')
     }
   }
 
@@ -191,10 +191,10 @@ class AuthService {
     try {
       await apiClient.post('/auth/change-password', {
         current_password: currentPassword,
-        new_password: newPassword
-      });
+        new_password: newPassword,
+      })
     } catch (error) {
-      throw handleError(error, 'changePassword');
+      throw handleError(error, 'changePassword')
     }
   }
 
@@ -205,9 +205,9 @@ class AuthService {
    */
   async requestPasswordReset(email: string): Promise<void> {
     try {
-      await apiClient.post('/auth/forgot-password', { email });
+      await apiClient.post('/auth/forgot-password', { email })
     } catch (error) {
-      throw handleError(error, 'requestPasswordReset');
+      throw handleError(error, 'requestPasswordReset')
     }
   }
 
@@ -221,10 +221,10 @@ class AuthService {
     try {
       await apiClient.post('/auth/reset-password', {
         token,
-        new_password: newPassword
-      });
+        new_password: newPassword,
+      })
     } catch (error) {
-      throw handleError(error, 'resetPassword');
+      throw handleError(error, 'resetPassword')
     }
   }
 
@@ -232,10 +232,10 @@ class AuthService {
    * Clear authentication data
    */
   private clearAuth(): void {
-    this.token = null;
-    this.currentUser = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.token = null
+    this.currentUser = null
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
 
   /**
@@ -243,7 +243,7 @@ class AuthService {
    * @returns True if authenticated
    */
   isAuthenticated(): boolean {
-    return !!this.token && !!this.currentUser;
+    return !!this.token && !!this.currentUser
   }
 
   /**
@@ -251,7 +251,7 @@ class AuthService {
    * @returns Current user or null
    */
   getCurrentUser(): User | null {
-    return this.currentUser;
+    return this.currentUser
   }
 
   /**
@@ -259,7 +259,7 @@ class AuthService {
    * @returns User role or null
    */
   getUserRole(): string | null {
-    return this.currentUser?.role || null;
+    return this.currentUser?.role || null
   }
 
   /**
@@ -267,7 +267,7 @@ class AuthService {
    * @returns True if user is admin
    */
   isAdmin(): boolean {
-    return this.currentUser?.role === 'admin';
+    return this.currentUser?.role === 'admin'
   }
 
   /**
@@ -275,7 +275,7 @@ class AuthService {
    * @returns True if user is finance
    */
   isFinance(): boolean {
-    return this.currentUser?.role === 'finance';
+    return this.currentUser?.role === 'finance'
   }
 
   /**
@@ -283,7 +283,7 @@ class AuthService {
    * @returns True if user is regular user
    */
   isRegularUser(): boolean {
-    return this.currentUser?.role === 'staff';
+    return this.currentUser?.role === 'staff'
   }
 
   /**
@@ -291,7 +291,7 @@ class AuthService {
    * @returns True if user can access all data
    */
   canAccessAllData(): boolean {
-    return this.isAdmin() || this.isFinance();
+    return this.isAdmin() || this.isFinance()
   }
 
   /**
@@ -300,30 +300,30 @@ class AuthService {
    * @returns True if user has permission
    */
   hasPermission(permission: string): boolean {
-    const userRole = this.getUserRole();
+    const userRole = this.getUserRole()
 
     switch (permission) {
       case 'view_all_customers':
       case 'view_all_quotes':
       case 'view_all_invoices':
       case 'view_all_payments':
-        return this.canAccessAllData();
+        return this.canAccessAllData()
 
       case 'manage_users':
       case 'manage_system_settings':
-        return this.isAdmin();
+        return this.isAdmin()
 
       case 'manage_finances':
       case 'view_financial_reports':
-        return this.isAdmin() || this.isFinance();
+        return this.isAdmin() || this.isFinance()
 
       case 'create_quotes':
       case 'create_invoices':
       case 'create_customers':
-        return true; // All authenticated users can create
+        return true // All authenticated users can create
 
       default:
-        return false;
+        return false
     }
   }
 
@@ -332,7 +332,7 @@ class AuthService {
    * @returns Current token
    */
   getToken(): string | null {
-    return this.token;
+    return this.token
   }
 
   /**
@@ -341,16 +341,16 @@ class AuthService {
    */
   async refreshToken(): Promise<string> {
     try {
-      const response = await apiClient.post('/auth/refresh');
-      const { access_token } = response.data;
+      const response = await apiClient.post('/auth/refresh')
+      const { access_token } = response.data
 
-      this.token = access_token;
-      localStorage.setItem('token', access_token);
+      this.token = access_token
+      localStorage.setItem('token', access_token)
 
-      return access_token;
+      return access_token
     } catch (error) {
-      this.clearAuth();
-      throw handleError(error, 'refreshToken');
+      this.clearAuth()
+      throw handleError(error, 'refreshToken')
     }
   }
 
@@ -360,13 +360,13 @@ class AuthService {
    */
   async verifyToken(): Promise<boolean> {
     try {
-      await apiClient.get('/auth/verify');
-      return true;
+      await apiClient.get('/auth/verify')
+      return true
     } catch (error) {
-      this.clearAuth();
-      return false;
+      this.clearAuth()
+      return false
     }
   }
 }
 
-export default new AuthService();
+export default new AuthService()

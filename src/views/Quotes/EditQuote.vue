@@ -5,7 +5,10 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="loadingQuote" class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-if="loadingQuote"
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <span class="ml-3 text-[#4b5563] dark:text-gray-400">Loading Quotation...</span>
@@ -13,7 +16,10 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-else-if="error"
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="flex items-center justify-center py-12">
         <div class="text-center">
           <div class="text-[#ef4444] text-lg font-[600] mb-2">{{ error }}</div>
@@ -28,7 +34,10 @@
     </div>
 
     <!-- Edit Form -->
-    <div v-else class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]">
+    <div
+      v-else
+      class="rounded-sm border border-stroke bg-[#ffffff] px-[1.25rem] pt-[1.5rem] pb-[0.625rem] shadow-default dark:border-strokedark dark:bg-boxdark sm:px-[1.875rem] xl:pb-[0.25rem]"
+    >
       <div class="mb-[1.5rem] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-title-md2 font-[700] text-black dark:text-white">
@@ -36,7 +45,10 @@
           </h2>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">Status:</span>
-            <span :class="getStatusClass(quote?.status)" class="px-2 py-1 text-xs font-[500] rounded-full">
+            <span
+              :class="getStatusClass(quote?.status)"
+              class="px-2 py-1 text-xs font-[500] rounded-full"
+            >
               {{ quote?.status?.toUpperCase() }}
             </span>
           </div>
@@ -52,13 +64,25 @@
       </div>
 
       <!-- Non-editable Quotation Warning -->
-      <div v-if="!isEditable" class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800">
+      <div
+        v-if="!isEditable"
+        class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800"
+      >
         <div class="flex items-center">
-          <svg class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          <svg
+            class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            ></path>
           </svg>
           <span class="text-[#92400e] dark:text-yellow-200 font-[500]">
-            This Quotation cannot be edited because its status is "{{ quote?.status }}". Only draft quotations can be modified.
+            This Quotation cannot be edited because its status is "{{ quote?.status }}". Only draft
+            quotations can be modified.
           </span>
         </div>
       </div>
@@ -130,7 +154,7 @@
               help="Select one or more villas"
               select-icon="down"
               :classes="{
-                selectIcon: '!opacity-100 !block'
+                selectIcon: '!opacity-100 !block',
               }"
               :disabled="!isEditable"
             />
@@ -259,31 +283,35 @@
         </div>
 
         <!-- Calculations Summary -->
-        <div class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]">
-          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">Quotation Summary</h4>
+        <div
+          class="mb-[1.5rem] rounded-[0.5rem] border border-[#e5e7eb] bg-[#f9fafb] p-[1rem] dark:border-[#374151] dark:bg-[#1f2937]"
+        >
+          <h4 class="text-md font-[600] text-black dark:text-white mb-[0.75rem]">
+            Quotation Summary
+          </h4>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span class="text-[#4b5563] dark:text-gray-400">Subtotal:</span>
-              <span class="font-[500] text-black dark:text-white">IDR {{ formatPrice(calculations.subtotal) }}</span>
+              <span class="font-[500] text-black dark:text-white"
+                >IDR {{ formatPrice(calculations.subtotal) }}</span
+              >
             </div>
 
-            <hr class="border-[#d1d5db] dark:border-gray-600">
+            <hr class="border-[#d1d5db] dark:border-gray-600" />
 
             <div class="flex justify-between text-lg font-[700]">
               <span class="text-black dark:text-white">Total:</span>
-              <span class="text-black dark:text-white">IDR {{ formatPrice(calculations.total) }}</span>
+              <span class="text-black dark:text-white"
+                >IDR {{ formatPrice(calculations.total) }}</span
+              >
             </div>
           </div>
         </div>
 
         <!-- Form Actions -->
         <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-if="isEditable">
-          <FormKit
-            type="button"
-            @click="$router.push('/quotes')"
-            :disabled="loading"
-          >
+          <FormKit type="button" @click="$router.push('/quotes')" :disabled="loading">
             Cancel
           </FormKit>
 
@@ -296,10 +324,7 @@
             {{ loading ? 'Saving...' : 'Save as Draft' }}
           </FormKit>
 
-          <FormKit
-            type="submit"
-            :disabled="loading || !isFormValid"
-          >
+          <FormKit type="submit" :disabled="loading || !isFormValid">
             {{ loading ? 'Updating...' : 'Update Quotation' }}
           </FormKit>
         </div>
@@ -341,12 +366,7 @@ const route = useRoute()
 const quoteId = computed(() => route.params.id as string)
 
 // Composables
-const {
-  customers,
-  loading: invoicingLoading,
-  fetchCustomers,
-  updateQuote
-} = useInvoicing()
+const { customers, loading: invoicingLoading, fetchCustomers, updateQuote } = useInvoicing()
 
 // Reactive state
 const loading = ref(false)
@@ -370,9 +390,9 @@ const quoteForm = ref({
       unit_price: 0,
       pax: 1,
       discount: 0,
-      line_total: 0
-    }
-  ]
+      line_total: 0,
+    },
+  ],
 })
 
 // Computed properties
@@ -383,7 +403,7 @@ const customerOptions = computed(() => {
 
   return customers.value.map((customer: Customer) => ({
     label: `${customer.name} - ${customer.email || 'No email'}`,
-    value: customer.id
+    value: customer.id,
   }))
 })
 
@@ -396,7 +416,7 @@ const packageOptions = computed(() => {
   return packages.value.map((pkg: Package) => ({
     label: `${pkg.name} - Rp ${formatPrice(pkg.cost_per_pax)}`,
     value: pkg.id,
-    cost_per_pax: pkg.cost_per_pax
+    cost_per_pax: pkg.cost_per_pax,
   }))
 })
 
@@ -407,7 +427,7 @@ const villaOptions = computed(() => {
 
   return villas.value.map((villa: any) => ({
     label: villa.name,
-    value: villa.id
+    value: villa.id,
   }))
 })
 
@@ -423,7 +443,7 @@ const calculations = computed(() => {
 
   return {
     subtotal,
-    total
+    total,
   }
 })
 
@@ -437,11 +457,12 @@ const isFormValid = computed(() => {
   if (!form.items || form.items.length === 0) return false
 
   // Check if all items have required fields
-  return form.items.every(item =>
-    item.package_id &&
-    Number(item.unit_price) >= 0 &&
-    Number(item.pax) >= 1 &&
-    Number(item.discount) >= 0
+  return form.items.every(
+    (item) =>
+      item.package_id &&
+      Number(item.unit_price) >= 0 &&
+      Number(item.pax) >= 1 &&
+      Number(item.discount) >= 0,
   )
 })
 
@@ -470,7 +491,7 @@ const getStatusClass = (status: string | undefined) => {
 const onPackageSelect = (value: number | undefined, node: any) => {
   if (!value) return
 
-  const selectedPackage = packages.value.find(pkg => pkg.id === value)
+  const selectedPackage = packages.value.find((pkg) => pkg.id === value)
   if (selectedPackage && node?.parent?.value) {
     // Auto-populate unit_price from package cost_per_pax
     node.parent.value.unit_price = selectedPackage.cost_per_pax
@@ -494,7 +515,7 @@ const formatDate = (date: Date | string): string => {
   return dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
@@ -516,8 +537,8 @@ const loadQuoteData = async () => {
     // Convert status to string if it's an array
     if (quote.value && quote.value.status) {
       quote.value.status = Array.isArray(quote.value.status)
-      ? quote.value.status[0]
-      : quote.value.status
+        ? quote.value.status[0]
+        : quote.value.status
     }
     // console.log(quote.value.status);
 
@@ -529,28 +550,27 @@ const loadQuoteData = async () => {
       villa_ids: (quote.value as any)?.villa_ids || [],
       expiry_date: quote.value?.expiry_date || '',
       notes: '', // Notes field doesn't exist in Quote type, so we'll leave it empty
-      items: quote.value?.items?.map(item => ({
+      items: quote.value?.items?.map((item) => ({
         package_id: item.package_id?.toString() || '',
         unit_price: item.unit_price || 0,
         pax: (item as any).pax || 1,
         discount: item.discount || 0,
-        line_total: item.line_total || 0
+        line_total: item.line_total || 0,
       })) || [
         {
           package_id: '',
           unit_price: 0,
           pax: 1,
           discount: 0,
-          line_total: 0
-        }
-      ]
+          line_total: 0,
+        },
+      ],
     }
 
     // Load available villas if dates are present
     if (quoteForm.value.check_in && quoteForm.value.check_out) {
       await loadAvailableVillas(quoteForm.value.check_in, quoteForm.value.check_out)
     }
-
   } catch (err: any) {
     console.error('Error loading quote:', err)
     if (err.response?.status === 404) {
@@ -587,14 +607,17 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
       total: calculations.value.total,
       check_in: quoteForm.value.check_in || undefined,
       check_out: quoteForm.value.check_out || undefined,
-      villa_ids: quoteForm.value.villa_ids.length > 0 ? quoteForm.value.villa_ids.map(id => Number(id)) : undefined,
-      items: quoteForm.value.items.map(item => ({
+      villa_ids:
+        quoteForm.value.villa_ids.length > 0
+          ? quoteForm.value.villa_ids.map((id) => Number(id))
+          : undefined,
+      items: quoteForm.value.items.map((item) => ({
         package_id: Number(item.package_id),
         unit_price: Number(item.unit_price),
         pax: Number(item.pax) || 1,
         discount: Number(item.discount),
-        line_total: Number(item.line_total)
-      }))
+        line_total: Number(item.line_total),
+      })),
     }
 
     // Update the quote
@@ -604,7 +627,6 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
 
     // Redirect to quotes list
     router.push('/quotes')
-
   } catch (error) {
     handleError(error, 'submitQuote')
   } finally {
@@ -613,23 +635,28 @@ const submitQuote = async (status: 'draft' | 'sent' = 'draft') => {
 }
 
 // Watchers
-watch(() => quoteForm.value.items, (newItems) => {
-  // Update line_total for each item when unit_price, pax or discount changes
-  newItems.forEach(item => {
-    const unitPrice = Number(item.unit_price) || 0
-    const pax = Number(item.pax) || 1
-    const discount = Number(item.discount) || 0
-    item.line_total = Math.max(0, (unitPrice * pax) - discount)
-  })
-}, { deep: true })
+watch(
+  () => quoteForm.value.items,
+  (newItems) => {
+    // Update line_total for each item when unit_price, pax or discount changes
+    newItems.forEach((item) => {
+      const unitPrice = Number(item.unit_price) || 0
+      const pax = Number(item.pax) || 1
+      const discount = Number(item.discount) || 0
+      item.line_total = Math.max(0, unitPrice * pax - discount)
+    })
+  },
+  { deep: true },
+)
 
 // Watch for date changes to load available villas
-watch([() => quoteForm.value.check_in, () => quoteForm.value.check_out],
+watch(
+  [() => quoteForm.value.check_in, () => quoteForm.value.check_out],
   async ([checkIn, checkOut]) => {
     if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
       await loadAvailableVillas(checkIn, checkOut)
     }
-  }
+  },
 )
 
 const loadAvailableVillas = async (checkIn: string, checkOut: string) => {
@@ -671,11 +698,7 @@ const triggerDatePicker = (event: Event) => {
 onMounted(async () => {
   try {
     // Load customers, packages, and quote data in parallel
-    await Promise.all([
-      fetchCustomers({ active_only: true }),
-      loadPackages(),
-      loadQuoteData()
-    ])
+    await Promise.all([fetchCustomers({ active_only: true }), loadPackages(), loadQuoteData()])
   } catch (error) {
     handleError(error, 'loadData')
   }
@@ -693,7 +716,7 @@ const loadPackages = async () => {
 
     const response = await packageService.getPackages({ active_only: true })
     console.log('Package service response:', response)
-    packages.value = Array.isArray(response) ? response : (response.packages || [])
+    packages.value = Array.isArray(response) ? response : response.packages || []
     console.log('Packages loaded successfully:', packages.value.length, 'packages')
   } catch (error: any) {
     console.error('Error loading packages:', error)
@@ -710,7 +733,7 @@ const loadPackages = async () => {
 
 <style scoped>
 /* Additional custom styles if needed */
-.formkit-outer[data-type="repeater"] {
+.formkit-outer[data-type='repeater'] {
   @apply max-w-none;
 }
 
@@ -723,25 +746,25 @@ const loadPackages = async () => {
 }
 
 /* Ensure consistent height and alignment for repeater form fields */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-outer {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-outer {
   @apply flex flex-col justify-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-input {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-input {
   @apply min-h-[2.75rem] flex items-center;
 }
 
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-wrapper {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-wrapper {
   @apply flex items-center;
 }
 
 /* Align labels consistently */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-label {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-label {
   @apply mb-[0.5rem] block text-[0.875rem] font-[500];
 }
 
 /* Ensure help text doesn't affect alignment */
-.formkit-outer[data-type="repeater"] .formkit-item .formkit-help {
+.formkit-outer[data-type='repeater'] .formkit-item .formkit-help {
   @apply mt-[0.25rem] text-[0.75rem];
 }
 </style>

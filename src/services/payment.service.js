@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class PaymentService {
   /**
@@ -10,10 +10,10 @@ class PaymentService {
    */
   async getPayments(params = {}) {
     try {
-      const response = await apiClient.get('/payments', { params });
-      return response.data;
+      const response = await apiClient.get('/payments', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -24,10 +24,10 @@ class PaymentService {
    */
   async getPaymentById(id) {
     try {
-      const response = await apiClient.get(`/payments/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/payments/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -38,10 +38,10 @@ class PaymentService {
    */
   async getPaymentDetails(id) {
     try {
-      const response = await apiClient.get(`/payments/${id}/details`);
-      return response.data;
+      const response = await apiClient.get(`/payments/${id}/details`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -52,10 +52,10 @@ class PaymentService {
    */
   async createPayment(paymentData) {
     try {
-      const response = await apiClient.post('/payments', paymentData);
-      return response.data;
+      const response = await apiClient.post('/payments', paymentData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -67,10 +67,10 @@ class PaymentService {
    */
   async updatePayment(id, paymentData) {
     try {
-      const response = await apiClient.put(`/payments/${id}`, paymentData);
-      return response.data;
+      const response = await apiClient.put(`/payments/${id}`, paymentData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -81,10 +81,10 @@ class PaymentService {
    */
   async deletePayment(id) {
     try {
-      const response = await apiClient.delete(`/payments/${id}`);
-      return response.data;
+      const response = await apiClient.delete(`/payments/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -96,10 +96,10 @@ class PaymentService {
    */
   async updatePaymentStatus(id, statusData) {
     try {
-      const response = await apiClient.patch(`/payments/${id}/status`, statusData);
-      return response.data;
+      const response = await apiClient.patch(`/payments/${id}/status`, statusData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -111,10 +111,10 @@ class PaymentService {
    */
   async linkPaymentToInvoice(paymentId, invoiceId) {
     try {
-      const response = await apiClient.post(`/payments/${paymentId}/link-invoice/${invoiceId}`);
-      return response.data;
+      const response = await apiClient.post(`/payments/${paymentId}/link-invoice/${invoiceId}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -125,10 +125,10 @@ class PaymentService {
    */
   async getBookingPaymentSummary(bookingId) {
     try {
-      const response = await apiClient.get(`/payments/bookings/${bookingId}/summary`);
-      return response.data;
+      const response = await apiClient.get(`/payments/bookings/${bookingId}/summary`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -136,4 +136,4 @@ class PaymentService {
   // These duplicate methods were causing conflicts with the main invoice service
 }
 
-export default new PaymentService();
+export default new PaymentService()

@@ -1,14 +1,14 @@
-import { computed } from 'vue';
-import type { Quote } from '../types/quote.types';
-import { useGlobalCompanySettings } from './useCompanySettings';
-import { formatIDR } from '../utils/number-formatter';
+import { computed } from 'vue'
+import type { Quote } from '../types/quote.types'
+import { useGlobalCompanySettings } from './useCompanySettings'
+import { formatIDR } from '../utils/number-formatter'
 
 /**
  * Centralized Quotation Template Service
  * Provides consistent HTML generation for Quotations across all components
  */
 export function useQuoteTemplate() {
-  const { getInvoiceDisplaySettings, getInvoiceDisplaySettingsSync } = useGlobalCompanySettings();
+  const { getInvoiceDisplaySettings, getInvoiceDisplaySettingsSync } = useGlobalCompanySettings()
 
   /**
    * Generate consistent Quotation HTML for preview display
@@ -17,44 +17,50 @@ export function useQuoteTemplate() {
    * @returns HTML string for Quotation display
    */
   const generatePreviewHTML = (quoteData: Quote, companyData?: any): string => {
-    console.log('[useQuoteTemplate] Generating preview HTML for Quotation:', quoteData?.quote_number);
+    console.log(
+      '[useQuoteTemplate] Generating preview HTML for Quotation:',
+      quoteData?.quote_number,
+    )
 
     if (!quoteData) {
-      console.error('[useQuoteTemplate] Quotation data is null or undefined:', quoteData);
+      console.error('[useQuoteTemplate] Quotation data is null or undefined:', quoteData)
       return `
         <div style="padding: 20px; text-align: center; background: #f8f9fa; border-radius: 8px;">
           <h3 style="color: #dc3545;">Quotation data is incomplete</h3>
           <p>Please check if the Quotation data was loaded correctly.</p>
         </div>
-      `;
+      `
     }
 
     // Use provided company data or get sync version with fallbacks
-    const settings = companyData || getInvoiceDisplaySettingsSync();
-    console.log('[useQuoteTemplate] Using company settings:', settings);
+    const settings = companyData || getInvoiceDisplaySettingsSync()
+    console.log('[useQuoteTemplate] Using company settings:', settings)
 
     // Add robust data handling with fallbacks
-    const items = Array.isArray(quoteData.items) ? quoteData.items : [];
-    const total = Number(quoteData.total || 0);
-    const taxTotal = Number((quoteData as any).tax_total || 0);
-    const customer = quoteData.customer || {} as any;
-    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
+    const items = Array.isArray(quoteData.items) ? quoteData.items : []
+    const total = Number(quoteData.total || 0)
+    const taxTotal = Number((quoteData as any).tax_total || 0)
+    const customer = quoteData.customer || ({} as any)
+    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : []
 
     // Calculate total discount
-    const totalDiscount = items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0);
+    const totalDiscount = items.reduce(
+      (sum, item) => sum + (parseFloat(item.discount as any) || 0),
+      0,
+    )
 
     // Calculate validity period
-    const validityText = quoteData.expiry_date ?
-      `Valid until ${quoteData.expiry_date}` :
-      'No expiry date set';
+    const validityText = quoteData.expiry_date
+      ? `Valid until ${quoteData.expiry_date}`
+      : 'No expiry date set'
 
     console.log('[useQuoteTemplate] Processing Quotation data:', {
       quote_number: quoteData.quote_number,
       items_count: items.length,
       total,
       status: quoteData.status,
-      expiry_date: quoteData.expiry_date
-    });
+      expiry_date: quoteData.expiry_date,
+    })
 
     return `
 <!DOCTYPE html>
@@ -433,11 +439,19 @@ export function useQuoteTemplate() {
             </div>
             <div class="villa-details">
                 <h3>Villas:</h3>
-                ${villas.length > 0 ? villas.map((v: any) => `
+                ${
+                  villas.length > 0
+                    ? villas
+                        .map(
+                          (v: any) => `
                     <div class="villa-item">
                         <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
                     </div>
-                `).join('') : '<p>No villas assigned</p>'}
+                `,
+                        )
+                        .join('')
+                    : '<p>No villas assigned</p>'
+                }
             </div>
         </div>
 
@@ -453,7 +467,11 @@ export function useQuoteTemplate() {
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map((item: any) => `
+                ${
+                  items.length > 0
+                    ? items
+                        .map(
+                          (item: any) => `
                     <tr>
                         <td>${item.package?.name || item.package_name || 'N/A'}</td>
                         <td>${item.package?.description || 'No description available'}</td>
@@ -462,11 +480,15 @@ export function useQuoteTemplate() {
                         <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
-                `).join('') : `
+                `,
+                        )
+                        .join('')
+                    : `
                     <tr>
                         <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
-                `}
+                `
+                }
             </tbody>
         </table>
 
@@ -476,12 +498,16 @@ export function useQuoteTemplate() {
                     <td class="label" style="background-color: #f8f9fa;">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>
                 </tr>
-                ${taxTotal > 0 ? `
+                ${
+                  taxTotal > 0
+                    ? `
                 <tr>
                     <td class="label" style="background-color: #f8f9fa;">Tax:</td>
                     <td>${formatIDR(taxTotal)}</td>
                 </tr>
-                ` : ''}
+                `
+                    : ''
+                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
                     <td>${formatIDR(total)}</td>
@@ -504,8 +530,8 @@ export function useQuoteTemplate() {
     </div>
 </body>
 </html>
-    `;
-  };
+    `
+  }
 
   /**
    * Generate print-optimized Quotation HTML
@@ -514,31 +540,34 @@ export function useQuoteTemplate() {
    * @returns HTML string optimized for printing
    */
   const generatePrintHTML = (quoteData: Quote, companyData?: any): string => {
-    console.log('[useQuoteTemplate] Generating print HTML for quote:', quoteData?.quote_number);
+    console.log('[useQuoteTemplate] Generating print HTML for quote:', quoteData?.quote_number)
 
     if (!quoteData) {
-      console.error('[useQuoteTemplate] Quote data is null or undefined:', quoteData);
-      return '<div style="padding: 20px; text-align: center;"><h3>Quote data is incomplete</h3></div>';
+      console.error('[useQuoteTemplate] Quote data is null or undefined:', quoteData)
+      return '<div style="padding: 20px; text-align: center;"><h3>Quote data is incomplete</h3></div>'
     }
 
     // Use provided company data or get sync version with fallbacks
-    const settings = companyData || getInvoiceDisplaySettingsSync();
-    console.log('[useQuoteTemplate] Using company settings for print:', settings);
+    const settings = companyData || getInvoiceDisplaySettingsSync()
+    console.log('[useQuoteTemplate] Using company settings for print:', settings)
 
     // Add robust data handling with fallbacks
-    const items = Array.isArray(quoteData.items) ? quoteData.items : [];
-    const total = Number(quoteData.total || 0);
-    const taxTotal = Number((quoteData as any).tax_total || 0);
-    const customer = quoteData.customer || {} as any;
-    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : [];
+    const items = Array.isArray(quoteData.items) ? quoteData.items : []
+    const total = Number(quoteData.total || 0)
+    const taxTotal = Number((quoteData as any).tax_total || 0)
+    const customer = quoteData.customer || ({} as any)
+    const villas = Array.isArray((quoteData as any).villas) ? (quoteData as any).villas : []
 
     // Calculate total discount
-    const totalDiscount = items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0);
+    const totalDiscount = items.reduce(
+      (sum, item) => sum + (parseFloat(item.discount as any) || 0),
+      0,
+    )
 
     // Calculate validity period
-    const validityText = quoteData.expiry_date ?
-      `Valid until ${quoteData.expiry_date}` :
-      'No expiry date set';
+    const validityText = quoteData.expiry_date
+      ? `Valid until ${quoteData.expiry_date}`
+      : 'No expiry date set'
 
     return `
 <!DOCTYPE html>
@@ -925,11 +954,19 @@ export function useQuoteTemplate() {
             </div>
             <div class="villa-details">
                 <h3>Villas:</h3>
-                ${villas.length > 0 ? villas.map((v: any) => `
+                ${
+                  villas.length > 0
+                    ? villas
+                        .map(
+                          (v: any) => `
                     <div class="villa-item">
                         <p><strong>${v.villa?.name || 'N/A'}</strong> - ${v.villa?.capacity || 'N/A'}</p>
                     </div>
-                `).join('') : '<p>No villas assigned</p>'}
+                `,
+                        )
+                        .join('')
+                    : '<p>No villas assigned</p>'
+                }
             </div>
         </div>
 
@@ -945,7 +982,11 @@ export function useQuoteTemplate() {
                 </tr>
             </thead>
             <tbody>
-                ${items.length > 0 ? items.map((item: any) => `
+                ${
+                  items.length > 0
+                    ? items
+                        .map(
+                          (item: any) => `
                     <tr>
                         <td>${item.package?.name || item.package_name || 'N/A'}</td>
                         <td>${item.package?.description || 'No description available'}</td>
@@ -954,11 +995,15 @@ export function useQuoteTemplate() {
                         <td class="align-right">${formatIDR(item.discount || 0)}</td>
                         <td class="align-right">${formatIDR(item.line_total)}</td>
                     </tr>
-                `).join('') : `
+                `,
+                        )
+                        .join('')
+                    : `
                     <tr>
                         <td colspan="6" style="text-align: center; color: #666; font-style: italic;">No items found</td>
                     </tr>
-                `}
+                `
+                }
             </tbody>
         </table>
 
@@ -968,12 +1013,16 @@ export function useQuoteTemplate() {
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>
                 </tr>
-                ${taxTotal > 0 ? `
+                ${
+                  taxTotal > 0
+                    ? `
                 <tr>
                     <td class="label">Tax:</td>
                     <td>${formatIDR(taxTotal)}</td>
                 </tr>
-                ` : ''}
+                `
+                    : ''
+                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
                     <td>${formatIDR(total)}</td>
@@ -996,8 +1045,8 @@ export function useQuoteTemplate() {
     </div>
 </body>
 </html>
-    `;
-  };
+    `
+  }
 
   /**
    * Validate Quotation data before template generation
@@ -1006,17 +1055,17 @@ export function useQuoteTemplate() {
    */
   const validateQuoteData = (quoteData: any): quoteData is Quote => {
     if (!quoteData) {
-      console.error('Quote data is null or undefined');
-      return false;
+      console.error('Quote data is null or undefined')
+      return false
     }
 
     if (!quoteData.quote_number) {
-      console.error('Quote number is missing');
-      return false;
+      console.error('Quote number is missing')
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   /**
    * Create blob URL for quote preview
@@ -1025,30 +1074,30 @@ export function useQuoteTemplate() {
    * @returns Blob URL string
    */
   const createPreviewBlobUrl = async (quoteData: Quote, companyData?: any): Promise<string> => {
-    console.log('[useQuoteTemplate] Creating preview blob URL for quote:', quoteData?.quote_number);
+    console.log('[useQuoteTemplate] Creating preview blob URL for quote:', quoteData?.quote_number)
 
     if (!validateQuoteData(quoteData)) {
-      console.error('[useQuoteTemplate] Invalid quote data, cannot create blob URL');
-      return '';
+      console.error('[useQuoteTemplate] Invalid quote data, cannot create blob URL')
+      return ''
     }
 
     try {
       // Get company data if not provided
-      const settings = companyData || await getInvoiceDisplaySettings();
-      const htmlContent = generatePreviewHTML(quoteData, settings);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
+      const settings = companyData || (await getInvoiceDisplaySettings())
+      const htmlContent = generatePreviewHTML(quoteData, settings)
+      const blob = new Blob([htmlContent], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
 
-      console.log('[useQuoteTemplate] Successfully created blob URL:', url.substring(0, 50) + '...');
-      return url;
+      console.log('[useQuoteTemplate] Successfully created blob URL:', url.substring(0, 50) + '...')
+      return url
     } catch (error) {
-      console.error('[useQuoteTemplate] Failed to create blob URL:', error);
+      console.error('[useQuoteTemplate] Failed to create blob URL:', error)
       // Fallback to sync version if async fails
-      const htmlContent = generatePreviewHTML(quoteData);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      return URL.createObjectURL(blob);
+      const htmlContent = generatePreviewHTML(quoteData)
+      const blob = new Blob([htmlContent], { type: 'text/html' })
+      return URL.createObjectURL(blob)
     }
-  };
+  }
 
   return {
     // Template generation methods
@@ -1061,6 +1110,6 @@ export function useQuoteTemplate() {
 
     // Company settings access
     getInvoiceDisplaySettings,
-    getInvoiceDisplaySettingsSync
-  };
+    getInvoiceDisplaySettingsSync,
+  }
 }

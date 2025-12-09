@@ -3,13 +3,9 @@ import {
   PermissionState,
   SystemModule,
   MatrixRole,
-} from '../types/permissions.types';
+} from '../types/permissions.types'
 
-import type {
-  PermissionMatrix,
-  SystemRole,
-  RoleMapping
-} from '../types/permissions.types';
+import type { PermissionMatrix, SystemRole, RoleMapping } from '../types/permissions.types'
 
 /**
  * Permission Matrix Configuration
@@ -430,7 +426,7 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
   },
-};
+}
 
 /**
  * Role Mapping Configuration
@@ -439,64 +435,64 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
  * so it's not mapped but available for future use
  */
 export const ROLE_MAPPING: RoleMapping = {
-  'admin': MatrixRole.ADMIN,
-  'manager': MatrixRole.MANAGER,
-  'finance': MatrixRole.FINANCE,
-  'sales': MatrixRole.SALES,
+  admin: MatrixRole.ADMIN,
+  manager: MatrixRole.MANAGER,
+  finance: MatrixRole.FINANCE,
+  sales: MatrixRole.SALES,
   'survey-admin': MatrixRole.SURVEY,
-  'survey': MatrixRole.SURVEY,  // Add mapping for 'survey' role
-  'staff': MatrixRole.STAFF,
-};
+  survey: MatrixRole.SURVEY, // Add mapping for 'survey' role
+  staff: MatrixRole.STAFF,
+}
 
 /**
  * Get all available modules
  */
 export const getAvailableModules = (): SystemModule[] => {
-  return Object.values(SystemModule);
-};
+  return Object.values(SystemModule)
+}
 
 /**
  * Get all available actions
  */
 export const getAvailableActions = (): PermissionAction[] => {
-  return Object.values(PermissionAction);
-};
+  return Object.values(PermissionAction)
+}
 
 /**
  * Get all matrix roles
  */
 export const getMatrixRoles = (): MatrixRole[] => {
-  return Object.values(MatrixRole);
-};
+  return Object.values(MatrixRole)
+}
 
 /**
  * Get all system roles
  */
 export const getSystemRoles = (): SystemRole[] => {
-  return ['admin', 'finance', 'manager', 'sales', 'survey-admin', 'survey', 'staff'];
-};
+  return ['admin', 'finance', 'manager', 'sales', 'survey-admin', 'survey', 'staff']
+}
 
 /**
  * Check if a role mapping exists for a system role
  */
 export const hasRoleMapping = (systemRole: SystemRole): boolean => {
-  return systemRole in ROLE_MAPPING;
-};
+  return systemRole in ROLE_MAPPING
+}
 
 /**
  * Get matrix role from system role
  */
 export const getMatrixRole = (systemRole: SystemRole): MatrixRole | null => {
-  return ROLE_MAPPING[systemRole] || null;
-};
+  return ROLE_MAPPING[systemRole] || null
+}
 
 /**
  * Get system role from matrix role
  */
 export const getSystemRole = (matrixRole: MatrixRole): SystemRole | null => {
-  const entry = Object.entries(ROLE_MAPPING).find(([, value]) => value === matrixRole);
-  return entry ? entry[0] as SystemRole : null;
-};
+  const entry = Object.entries(ROLE_MAPPING).find(([, value]) => value === matrixRole)
+  return entry ? (entry[0] as SystemRole) : null
+}
 
 /**
  * Default export for easy importing
@@ -511,4 +507,4 @@ export default {
   hasRoleMapping,
   getMatrixRole,
   getSystemRole,
-};
+}

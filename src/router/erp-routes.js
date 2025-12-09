@@ -8,7 +8,7 @@ const erpRoutes = [
     component: () => import('../views/Dashboard.vue'),
     meta: {
       title: 'Dashboard',
-      requiresAuth: true
+      requiresAuth: true,
     },
   },
   // Customer Management
@@ -20,7 +20,7 @@ const erpRoutes = [
       title: 'Customer Management',
       requiresAuth: true,
       module: SystemModule.CUSTOMERS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   // Tax Management
@@ -30,7 +30,7 @@ const erpRoutes = [
     component: () => import('../views/Taxes.vue'),
     meta: {
       title: 'Tax Management',
-      requiresAuth: true
+      requiresAuth: true,
     },
   },
   {
@@ -41,7 +41,7 @@ const erpRoutes = [
       title: 'Users Management',
       requiresAuth: true,
       module: SystemModule.USER,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -52,7 +52,7 @@ const erpRoutes = [
       title: 'User Detail',
       requiresAuth: true,
       module: SystemModule.USER,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -63,7 +63,7 @@ const erpRoutes = [
       title: 'Villas Management',
       requiresAuth: true,
       module: SystemModule.VILLAS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -74,7 +74,7 @@ const erpRoutes = [
       title: 'Villa Detail',
       requiresAuth: true,
       module: SystemModule.VILLAS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   // Quote Management
@@ -86,7 +86,7 @@ const erpRoutes = [
       title: 'Quote Management',
       requiresAuth: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -97,7 +97,7 @@ const erpRoutes = [
       title: 'Create Quote',
       requiresAuth: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.CREATE
+      action: PermissionAction.CREATE,
     },
   },
   {
@@ -108,7 +108,7 @@ const erpRoutes = [
       title: 'Edit Quote',
       requiresAuth: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.UPDATE
+      action: PermissionAction.UPDATE,
     },
   },
   {
@@ -119,7 +119,7 @@ const erpRoutes = [
       title: 'Quote Detail',
       requiresAuth: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -131,7 +131,7 @@ const erpRoutes = [
       requiresAuth: true,
       fullScreen: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -143,7 +143,7 @@ const erpRoutes = [
       requiresAuth: true,
       fullScreen: true,
       module: SystemModule.QUOTES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -154,7 +154,7 @@ const erpRoutes = [
       title: 'Packages Management',
       requiresAuth: true,
       module: SystemModule.PACKAGES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -165,7 +165,7 @@ const erpRoutes = [
       title: 'Surveys Management',
       requiresAuth: true,
       module: SystemModule.SURVEYS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -176,7 +176,7 @@ const erpRoutes = [
       title: 'Bookings Management',
       requiresAuth: true,
       module: SystemModule.BOOKINGS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -187,7 +187,7 @@ const erpRoutes = [
       title: 'Create Booking',
       requiresAuth: true,
       module: SystemModule.BOOKINGS,
-      action: PermissionAction.CREATE
+      action: PermissionAction.CREATE,
     },
   },
   {
@@ -198,7 +198,7 @@ const erpRoutes = [
       title: 'Edit Booking',
       requiresAuth: true,
       module: SystemModule.BOOKINGS,
-      action: PermissionAction.UPDATE
+      action: PermissionAction.UPDATE,
     },
   },
   {
@@ -209,7 +209,7 @@ const erpRoutes = [
       title: 'Booking Detail',
       requiresAuth: true,
       module: SystemModule.BOOKINGS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -220,7 +220,7 @@ const erpRoutes = [
       title: 'Payments Management',
       requiresAuth: true,
       module: SystemModule.PAYMENTS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -231,7 +231,7 @@ const erpRoutes = [
       title: 'Payment Detail',
       requiresAuth: true,
       module: SystemModule.PAYMENTS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -242,7 +242,7 @@ const erpRoutes = [
       title: 'Invoices Management',
       requiresAuth: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -253,7 +253,7 @@ const erpRoutes = [
       title: 'Create Invoice',
       requiresAuth: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.CREATE
+      action: PermissionAction.CREATE,
     },
   },
   {
@@ -264,7 +264,7 @@ const erpRoutes = [
       title: 'Edit Invoice',
       requiresAuth: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.UPDATE
+      action: PermissionAction.UPDATE,
     },
   },
   {
@@ -275,7 +275,7 @@ const erpRoutes = [
       title: 'Invoice Detail',
       requiresAuth: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -287,7 +287,7 @@ const erpRoutes = [
       requiresAuth: true,
       fullScreen: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -299,7 +299,7 @@ const erpRoutes = [
       requiresAuth: true,
       fullScreen: true,
       module: SystemModule.INVOICES,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -310,7 +310,7 @@ const erpRoutes = [
       title: 'Settings',
       requiresAuth: true,
       module: SystemModule.SETTINGS_GENERAL,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   {
@@ -322,7 +322,7 @@ const erpRoutes = [
       requiresAuth: true,
       requiresAdmin: true,
       module: SystemModule.SETTINGS_TARGETS,
-      action: PermissionAction.VIEW
+      action: PermissionAction.VIEW,
     },
   },
   // Profile route
@@ -332,7 +332,7 @@ const erpRoutes = [
     component: () => import('../views/Others/UserProfile.vue'),
     meta: {
       title: 'Profile',
-      requiresAuth: true
+      requiresAuth: true,
     },
   },
   // Authentication routes
@@ -342,7 +342,7 @@ const erpRoutes = [
     component: () => import('../views/Auth/Signin.vue'),
     meta: {
       title: 'Sign In',
-      requiresAuth: false
+      requiresAuth: false,
     },
   },
   {
@@ -351,7 +351,7 @@ const erpRoutes = [
     component: () => import('../views/Auth/Signup.vue'),
     meta: {
       title: 'Sign Up',
-      requiresAuth: false
+      requiresAuth: false,
     },
   },
   // Error routes
@@ -361,7 +361,7 @@ const erpRoutes = [
     component: () => import('../views/Errors/FourZeroFour.vue'),
     meta: {
       title: '404 Not Found',
-      requiresAuth: false
+      requiresAuth: false,
     },
   },
   {
@@ -370,9 +370,9 @@ const erpRoutes = [
     component: () => import('../views/Errors/FourZeroFour.vue'),
     meta: {
       title: '404 Not Found',
-      requiresAuth: false
+      requiresAuth: false,
     },
-  }
-];
+  },
+]
 
-export default erpRoutes;
+export default erpRoutes

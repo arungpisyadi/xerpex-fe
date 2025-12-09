@@ -7,11 +7,10 @@
           type="checkbox"
           v-model="checkboxOne"
           label="Default"
-
           :decorator-classes="{
             base: checkboxOne
               ? 'border-brand-500 bg-brand-500'
-              : 'bg-transparent border-gray-300 dark:border-gray-700'
+              : 'bg-transparent border-gray-300 dark:border-gray-700',
           }"
         >
           <template #decoratorIcon>
@@ -42,11 +41,10 @@
           type="checkbox"
           v-model="checkboxTwo"
           label="Checked"
-
           :decorator-classes="{
             base: checkboxTwo
               ? 'border-brand-500 bg-brand-500'
-              : 'bg-transparent border-gray-300 dark:border-gray-700'
+              : 'bg-transparent border-gray-300 dark:border-gray-700',
           }"
         >
           <template #decoratorIcon>
@@ -78,11 +76,10 @@
           v-model="checkboxThree"
           label="Disabled"
           disabled
-
           :decorator-classes="{
             base: checkboxThree
               ? 'bg-transparent border-gray-200 dark:border-gray-800'
-              : 'border-brand-500 bg-brand-500'
+              : 'border-brand-500 bg-brand-500',
           }"
         >
           <template #decoratorIcon>

@@ -1,33 +1,33 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 interface Villa {
-  id: number;
-  name: string;
-  nightly_rate?: number;
-  cleaning_fee?: number;
-  [key: string]: any;
+  id: number
+  name: string
+  nightly_rate?: number
+  cleaning_fee?: number
+  [key: string]: any
 }
 
 interface VillaListResponse {
-  villas: Villa[];
-  total?: number;
-  skip?: number;
-  limit?: number;
+  villas: Villa[]
+  total?: number
+  skip?: number
+  limit?: number
 }
 
 interface VillaFilters {
-  page?: number;
-  limit?: number;
-  active_only?: boolean;
-  [key: string]: any;
+  page?: number
+  limit?: number
+  active_only?: boolean
+  [key: string]: any
 }
 
 interface AvailabilityData {
-  [key: string]: any;
+  [key: string]: any
 }
 
 interface CheckAvailabilityData {
-  [key: string]: any;
+  [key: string]: any
 }
 
 class VillaService {
@@ -38,10 +38,10 @@ class VillaService {
    */
   async getVillas(params: VillaFilters = {}): Promise<VillaListResponse> {
     try {
-      const response = await apiClient.get('/villas', { params });
-      return response.data;
+      const response = await apiClient.get('/villas', { params })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -52,10 +52,10 @@ class VillaService {
    */
   async getVillaById(id: string | number): Promise<Villa> {
     try {
-      const response = await apiClient.get(`/villas/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/villas/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -66,10 +66,10 @@ class VillaService {
    */
   async createVilla(villaData: Partial<Villa>): Promise<Villa> {
     try {
-      const response = await apiClient.post('/villas', villaData);
-      return response.data;
+      const response = await apiClient.post('/villas', villaData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -81,10 +81,10 @@ class VillaService {
    */
   async updateVilla(id: string | number, villaData: Partial<Villa>): Promise<Villa> {
     try {
-      const response = await apiClient.put(`/villas/${id}`, villaData);
-      return response.data;
+      const response = await apiClient.put(`/villas/${id}`, villaData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -95,10 +95,10 @@ class VillaService {
    */
   async deleteVilla(id: string | number): Promise<any> {
     try {
-      const response = await apiClient.delete(`/villas/${id}`);
-      return response.data;
+      const response = await apiClient.delete(`/villas/${id}`)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -109,10 +109,10 @@ class VillaService {
    */
   async createVillaAvailability(availabilityData: AvailabilityData): Promise<any> {
     try {
-      const response = await apiClient.post('/villas/availability', availabilityData);
-      return response.data;
+      const response = await apiClient.post('/villas/availability', availabilityData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -123,12 +123,16 @@ class VillaService {
    * @param availabilityData - Updated availability data
    * @returns Promise - Response from API
    */
-  async updateVillaAvailability(id: string | number, date: string, availabilityData: AvailabilityData): Promise<any> {
+  async updateVillaAvailability(
+    id: string | number,
+    date: string,
+    availabilityData: AvailabilityData,
+  ): Promise<any> {
     try {
-      const response = await apiClient.put(`/villas/${id}/availability/${date}`, availabilityData);
-      return response.data;
+      const response = await apiClient.put(`/villas/${id}/availability/${date}`, availabilityData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -139,10 +143,10 @@ class VillaService {
    */
   async checkAvailability(checkData: CheckAvailabilityData): Promise<any> {
     try {
-      const response = await apiClient.post('/villas/check-availability', checkData);
-      return response.data;
+      const response = await apiClient.post('/villas/check-availability', checkData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -155,13 +159,13 @@ class VillaService {
   async getAvailableVillas(checkIn: string, checkOut: string): Promise<any> {
     try {
       const response = await apiClient.get('/villas/available', {
-        params: { check_in: checkIn, check_out: checkOut }
-      });
-      return response.data;
+        params: { check_in: checkIn, check_out: checkOut },
+      })
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }
 
-export default new VillaService();
+export default new VillaService()

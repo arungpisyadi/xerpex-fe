@@ -2,12 +2,7 @@
   <div class="space-y-6">
     <!-- Text Input -->
     <div>
-      <FormKit
-        type="text"
-        v-model="formData.input"
-        label="Input"
-
-      />
+      <FormKit type="text" v-model="formData.input" label="Input" />
     </div>
 
     <!-- Input with Placeholder -->
@@ -17,7 +12,6 @@
         v-model="formData.inputWithPlaceholder"
         label="Input with Placeholder"
         placeholder="info@gmail.com"
-
       />
     </div>
 
@@ -31,9 +25,8 @@
         :options="[
           { label: 'Marketing', value: 'marketing' },
           { label: 'Template', value: 'template' },
-          { label: 'Development', value: 'development' }
+          { label: 'Development', value: 'development' },
         ]"
-
       />
     </div>
 
@@ -44,7 +37,6 @@
         v-model="formData.password"
         label="Password Input"
         placeholder="Enter your password"
-
       />
     </div>
 
@@ -55,10 +47,11 @@
         v-model="formData.date"
         label="Date Picker Input"
         placeholder="Select date"
-
       >
         <template #suffix>
-          <span class="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+          <span
+            class="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400"
+          >
             <svg
               class="fill-current"
               width="20"
@@ -86,7 +79,6 @@
         v-model="formData.time"
         label="Time Select Input"
         placeholder="Select time"
-
       >
         <template #suffix>
           <span class="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 dark:text-gray-400">
@@ -117,10 +109,11 @@
         v-model="formData.cardNumber"
         label="Input with Payment"
         placeholder="Card number"
-
       >
         <template #prefix>
-          <span class="absolute left-0 top-1/2 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
+          <span
+            class="absolute left-0 top-1/2 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800"
+          >
             <svg
               width="20"
               height="20"

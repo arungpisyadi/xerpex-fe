@@ -1,4 +1,4 @@
-import apiClient from './api.service';
+import apiClient from './api.service'
 
 class AuthService {
   /**
@@ -9,66 +9,66 @@ class AuthService {
    * @returns {Promise} - Response from API
    */
   async login(credentials) {
-    console.log('Auth service login called with:', credentials);
+    console.log('Auth service login called with:', credentials)
 
     try {
       // Use the login-json endpoint which accepts JSON data
-      console.log('Making API request to /auth/login/json');
+      console.log('Making API request to /auth/login/json')
       const response = await apiClient.post('/auth/login/json', {
         email: credentials.username, // API expects 'email' field, not 'username'
-        password: credentials.password
-      });
+        password: credentials.password,
+      })
 
-      console.log('Login API response:', response);
+      console.log('Login API response:', response)
       if (response.data.access_token) {
-        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('token', response.data.access_token)
         try {
           // Get user info but don't let it fail the whole login process
-          await this.getCurrentUser();
+          await this.getCurrentUser()
         } catch (userError) {
-          console.error('Error fetching user data, but login succeeded:', userError);
+          console.error('Error fetching user data, but login succeeded:', userError)
         }
 
         // Dispatch auth event for App.vue to listen
-        window.dispatchEvent(new CustomEvent('auth:login'));
+        window.dispatchEvent(new CustomEvent('auth:login'))
 
         // Return success result
         return {
           success: true,
           data: response.data,
-          error: null
-        };
+          error: null,
+        }
       } else {
         // No token in response - throw error
-        throw new Error('Invalid response from server');
+        throw new Error('Invalid response from server')
       }
     } catch (error) {
-      console.error('Login error in auth service:', error);
+      console.error('Login error in auth service:', error)
 
-      let errorMessage = 'Authentication failed';
-      let detailMessage = '';
+      let errorMessage = 'Authentication failed'
+      let detailMessage = ''
 
       if (error.response) {
         // Extract the error message from the response
         if (error.response.data) {
           // Check for msg field first (as per API docs)
           if (error.response.data.msg) {
-            detailMessage = error.response.data.msg;
-            errorMessage = 'Authentication failed';
+            detailMessage = error.response.data.msg
+            errorMessage = 'Authentication failed'
           } else if (typeof error.response.data === 'string') {
-            errorMessage = error.response.data;
+            errorMessage = error.response.data
           } else if (error.response.data.message) {
-            errorMessage = error.response.data.message;
+            errorMessage = error.response.data.message
           } else if (error.response.data.error) {
-            errorMessage = error.response.data.error;
+            errorMessage = error.response.data.error
           } else {
-            errorMessage = `Authentication failed (${error.response.status})`;
+            errorMessage = `Authentication failed (${error.response.status})`
           }
         }
       } else if (error.request) {
-        errorMessage = 'Server not responding. Please try again later.';
+        errorMessage = 'Server not responding. Please try again later.'
       } else if (error.message) {
-        errorMessage = error.message;
+        errorMessage = error.message
       }
 
       // Return error result with the backend error message and details
@@ -77,8 +77,8 @@ class AuthService {
         data: null,
         error: errorMessage,
         details: detailMessage,
-        status: error.response?.status
-      };
+        status: error.response?.status,
+      }
     }
   }
 
@@ -89,10 +89,10 @@ class AuthService {
    */
   async register(userData) {
     try {
-      const response = await apiClient.post('/auth/register', userData);
-      return response.data;
+      const response = await apiClient.post('/auth/register', userData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -102,23 +102,23 @@ class AuthService {
    */
   async logout() {
     try {
-      const response = await apiClient.post('/auth/logout');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      const response = await apiClient.post('/auth/logout')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
 
       // Dispatch auth event for App.vue to listen
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent('auth:logout'))
 
-      return response.data;
+      return response.data
     } catch (error) {
       // Clear storage even if API call fails
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
 
       // Dispatch auth event even if API call fails
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent('auth:logout'))
 
-      throw error;
+      throw error
     }
   }
 
@@ -128,11 +128,11 @@ class AuthService {
    */
   async getCurrentUser() {
     try {
-      const response = await apiClient.get('/auth/me');
-      localStorage.setItem('user', JSON.stringify(response.data));
-      return response.data;
+      const response = await apiClient.get('/auth/me')
+      localStorage.setItem('user', JSON.stringify(response.data))
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -147,12 +147,12 @@ class AuthService {
    */
   async updatePersonalInfo(personalInfo) {
     try {
-      const response = await apiClient.put('/auth/profile/personal-info', personalInfo);
+      const response = await apiClient.put('/auth/profile/personal-info', personalInfo)
       // Update stored user data
-      localStorage.setItem('user', JSON.stringify(response.data));
-      return response.data;
+      localStorage.setItem('user', JSON.stringify(response.data))
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -165,10 +165,10 @@ class AuthService {
    */
   async updatePassword(passwordData) {
     try {
-      const response = await apiClient.put('/auth/profile/password', passwordData);
-      return response.data;
+      const response = await apiClient.put('/auth/profile/password', passwordData)
+      return response.data
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -177,7 +177,7 @@ class AuthService {
    * @returns {boolean} - True if authenticated
    */
   isAuthenticated() {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('token')
   }
 
   /**
@@ -185,8 +185,8 @@ class AuthService {
    * @returns {Object|null} - User data or null
    */
   getUser() {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    const user = localStorage.getItem('user')
+    return user ? JSON.parse(user) : null
   }
 
   /**
@@ -194,9 +194,9 @@ class AuthService {
    * @returns {boolean} - True if user is admin
    */
   isAdmin() {
-    const user = this.getUser();
-    return user && user.role === 'admin';
+    const user = this.getUser()
+    return user && user.role === 'admin'
   }
 }
 
-export default new AuthService();
+export default new AuthService()

@@ -119,21 +119,21 @@
                   <span
                     :class="[
                       'inline-flex rounded-full bg-opacity-10 py-1 px-3 font-medium',
-                      getStatusClass(item[column.key]),
+                      getStatusClass(getNestedValue(item, column.key)),
                     ]"
                     style="font-size: 0.7rem"
                   >
-                    {{ formatStatus(item[column.key]) }}
+                    {{ formatStatus(getNestedValue(item, column.key)) }}
                   </span>
                 </template>
                 <template v-else-if="column.type === 'date'">
-                  <span style="font-size: 0.7rem">{{ formatDate(item[column.key]) }}</span>
+                  <span style="font-size: 0.7rem">{{ formatDate(getNestedValue(item, column.key)) }}</span>
                 </template>
                 <template v-else-if="column.type === 'currency'">
-                  <span style="font-size: 0.7rem">{{ formatCurrency(item[column.key]) }}</span>
+                  <span style="font-size: 0.7rem">{{ formatCurrency(getNestedValue(item, column.key)) }}</span>
                 </template>
                 <template v-else>
-                  <span style="font-size: 0.7rem">{{ item[column.key] }}</span>
+                  <span style="font-size: 0.7rem">{{ getNestedValue(item, column.key) }}</span>
                 </template>
               </td>
 
@@ -409,6 +409,10 @@ export default {
     },
   },
   methods: {
+    getNestedValue(obj, path) {
+      if (!path) return ''
+      return path.split('.').reduce((current, key) => current?.[key], obj) ?? ''
+    },
     goToPage(page) {
       if (typeof page === 'number') {
         this.currentPage = page

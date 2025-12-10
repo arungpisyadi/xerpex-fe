@@ -1,3 +1,5 @@
+import type { InvoiceStatus } from './invoice.types'
+
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded' | 'partial' | 'full'
 export type PaymentMethod =
   | 'cash'
@@ -8,6 +10,20 @@ export type PaymentMethod =
   | 'check'
   | 'other'
 export type PaymentType = 'down-payment' | 'installment' | 'paid-off'
+
+export interface PaymentCustomer {
+  name: string
+  email?: string
+  phone?: string
+  address?: string
+}
+
+export interface PaymentInvoice {
+  invoice_number: string
+  total: number
+  status: InvoiceStatus
+  due_date: string
+}
 
 export interface Payment {
   id: number
@@ -21,6 +37,9 @@ export interface Payment {
   notes?: string
   created_at: string
   updated_at: string
+  // Nested properties from backend response
+  customer?: PaymentCustomer
+  invoice?: PaymentInvoice
 }
 
 export interface CreatePaymentRequest {

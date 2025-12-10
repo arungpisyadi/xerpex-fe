@@ -203,7 +203,7 @@ const classes: Record<string, Record<string, boolean>> = {
     "font-bold": true,
     "dark:text-neutral-300": true,
     "!inline-flex": true,
-    "mb-1": true
+    "mb-1": true,
   },
   "family:text__inner": {
     "text-base": true,

@@ -4,6 +4,16 @@
       <page-breadcrumb page-title="Payments" />
     </div>
 
+    <!-- Payment Form Modal -->
+    <PaymentFormModal
+      v-if="showFormModal"
+      :mode="formMode"
+      :payment="selectedPaymentForEdit"
+      :available-invoices="availableInvoices"
+      @close="closeFormModal"
+      @saved="handlePaymentSaved"
+    />
+
     <div
       class="bg-white px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-4 xl:pb-0"
     >
@@ -92,10 +102,10 @@
           :loading="loading"
           :show-add-button="false"
           @view="viewPaymentDetails"
-          @edit="canUpdate ? editPayment : null"
-          @delete="canDelete ? deletePayment : null"
-          :show-edit="canUpdate"
-          :show-delete="canDelete"
+          @edit="openEditModal"
+          @delete="deletePayment"
+          :show-edit-button="canUpdate"
+          :show-delete-button="canDelete"
         />
       </div>
     </div>
@@ -103,12 +113,14 @@
     <!-- Payment Details Modal -->
     <div
       v-if="showModal"
-      class="fixed inset-0 z-999 flex items-center justify-center bg-black bg-opacity-50"
+      class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70"
     >
       <div
-        class="w-full max-w-2xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:p-8"
+        class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
       >
-        <div class="flex items-center justify-between mb-6">
+        <div
+          class="sticky top-0 z-10 flex items-center justify-between border-b border-stroke bg-white p-6 dark:border-strokedark dark:bg-boxdark"
+        >
           <h3 class="text-xl font-semibold text-black dark:text-white">Payment Details</h3>
           <button @click="showModal = false" class="text-gray-500 hover:text-primary">
             <svg
@@ -127,85 +139,164 @@
           </button>
         </div>
 
-        <div v-if="selectedPayment" class="mb-6">
-          <div class="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Payment ID</p>
-              <p class="text-base font-medium text-black dark:text-white">
-                #{{ selectedPayment.id }}
-              </p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Status</p>
-              <span
-                class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
-                :class="getStatusClass(selectedPayment.status)"
-              >
-                {{ capitalizeFirstLetter(selectedPayment.status) }}
-              </span>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Invoice</p>
-              <router-link
-                :to="`/invoices/${selectedPayment.invoice_id}`"
-                class="text-base font-medium text-primary hover:underline"
-              >
-                Invoice #{{ selectedPayment.invoice_id }}
-              </router-link>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Amount</p>
-              <p class="text-base font-medium text-black dark:text-white">
-                IDR {{ formatPrice(selectedPayment.amount) }}
-              </p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Payment Method</p>
-              <p class="text-base font-medium text-black dark:text-white">
-                {{ formatPaymentMethod(selectedPayment.payment_method) }}
-              </p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Payment Date</p>
-              <p class="text-base font-medium text-black dark:text-white">
-                {{ formatDate(selectedPayment.payment_date) }}
-              </p>
-            </div>
-            <div>
-              <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Reference Number</p>
-              <p class="text-base font-medium text-black dark:text-white">
-                {{ selectedPayment.reference_number || 'N/A' }}
-              </p>
+        <div v-if="selectedPayment" class="p-6">
+          <!-- Payment Overview Card (merged with Payment Details) -->
+          <div
+            class="mb-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+          >
+            <h3 class="mb-4 text-xl font-semibold text-black dark:text-white">Payment Overview</h3>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Payment ID</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  #{{ selectedPayment.id }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Status</p>
+                <span
+                  class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
+                  :class="getStatusClass(selectedPayment.status)"
+                >
+                  {{ capitalizeFirstLetter(selectedPayment.status) }}
+                </span>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Amount</p>
+                <p class="text-xl font-bold text-black dark:text-white">
+                  IDR {{ formatPrice(selectedPayment.amount) }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Payment Date</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ formatDate(selectedPayment.payment_date) }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Payment Method</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ formatPaymentMethod(selectedPayment.payment_method) }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Reference Number</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ selectedPayment.reference_number || 'N/A' }}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div v-if="selectedPayment.notes" class="mb-4">
-            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400">Notes</p>
-            <p
-              class="text-sm text-gray-600 dark:text-gray-400 p-3 bg-gray-100 dark:bg-gray-800 rounded"
-            >
+          <!-- Customer Details Card -->
+          <div
+            class="mb-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+          >
+            <h3 class="mb-4 text-xl font-semibold text-black dark:text-white">Customer Details</h3>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Customer Name</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ selectedPayment.customer?.name || 'N/A' }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Customer Phone</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ selectedPayment.customer?.phone || 'N/A' }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Customer Email</p>
+                <a
+                  v-if="selectedPayment.customer?.email"
+                  :href="`mailto:${selectedPayment.customer.email}`"
+                  class="text-base font-medium text-primary hover:underline"
+                >
+                  {{ selectedPayment.customer.email }}
+                </a>
+                <p v-else class="text-base font-medium text-black dark:text-white">N/A</p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Customer Address</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ selectedPayment.customer?.address || 'N/A' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invoice Details Card -->
+          <div
+            class="mb-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+          >
+            <h3 class="mb-4 text-xl font-semibold text-black dark:text-white">Invoice Details</h3>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Invoice Number</p>
+                <router-link
+                  :to="`/invoices/${selectedPayment.invoice_id}`"
+                  class="text-base font-medium text-primary hover:underline"
+                >
+                  {{ selectedPayment.invoice?.invoice_number || `#${selectedPayment.invoice_id}` }}
+                </router-link>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Invoice Total</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  IDR {{ formatPrice(selectedPayment.invoice?.total || 0) }}
+                </p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Invoice Status</p>
+                <span
+                  v-if="selectedPayment.invoice?.status"
+                  class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
+                  :class="getStatusClass(selectedPayment.invoice.status)"
+                >
+                  {{ capitalizeFirstLetter(selectedPayment.invoice.status) }}
+                </span>
+                <p v-else class="text-base font-medium text-black dark:text-white">N/A</p>
+              </div>
+              <div class="mb-3">
+                <p class="mb-1 text-sm text-gray-600 dark:text-gray-400">Invoice Due Date</p>
+                <p class="text-base font-medium text-black dark:text-white">
+                  {{ selectedPayment.invoice?.due_date ? formatDate(selectedPayment.invoice.due_date) : 'N/A' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Card (conditional) -->
+          <div
+            v-if="selectedPayment.notes"
+            class="mb-6 rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+          >
+            <h3 class="mb-4 text-xl font-semibold text-black dark:text-white">Notes</h3>
+            <p class="text-base text-gray-600 dark:text-gray-400">
               {{ selectedPayment.notes }}
             </p>
           </div>
 
-          <div class="flex justify-end gap-4 mt-6">
+          <!-- Actions Section -->
+          <div class="flex flex-wrap justify-end gap-4">
             <button
               v-if="selectedPayment.status === 'pending'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-green-500 hover:bg-green-600"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-success px-5 py-3 text-center font-medium text-white hover:bg-opacity-90"
               @click="confirmPaymentAction(selectedPayment)"
             >
               Confirm Payment
             </button>
             <button
               v-if="selectedPayment.status === 'pending'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-red-500 hover:bg-red-600"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-danger px-5 py-3 text-center font-medium text-white hover:bg-opacity-90"
               @click="failPaymentAction(selectedPayment)"
             >
               Mark as Failed
             </button>
             <button
               v-if="selectedPayment.status === 'completed'"
-              class="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-orange-500 hover:bg-orange-600"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-warning px-5 py-3 text-center font-medium text-white hover:bg-opacity-90"
               @click="refundPaymentAction(selectedPayment)"
             >
               Refund Payment
@@ -275,6 +366,7 @@
               min="0"
               validation="required|min:0"
             />
+
             <FormKit
               type="select"
               name="payment_method"
@@ -374,35 +466,168 @@
             />
           </div>
 
-          <div class="flex justify-end gap-4 mt-6">
+          <div class="flex justify-end gap-4">
             <FormKit type="button" @click="showCreateModal = false"> Cancel </FormKit>
-            <FormKit type="submit"> Save </FormKit>
+            <FormKit type="submit">Save Payment</FormKit>
           </div>
         </FormKit>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 z-999999 flex items-center justify-center bg-black/70"
+    >
+      <div
+        class="w-full max-w-md rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold text-danger">Confirm Delete Payment</h3>
+          <button @click="cancelDelete" class="text-gray-500 hover:text-primary">
+            <svg
+              class="fill-current"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.8323 10.0001L19.6199 2.21215C20.1267 1.70557 20.1267 0.88651 19.6199 0.379933C19.1133 -0.126644 18.2943 -0.126644 17.7877 0.379933L9.99988 8.16793L2.21228 0.379933C1.70548 -0.126644 0.886669 -0.126644 0.380103 0.379933C-0.126701 0.88651 -0.126701 1.70557 0.380103 2.21215L8.16771 10.0001L0.380103 17.7881C-0.126701 18.2947 -0.126701 19.1138 0.380103 19.6204C0.632555 19.8731 0.964493 20 1.29619 20C1.62789 20 1.9596 19.8731 2.21228 19.6204L9.99988 11.8324L17.7877 19.6204C18.0404 19.8731 18.3721 20 18.7038 20C19.0355 20 19.3672 19.8731 19.6199 19.6204C20.1267 19.1138 20.1267 18.2947 19.6199 17.7881L11.8323 10.0001Z"
+                fill=""
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div v-if="selectedPaymentToDelete" class="mb-6">
+          <div class="flex items-center justify-center mb-4">
+            <div class="rounded-full bg-danger bg-opacity-10 p-4">
+              <svg
+                class="fill-danger"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 11V17M14 11V17M4 7H20M19 7L18.133 19.142C18.0971 19.6466 17.8713 20.1188 17.5011 20.4636C17.1309 20.8083 16.6439 21 16.138 21H7.862C7.35614 21 6.86907 20.8083 6.49889 20.4636C6.1287 20.1188 5.90292 19.6466 5.867 19.142L5 7H19ZM15 7V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H10C9.73478 3 9.48043 3.10536 9.29289 3.29289C9.10536 3.48043 9 3.73478 9 4V7H15Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <p class="text-center text-base text-black dark:text-white mb-4">
+            Are you sure you want to delete this payment?
+          </p>
+
+          <div class="bg-gray-50 dark:bg-meta-4 rounded-md p-4 mb-4">
+            <div class="mb-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">Payment ID</p>
+              <p class="text-base font-medium text-black dark:text-white">#{{ selectedPaymentToDelete.id }}</p>
+            </div>
+            <div class="mb-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">Amount</p>
+              <p class="text-base font-semibold text-black dark:text-white">
+                IDR {{ formatPrice(selectedPaymentToDelete.amount) }}
+              </p>
+            </div>
+            <div class="mb-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">Reference Number</p>
+              <p class="text-base font-medium text-black dark:text-white">
+                {{ selectedPaymentToDelete.reference_number || 'N/A' }}
+              </p>
+            </div>
+            <div class="mb-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">Payment Method</p>
+              <p class="text-base font-medium text-black dark:text-white">
+                {{ formatPaymentMethod(selectedPaymentToDelete.payment_method) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Status</p>
+              <span
+                class="inline-flex rounded px-2.5 py-1 text-xs font-medium"
+                :class="getStatusClass(selectedPaymentToDelete.status)"
+              >
+                {{ capitalizeFirstLetter(selectedPaymentToDelete.status) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border border-red-200 rounded-md p-3 mb-4 dark:bg-red-900/20 dark:border-red-800">
+            <p class="text-sm text-red-600 dark:text-red-400">
+              <strong>Warning:</strong> This action cannot be undone. The payment record will be permanently deleted from the system.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-4">
+          <button
+            type="button"
+            class="flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+            @click="cancelDelete"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-opacity-90"
+            @click="confirmDelete"
+          >
+            <svg
+              class="fill-current"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 11V17M14 11V17M4 7H20M19 7L18.133 19.142C18.0971 19.6466 17.8713 20.1188 17.5011 20.4636C17.1309 20.8083 16.6439 21 16.138 21H7.862C7.35614 21 6.86907 20.8083 6.49889 20.4636C6.1287 20.1188 5.90292 19.6466 5.867 19.142L5 7H19ZM15 7V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H10C9.73478 3 9.48043 3.10536 9.29289 3.29289C9.10536 3.48043 9 3.73478 9 4V7H15Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Delete Payment
+          </button>
+        </div>
       </div>
     </div>
   </admin-layout>
 </template>
 
-<script>
+<script lang="ts">
 import AdminLayout from '../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue'
 import DataTable from '../components/common/DataTable.vue'
+import PaymentFormModal from '../components/payments/PaymentFormModal.vue'
 import CalenderIcon from '../icons/CalenderIcon.vue'
 import ChevronDownIcon from '../icons/ChevronDownIcon.vue'
 import { useInvoicing } from '../composables/useInvoicing'
-import invoiceService from '../services/invoice.service.ts'
 import paymentService from '../services/payment.service'
 import authService from '../services/auth.service'
 import { handleError } from '../utils/errorHandler'
 import { usePermissions } from '../composables/usePermissions'
 import { SystemModule, PermissionAction } from '../types/permissions.types'
+import type { Payment } from '../types/payment.types'
+import type { Invoice } from '../types/invoice.types'
 
 export default {
+  name: 'PaymentsView',
   components: {
     AdminLayout,
     PageBreadcrumb,
     DataTable,
+    PaymentFormModal,
     CalenderIcon,
     ChevronDownIcon,
   },
@@ -446,10 +671,15 @@ export default {
       totalItems: 0,
       showModal: false,
       showCreateModal: false,
-      selectedPayment: null,
-      availableInvoices: [],
+      showFormModal: false,
+      showDeleteModal: false,
+      formMode: 'create' as 'create' | 'edit',
+      selectedPayment: null as Payment | null,
+      selectedPaymentForEdit: null as Payment | null,
+      selectedPaymentToDelete: null as Payment | null,
+      availableInvoices: [] as Invoice[],
       paymentForm: {
-        invoice_id: '',
+        invoice_id: 0 as number,
         amount: '',
         payment_method: '',
         payment_type: '',
@@ -459,9 +689,10 @@ export default {
         notes: '',
       },
       columns: [
-        { key: 'invoice_id', label: 'Invoice', span: 1 },
+        { key: 'invoice.invoice_number', label: 'INVOICE #', span: 1 },
         { key: 'amount', label: 'Amount', span: 1, type: 'currency' },
         { key: 'payment_method', label: 'Method', span: 1 },
+        { key: 'payment_type', label: 'Type', span: 1 },
         { key: 'status', label: 'Status', span: 1, type: 'status' },
         { key: 'payment_date', label: 'Date', span: 1, type: 'date' },
         { key: 'reference_number', label: 'Reference', span: 2 },
@@ -526,13 +757,16 @@ export default {
             skip: (this.currentPage - 1) * this.itemsPerPage,
             limit: this.itemsPerPage,
           }),
-          this.fetchInvoices({ status: 'sent' }), // Get invoices that can receive payments
+          this.fetchInvoices({ status: 'sent,partially_paid,overdue' }), // Get invoices that can receive payments
         ])
         this.totalItems = this.payments?.length || 0
         this.availableInvoices =
           this.invoices && Array.isArray(this.invoices)
             ? this.invoices.filter(
-                (invoice) => invoice.status === 'sent' || invoice.status === 'overdue',
+                (invoice) =>
+                  invoice.status === 'sent' ||
+                  invoice.status === 'partially_paid' ||
+                  invoice.status === 'overdue',
               )
             : []
       } catch (error) {
@@ -540,12 +774,12 @@ export default {
       }
     },
 
-    async handlePageChange(page) {
+    async handlePageChange(page: number) {
       this.currentPage = page
       await this.loadData()
     },
 
-    viewPaymentDetails(payment) {
+    viewPaymentDetails(payment: Payment) {
       this.selectedPayment = payment
       this.showModal = true
     },
@@ -556,17 +790,32 @@ export default {
         return
       }
 
-      this.paymentForm = {
-        invoice_id: '',
-        amount: '',
-        payment_method: '',
-        payment_type: '',
-        payment_date: new Date().toISOString().split('T')[0],
-        status: '',
-        reference_number: '',
-        notes: '',
+      this.formMode = 'create'
+      this.selectedPaymentForEdit = null
+      this.showFormModal = true
+    },
+
+    openEditModal(payment: Payment) {
+      if (!this.canUpdate) {
+        console.error('You do not have permission to edit payments')
+        return
       }
-      this.showCreateModal = true
+
+      this.formMode = 'edit'
+      this.selectedPaymentForEdit = payment
+      this.showFormModal = true
+    },
+
+    closeFormModal() {
+      this.showFormModal = false
+      this.selectedPaymentForEdit = null
+    },
+
+    async handlePaymentSaved() {
+      this.showFormModal = false
+      this.selectedPaymentForEdit = null
+      await this.loadData()
+      console.log('Payment saved successfully')
     },
 
     async submitPayment() {
@@ -580,7 +829,7 @@ export default {
       }
     },
 
-    async confirmPaymentAction(payment) {
+    async confirmPaymentAction(payment: Payment) {
       try {
         await this.confirmPayment(payment.id)
 
@@ -596,7 +845,7 @@ export default {
       }
     },
 
-    async failPaymentAction(payment) {
+    async failPaymentAction(payment: Payment) {
       try {
         await paymentService.failPayment(payment.id)
 
@@ -612,27 +861,52 @@ export default {
       }
     },
 
-    editPayment(payment) {
-      if (!this.canUpdate) {
-        console.error('You do not have permission to edit payments')
-        return
-      }
 
-      // For now, just view the payment details
-      this.viewPaymentDetails(payment)
-    },
-
-    deletePayment(payment) {
+    deletePayment(payment: Payment) {
       if (!this.canDelete) {
         console.error('You do not have permission to delete payments')
+        alert('You do not have permission to delete payments. Only admin users can delete payments.')
         return
       }
 
-      // For now, just log - could implement delete functionality later
-      console.log('Delete payment:', payment.id)
+      // Show confirmation modal
+      this.selectedPaymentToDelete = payment
+      this.showDeleteModal = true
     },
 
-    async refundPaymentAction(payment) {
+    async confirmDelete() {
+      if (!this.selectedPaymentToDelete) {
+        return
+      }
+
+      try {
+        const payment = this.selectedPaymentToDelete
+        await paymentService.deletePayment(payment.id)
+
+        // Close modal
+        this.showDeleteModal = false
+        this.selectedPaymentToDelete = null
+
+        // Refresh data
+        await this.loadData()
+
+        // Show success notification
+        alert(`Payment #${payment.id} (${payment.reference_number || 'N/A'}) has been deleted successfully.`)
+        console.log('Payment deleted successfully:', payment.id)
+      } catch (error: any) {
+        console.error('Error deleting payment:', error)
+        const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete payment'
+        alert(`Error: ${errorMessage}`)
+        this.handleError(error, 'confirmDelete')
+      }
+    },
+
+    cancelDelete() {
+      this.showDeleteModal = false
+      this.selectedPaymentToDelete = null
+    },
+
+    async refundPaymentAction(payment: Payment) {
       try {
         await paymentService.refundPayment(payment.id, {
           reason: 'Customer requested refund',
@@ -651,25 +925,24 @@ export default {
       }
     },
 
-    formatDate(dateString) {
+    formatDate(dateString: string) {
       if (!dateString) return ''
       const date = new Date(dateString)
       return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
     },
 
-    formatPrice(price) {
-      return parseFloat(price)
-        .toFixed(2)
-        .replace(/\d(?=(\d{3})+\.)/g, '$&,')
+    formatPrice(price: number | string) {
+      const numPrice = typeof price === 'number' ? price : parseFloat(price)
+      return numPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
     },
 
-    capitalizeFirstLetter(string) {
+    capitalizeFirstLetter(string: string) {
       if (!string) return ''
       return string.charAt(0).toUpperCase() + string.slice(1)
     },
 
-    formatPaymentMethod(method) {
-      const methods = {
+    formatPaymentMethod(method: string) {
+      const methods: Record<string, string> = {
         cash: 'Cash',
         bank_transfer: 'Bank Transfer',
         credit_card: 'Credit Card',
@@ -681,7 +954,7 @@ export default {
       return methods[method] || method
     },
 
-    getStatusClass(status) {
+    getStatusClass(status: string) {
       switch (status) {
         case 'pending':
           return 'bg-warning bg-opacity-10 text-warning'
@@ -690,23 +963,24 @@ export default {
         case 'failed':
           return 'bg-red-500 bg-opacity-10 text-danger'
         case 'refunded':
-          return 'bg-gray-500 bg-opacity-10 text-gray-500'
+          return 'bg-gray-500 bg-opacity-10 text-white'
         default:
-          return 'bg-gray-500 bg-opacity-10 text-gray-500'
+          return 'bg-gray-500 bg-opacity-10 text-white'
       }
     },
 
-    triggerDatePicker(event) {
-      const target = event.target
+    triggerDatePicker(event: Event) {
+      const target = event.target as HTMLElement | null
+      if (!target) return
       const wrapper = target.closest('.formkit-outer')
       if (wrapper) {
-        const input = wrapper.querySelector('input[type="date"]')
+        const input = wrapper.querySelector('input[type="date"]') as HTMLInputElement | null
         if (input) {
           input.focus()
           if (input.showPicker) {
             try {
               input.showPicker()
-            } catch (e) {
+            } catch {
               input.click()
             }
           } else {

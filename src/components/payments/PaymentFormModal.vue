@@ -57,6 +57,11 @@
             min="0"
             validation="required|min:0"
           >
+            <template #label="{ label }">
+              <div class="flex flex-row">
+                {{ label }} <span class="ml-2 text-red-500">*</span>
+              </div>
+            </template>
           </FormKit>
 
           <FormKit
@@ -68,6 +73,11 @@
             placeholder="Select method"
             validation="required"
           >
+            <template #label="{ label }">
+              <div class="flex flex-row">
+                {{ label }} <span class="ml-2 text-red-500">*</span>
+              </div>
+            </template>
             <template #suffixIcon>
               <ChevronDownIcon />
             </template>
@@ -84,6 +94,11 @@
             placeholder="Select payment type"
             validation="required"
           >
+            <template #label="{ label }">
+              <div class="flex flex-row">
+                {{ label }} <span class="ml-2 text-red-500">*</span>
+              </div>
+            </template>
             <template #suffixIcon>
               <ChevronDownIcon />
             </template>
@@ -98,6 +113,11 @@
             v-model="form.payment_date"
             validation="required"
           >
+            <template #label="{ label }">
+              <div class="flex flex-row">
+                {{ label }} <span class="ml-2 text-red-500">*</span>
+              </div>
+            </template>
             <template #suffixIcon>
               <div @click="triggerDatePicker($event)" class="cursor-pointer">
                 <CalenderIcon />
@@ -114,6 +134,11 @@
             placeholder="Select status"
             validation="required"
           >
+            <template #label="{ label }">
+              <div class="flex flex-row">
+                {{ label }} <span class="ml-2 text-red-500">*</span>
+              </div>
+            </template>
             <template #suffixIcon>
               <ChevronDownIcon />
             </template>

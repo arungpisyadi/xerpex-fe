@@ -36,17 +36,24 @@ export interface BookingVilla {
   discount: number
   line_total: number
   special_requests?: string
+
+  // Nested villa object (API v2)
+  villa?: BookingDetailVillaInfo
 }
 
 export interface Booking {
   id: number
   user_id: number
   booking_number: string
+  booking_code?: string // New field for API v2
   customer_id: number
   customer_name?: string
   customer_email?: string
   customer_phone?: string
   booking_date: string
+
+  // Nested customer object (API v2)
+  customer?: BookingDetailCustomer
 
   // New structure with packages
   packages: BookingPackage[]
@@ -71,6 +78,12 @@ export interface Booking {
   subtotal: number
   tax_amount: number
   total_amount: number
+
+  // New finance fields (API v2)
+  total?: string
+  amount_paid?: string
+  amount_due?: string
+
   notes?: string
   customer_notes?: string
   internal_notes?: string

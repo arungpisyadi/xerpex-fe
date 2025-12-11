@@ -521,9 +521,9 @@
                 >
               </div>
               <div class="flex justify-between text-sm">
-                <span class="text-gray-500 dark:text-gray-400">Tax Total:</span>
+                <span class="text-gray-500 dark:text-gray-400">Total Discounts:</span>
                 <span class="text-black dark:text-white font-medium"
-                  >IDR {{ formatPrice(booking.tax_total) }}</span
+                  >IDR {{ formatPrice(totalDiscounts) }}</span
                 >
               </div>
               <div class="pt-3 border-t border-stroke dark:border-strokedark flex justify-between">
@@ -730,6 +730,12 @@ export default {
   computed: {
     bookingId() {
       return this.$route.params.id
+    },
+    totalDiscounts() {
+      if (!this.booking?.items) return 0
+      return this.booking.items.reduce((sum, item) => {
+        return sum + (parseFloat(item.discount || '0') || 0)
+      }, 0)
     },
   },
   async created() {

@@ -57,6 +57,18 @@
       <page-breadcrumb page-title="Bookings" />
     </div>
 
+    <!-- Booking Calendar - Moved to top -->
+    <div class="mb-6">
+      <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <BookingCalendar
+          :bookings="filteredBookings"
+          :auto-fetch="false"
+          :full-width="true"
+          @booking-clicked="viewBookingDetails"
+        />
+      </div>
+    </div>
+
     <div
       class="bg-white px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-4 xl:pb-0"
     >
@@ -244,6 +256,7 @@
 import AdminLayout from '../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue'
 import DataTable from '../components/common/DataTable.vue'
+import BookingCalendar from '@/components/calendar/BookingCalendar.vue'
 import { bookingService } from '../services'
 import { usePermissions } from '../composables/usePermissions'
 import { SystemModule, PermissionAction } from '../types/permissions.types'
@@ -253,6 +266,7 @@ export default {
     AdminLayout,
     PageBreadcrumb,
     DataTable,
+    BookingCalendar,
   },
   setup() {
     const permissions = usePermissions()

@@ -303,16 +303,29 @@
           </div>
         </div>
       </div> -->
+
+      <!-- Booking Calendar -->
+      <div class="col-span-12">
+        <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <BookingCalendar
+            :auto-fetch="true"
+            :full-width="true"
+            @booking-clicked="handleBookingClick"
+          />
+        </div>
+      </div>
     </div>
   </admin-layout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import AdminLayout from '../components/layout/AdminLayout.vue'
 import BarChartOne from '../components/charts/BarChart/BarChartOne.vue'
 import LineChartOne from '../components/charts/LineChart/LineChartOne.vue'
 import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue'
+import BookingCalendar from '@/components/calendar/BookingCalendar.vue'
 import { TargetsService } from '../services/targets.service'
 import { KpiService } from '../services/kpi.service'
 import { formatNumber, formatCurrency } from '../utils/number-formatter'
@@ -324,6 +337,8 @@ import {
   SurveyIcon,
   HorizontalDots,
 } from '../icons'
+
+const router = useRouter()
 
 // Reactive data for API responses
 // const targetsOverview = ref(null);
@@ -377,6 +392,11 @@ const monthlySalesData = ref({
   labels: [],
   datasets: [],
 })
+
+// Handle booking click navigation
+const handleBookingClick = (bookingId) => {
+  router.push(`/bookings/${bookingId}`)
+}
 
 // Fetch dashboard data
 onMounted(async () => {

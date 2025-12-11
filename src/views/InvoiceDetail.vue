@@ -563,9 +563,9 @@
                   >
                 </div>
                 <div class="mb-2 flex justify-between">
-                  <span class="text-xs text-gray-500 dark:text-gray-400">Tax:</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Amount Paid:</span>
                   <span class="text-xs font-medium text-black dark:text-white"
-                    >IDR {{ formatPrice(invoice.tax_total || 0) }}</span
+                    >IDR {{ formatPrice(invoice.amount_paid) }}</span
                   >
                 </div>
                 <div
@@ -575,7 +575,7 @@
                     >Total Amount:</span
                   >
                   <span class="text-sm font-semibold text-black dark:text-white"
-                    >IDR {{ formatPrice(invoice.total) }}</span
+                    >IDR {{ formatPrice(invoice.amount_due) }}</span
                   >
                 </div>
               </div>
@@ -992,16 +992,11 @@ export default {
         // 6. Call service method
         const response = await invoiceService.convertToBooking(this.invoice.id, payload)
 
-        // 7. Handle success - refresh invoice data
-        await this.fetchInvoiceData()
-
-        // 8. Show success message
+        // 7. Handle success
         alert('Invoice successfully converted to booking!')
 
-        // Optional: redirect to booking detail page if response includes booking_id
-        // if (response.data && response.data.booking_id) {
-        //   this.$router.push(`/bookings/${response.data.booking_id}`)
-        // }
+        // 8. Redirect to bookings page
+        this.$router.push('/bookings')
 
       } catch (error) {
         console.error('Error converting invoice to booking:', error)

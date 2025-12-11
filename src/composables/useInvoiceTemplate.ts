@@ -421,22 +421,20 @@ export function useInvoiceTemplate() {
         <div class="totals">
             <table class="totals-table">
                 <tr>
+                    <td class="label">Subtotal:</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.line_total as any) || 0), 0))}</td>
+                </tr>
+                <tr>
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
                 </tr>
-                ${
-                  taxTotal > 0
-                    ? `
                 <tr>
-                    <td class="label">Tax:</td>
-                    <td>${formatIDR(taxTotal)}</td>
+                    <td class="label">Amount Paid:</td>
+                    <td>${formatIDR(Number(invoiceData.amount_paid || 0))}</td>
                 </tr>
-                `
-                    : ''
-                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
-                    <td>${formatIDR(total)}</td>
+                    <td>${formatIDR(invoiceData.amount_due || 0)}</td>
                 </tr>
             </table>
         </div>
@@ -922,22 +920,20 @@ export function useInvoiceTemplate() {
         <div class="totals">
             <table class="totals-table">
                 <tr>
+                    <td class="label">Subtotal:</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.line_total as any) || 0), 0))}</td>
+                </tr>
+                <tr>
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.discount as any) || 0), 0))}</td>
                 </tr>
-                ${
-                  taxTotal > 0
-                    ? `
                 <tr>
-                    <td class="label">Tax:</td>
-                    <td>${formatIDR(taxTotal)}</td>
+                    <td class="label">Amount Paid:</td>
+                    <td>${formatIDR(Number(invoiceData.amount_paid || 0))}</td>
                 </tr>
-                `
-                    : ''
-                }
                 <tr class="total-row">
                     <td class="label">Total:</td>
-                    <td>${formatIDR(total)}</td>
+                    <td>${formatIDR(invoiceData.amount_due || 0)}</td>
                 </tr>
             </table>
         </div>

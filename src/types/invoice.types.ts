@@ -26,6 +26,8 @@ export interface Invoice {
   status: InvoiceStatus
   total: number
   tax_total: number
+  amount_paid?: number
+  amount_due?: number
   customer_name?: string
   billing_address?: string
   items: InvoiceItem[]

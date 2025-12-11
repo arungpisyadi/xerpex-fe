@@ -552,46 +552,46 @@
             v-if="booking.history && booking.history.length > 0"
             class="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark mt-6"
           >
-            <h4 class="mb-6 text-xl font-semibold text-black dark:text-white">Activity History</h4>
+            <h4 class="mb-6 text-sm font-semibold text-black dark:text-white">Activity History</h4>
 
             <div class="overflow-x-auto">
               <table class="w-full table-auto">
                 <thead>
-                  <tr class="bg-gray-100 dark:bg-gray-800 text-left">
-                    <th class="py-3 px-4 font-medium text-black dark:text-white whitespace-nowrap">
+                  <tr class="bg-gray-2 text-left dark:bg-meta-4">
+                    <th class="py-3 px-3 font-medium text-xs text-black dark:text-white whitespace-nowrap">
                       Date/Time
                     </th>
-                    <th class="py-3 px-4 font-medium text-black dark:text-white whitespace-nowrap">
+                    <th class="py-3 px-3 font-medium text-xs text-black dark:text-white whitespace-nowrap">
                       Event Type
                     </th>
-                    <th class="py-3 px-4 font-medium text-black dark:text-white">Details</th>
+                    <th class="py-3 px-3 font-medium text-xs text-black dark:text-white">Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
                     v-for="item in booking.history"
                     :key="item.id"
-                    class="border-b border-stroke dark:border-strokedark hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    class="border-b border-[#eee] dark:border-strokedark hover:bg-gray-50 dark:hover:bg-gray-800/50"
                   >
                     <td
-                      class="py-4 px-4 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap"
+                      class="py-3 px-3 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap"
                     >
                       {{ formatHistoryDateTime(item.created_at) }}
                     </td>
-                    <td class="py-4 px-4">
+                    <td class="py-3 px-3">
                       <span
-                        class="inline-block px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap"
+                        class="inline-flex rounded px-2 py-1 text-xs font-medium"
                         :class="getEventBadgeClass(item.event_category)"
                       >
                         {{ item.event_type }}
                       </span>
                     </td>
-                    <td class="py-4 px-4">
+                    <td class="py-3 px-3">
                       <div
                         v-if="item.event_metadata && Object.keys(item.event_metadata).length > 0"
                         class="space-y-1"
                       >
-                        <div v-for="(value, key) in item.event_metadata" :key="key" class="text-sm">
+                        <div v-for="(value, key) in item.event_metadata" :key="key" class="text-xs">
                           <span class="font-semibold text-black dark:text-white"
                             >{{ formatMetadataKey(key) }}:</span
                           >
@@ -600,7 +600,7 @@
                           }}</span>
                         </div>
                       </div>
-                      <span v-else class="text-sm text-gray-400 dark:text-gray-500 italic">—</span>
+                      <span v-else class="text-xs text-gray-400 dark:text-gray-500 italic">—</span>
                     </td>
                   </tr>
                 </tbody>

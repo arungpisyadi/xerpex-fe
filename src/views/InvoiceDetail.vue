@@ -113,6 +113,27 @@
               Cancel Invoice
             </button>
             <button
+              v-if="(invoice.status === 'partially_paid' || invoice.status === 'paid') && invoice.check_in && new Date(invoice.check_in) > new Date()"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              @click="convertToBooking"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                ></path>
+              </svg>
+              Convert To Booking
+            </button>
+            <button
               class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
               @click="previewPDF"
             >
@@ -933,6 +954,58 @@ export default {
         console.error('Error updating invoice status:', error)
         // Show error notification
         alert('Failed to update invoice status')
+      } finally {
+        this.loading = false
+      }
+    },
+    async convertToBooking() {
+      try {
+        // 1. Show confirmation dialog
+        if (!confirm('Are you sure you want to convert this invoice to a booking?')) {
+          return
+        }
+
+        // 2. Validate invoice data
+        if (!this.invoice || !this.invoice.id) {
+          alert('Invoice data not available')
+          return
+        }
+
+        // 3. Validate required fields
+        if (!this.invoice.check_in || !this.invoice.check_out) {
+          alert('Check-in and check-out dates are required')
+          return
+        }
+
+        // 4. Set loading state
+        this.loading = true
+
+        // 5. Prepare payload (use invoice data)
+        const payload = {
+          invoice_id: this.invoice.id,
+          check_in: this.invoice.check_in,
+          check_out: this.invoice.check_out,
+          total_pax: this.invoice.total_pax || 1, // default to 1 if not set
+          notes: this.invoice.notes || ''
+        }
+
+        // 6. Call service method
+        const response = await invoiceService.convertToBooking(this.invoice.id, payload)
+
+        // 7. Handle success - refresh invoice data
+        await this.fetchInvoiceData()
+
+        // 8. Show success message
+        alert('Invoice successfully converted to booking!')
+
+        // Optional: redirect to booking detail page if response includes booking_id
+        // if (response.data && response.data.booking_id) {
+        //   this.$router.push(`/bookings/${response.data.booking_id}`)
+        // }
+
+      } catch (error) {
+        console.error('Error converting invoice to booking:', error)
+        alert('Failed to convert invoice to booking. Please try again.')
       } finally {
         this.loading = false
       }

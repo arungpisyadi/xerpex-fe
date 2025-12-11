@@ -140,6 +140,30 @@ class InvoiceService {
       throw error
     }
   }
+  /**
+   * Convert invoice to booking
+   * @param id - Invoice ID
+   * @param data - Booking conversion data
+   * @returns Promise with action result
+   */
+  async convertToBooking(
+    id: number,
+    data: {
+      invoice_id: number
+      check_in: string
+      check_out: string
+      total_pax: number
+      notes: string
+    },
+  ): Promise<InvoiceActionResponse> {
+    try {
+      const response = await apiClient.post(`/invoices/${id}/convert-to-booking`, data)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+
 
   /**
    * Generate PDF using client-side html2pdf.js

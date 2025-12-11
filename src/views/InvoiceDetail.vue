@@ -113,6 +113,27 @@
               Cancel Invoice
             </button>
             <button
+              v-if="invoice.status === 'draft'"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              @click="updateInvoiceStatus('sent')"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                ></path>
+              </svg>
+              Mark Invoice as Sent
+            </button>
+            <button
               v-if="(invoice.status === 'partially_paid' || invoice.status === 'paid') && invoice.check_in && new Date(invoice.check_in) > new Date()"
               class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
               @click="convertToBooking"

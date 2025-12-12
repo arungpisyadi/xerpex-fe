@@ -495,6 +495,10 @@ export function useQuoteTemplate() {
         <div class="totals">
             <table class="totals-table">
                 <tr>
+                    <td class="label" style="background-color: #f8f9fa;">Subtotal:</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0)), 0))}</td>
+                </tr>
+                <tr>
                     <td class="label" style="background-color: #f8f9fa;">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>
                 </tr>
@@ -1009,6 +1013,10 @@ export function useQuoteTemplate() {
 
         <div class="totals">
             <table class="totals-table">
+                <tr>
+                    <td class="label">Subtotal:</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0)), 0))}</td>
+                </tr>
                 <tr>
                     <td class="label">Total Discount:</td>
                     <td style="font-style: italic;">${formatIDR(totalDiscount)}</td>

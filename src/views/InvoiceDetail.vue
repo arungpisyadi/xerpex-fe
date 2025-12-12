@@ -713,7 +713,11 @@ export default {
       if (!this.invoice.items || !Array.isArray(this.invoice.items)) {
         return 0
       }
-      return this.invoice.items.reduce((sum, item) => sum + (parseFloat(item.line_total) || 0), 0)
+      return this.invoice.items.reduce((sum, item) => {
+        const unitPrice = parseFloat(item.unit_price) || 0
+        const pax = parseFloat(item.pax) || 0
+        return sum + (unitPrice * pax)
+      }, 0)
     },
     totalDiscount() {
       if (!this.invoice.items || !Array.isArray(this.invoice.items)) {

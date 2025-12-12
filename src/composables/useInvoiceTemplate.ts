@@ -422,7 +422,7 @@ export function useInvoiceTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.line_total as any) || 0), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0)), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label">Total Discount:</td>
@@ -921,7 +921,7 @@ export function useInvoiceTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.line_total as any) || 0), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0)), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label">Total Discount:</td>

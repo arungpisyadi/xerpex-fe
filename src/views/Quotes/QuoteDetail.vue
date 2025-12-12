@@ -578,7 +578,11 @@ export default {
       if (!this.quote.items || !Array.isArray(this.quote.items)) {
         return 0
       }
-      return this.quote.items.reduce((sum, item) => sum + (parseFloat(item.line_total) || 0), 0)
+      return this.quote.items.reduce((sum, item) => {
+        const unitPrice = parseFloat(item.unit_price) || 0
+        const pax = parseFloat(item.pax) || 0
+        return sum + (unitPrice * pax)
+      }, 0)
     },
     totalDiscount() {
       if (!this.quote.items || !Array.isArray(this.quote.items)) {

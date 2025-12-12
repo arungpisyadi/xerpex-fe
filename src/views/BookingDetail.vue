@@ -884,7 +884,9 @@ export default {
       }
 
       const subtotal = this.booking.items.reduce((sum, item) => {
-        return sum + parseFloat(item.line_total || 0)
+        const unitPrice = parseFloat(item.unit_price) || 0
+        const pax = parseFloat(item.pax) || 0
+        return sum + (unitPrice * pax)
       }, 0)
 
       return subtotal.toString()

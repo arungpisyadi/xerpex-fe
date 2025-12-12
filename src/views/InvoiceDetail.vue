@@ -133,8 +133,13 @@
               </svg>
               Mark Invoice as Sent
             </button>
-            <button
+            <!-- <button
               v-if="(invoice.status === 'partially_paid' || invoice.status === 'paid') && invoice.check_in && new Date(invoice.check_in) > new Date()"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              @click="convertToBooking"
+            > -->
+            <button
+              v-if="(invoice.status === 'partially_paid' || invoice.status === 'paid')"
               class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
               @click="convertToBooking"
             >

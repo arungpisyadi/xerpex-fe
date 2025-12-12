@@ -557,6 +557,11 @@ export default {
       },
     }
   },
+  computed: {
+    canUpdateGeneral() {
+      return this.permissions.canPerform(SystemModule.SETTINGS_GENERAL, PermissionAction.UPDATE)
+    },
+  },
   async created() {
     await this.loadSettings()
   },

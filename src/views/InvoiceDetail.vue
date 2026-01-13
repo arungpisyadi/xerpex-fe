@@ -14,8 +14,8 @@
         class="mb-6 rounded-sm border p-4 shadow-default"
         :class="getStatusClass(invoice.status)"
       >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
+        <div class="flex-row md:flex-col items-center justify-between">
+          <div class="flex items-center mb-2 md:mb-0">
             <span class="mr-2">
               <svg
                 class="w-6 h-6"
@@ -69,10 +69,10 @@
               {{ capitalizeFirstLetter(invoice.status) }}</span
             >
           </div>
-          <div class="flex gap-2">
+          <div class="flex-row md:flex-col gap-2">
             <button
               v-if="invoice.status === 'pending' || invoice.status === 'overdue'"
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200 mb-2 md:mb-0"
               @click="updateInvoiceStatus('paid')"
             >
               <svg
@@ -93,7 +93,7 @@
             </button>
             <button
               v-if="invoice.status === 'pending'"
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-red-600 hover:bg-red-700 shadow-theme-xs transition-colors duration-200 mb-2 md:mb-0"
               @click="updateInvoiceStatus('cancelled')"
             >
               <svg
@@ -114,7 +114,7 @@
             </button>
             <button
               v-if="invoice.status === 'draft'"
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200 mb-2 md:mb-0"
               @click="updateInvoiceStatus('sent')"
             >
               <svg
@@ -140,7 +140,7 @@
             > -->
             <button
               v-if="(invoice.status === 'partially_paid' || invoice.status === 'paid')"
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-blue-600 hover:bg-blue-700 shadow-theme-xs transition-colors duration-200 mb-2 md:mb-0"
               @click="convertToBooking"
             >
               <svg
@@ -160,7 +160,7 @@
               Convert To Booking
             </button>
             <button
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 dark:bg-green-600 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-700 transition-colors duration-200 mb-2 md:mb-0"
               @click="previewPDF"
             >
               <svg
@@ -197,7 +197,7 @@
               Download PDF (Direct)
             </button> -->
             <button
-              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200"
+              class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600 shadow-theme-xs disabled:bg-brand-300 transition-colors duration-200 mb-2 md:mb-0"
               @click="sendInvoice"
             >
               <svg

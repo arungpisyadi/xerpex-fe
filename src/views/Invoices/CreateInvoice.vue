@@ -131,7 +131,13 @@
               label="Due Date"
               help="When payment is due"
               validation="required"
-            />
+            >
+             <template #suffixIcon>
+                <div @click="triggerDatePicker($event)" class="cursor-pointer">
+                  <CalenderIcon />
+                </div>
+              </template>
+            </FormKit>
           </div>
           <div class="flex items-center">
             <span class="text-sm text-[#4b5563] dark:text-gray-400">

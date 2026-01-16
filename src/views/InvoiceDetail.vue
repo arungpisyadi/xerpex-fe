@@ -14,7 +14,7 @@
         class="mb-6 rounded-sm border p-4 shadow-default"
         :class="getStatusClass(invoice.status)"
       >
-        <div class="flex-row md:flex-col items-center justify-between">
+        <div class="flex flex-col md:flex-row items-center justify-between">
           <div class="flex items-center mb-2 md:mb-0">
             <span class="mr-2">
               <svg
@@ -69,7 +69,7 @@
               {{ capitalizeFirstLetter(invoice.status) }}</span
             >
           </div>
-          <div class="flex-row md:flex-col gap-2">
+          <div class="flex flex-col md:flex-row gap-2">
             <button
               v-if="invoice.status === 'pending' || invoice.status === 'overdue'"
               class="flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 shadow-theme-xs transition-colors duration-200 mb-2 md:mb-0"

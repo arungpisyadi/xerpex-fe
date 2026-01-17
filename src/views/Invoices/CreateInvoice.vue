@@ -341,9 +341,6 @@ const paymentTermsOptions = [
 const statusOptions = [
   { label: 'Draft', value: 'draft' },
   { label: 'Sent', value: 'sent' },
-  { label: 'Partially Paid', value: 'partially_paid' },
-  { label: 'Paid', value: 'paid' },
-  { label: 'Overdue', value: 'overdue' },
   { label: 'Cancelled', value: 'cancelled' },
 ]
 

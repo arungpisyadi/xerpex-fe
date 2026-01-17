@@ -353,6 +353,10 @@ export function useInvoiceTemplate() {
                 <strong>Due Date:</strong>
                 <span>${invoiceData.due_date || 'N/A'}</span>
             </div>
+            <div>
+                <strong>Check-in/Check-out:</strong>
+                <span>${invoiceData.check_in + ' / ' + invoiceData.check_out || 'N/A'}</span>
+            </div>
         </div>
 
         <div class="customer-villa-section">
@@ -422,7 +426,7 @@ export function useInvoiceTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0)), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label">Total Discount:</td>
@@ -587,7 +591,7 @@ export function useInvoiceTemplate() {
 
         .invoice-details {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 15px;
             margin-bottom: 25px;
             background-color: #f8f9fa;
@@ -851,6 +855,10 @@ export function useInvoiceTemplate() {
             <div>
                 <strong>Due Date:</strong>
                 <span>${invoiceData.due_date || 'N/A'}</span>
+            </div>
+            <div>
+                <strong>Check In / Check Out:</strong>
+                <span>${invoiceData.check_in || 'N/A'} / ${invoiceData.check_out || 'N/A'}</span>
             </div>
         </div>
 

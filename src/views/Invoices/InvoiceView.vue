@@ -41,6 +41,7 @@
         <div><strong>Invoice #:</strong> {{ invoice.invoice_number }}</div>
         <div><strong>Issue Date:</strong> {{ invoice.issue_date }}</div>
         <div><strong>Due Date:</strong> {{ invoice.due_date }}</div>
+        <div><strong>Check In / Check Out:</strong> {{ invoice.check_in }} / {{ invoice.check_out }}</div>
       </div>
       <div class="customer-details">
         <h3>Bill To:</h3>

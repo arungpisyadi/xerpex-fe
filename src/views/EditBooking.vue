@@ -337,13 +337,6 @@
               >
             </div>
 
-            <div class="flex justify-between text-sm">
-              <span class="text-[#4b5563] dark:text-gray-400">Tax (10%):</span>
-              <span class="font-[500] text-black dark:text-white"
-                >Rp {{ formatPrice(calculations.tax_amount) }}</span
-              >
-            </div>
-
             <hr class="border-[#d1d5db] dark:border-gray-600" />
 
             <div class="flex justify-between text-lg font-[700]">
@@ -429,7 +422,6 @@ const bookingForm = ref({
     },
   ],
   subtotal: 0,
-  tax_amount: 0,
   total_amount: 0,
   notes: '',
   customer_notes: '',
@@ -492,16 +484,13 @@ const calculations = computed(() => {
     return sum + lineTotal
   }, 0)
 
-  const taxRate = 0.1 // 10% tax rate
-  const tax_amount = subtotal * taxRate
-  const total = subtotal + tax_amount
+  const total = subtotal
 
   // Calculate number of nights
   const numNights = calculateNumNights(bookingForm.value.check_in, bookingForm.value.check_out)
 
   return {
     subtotal,
-    tax_amount,
     total,
     numNights,
   }
@@ -668,7 +657,6 @@ const loadBookingData = async () => {
               },
             ],
       subtotal: Number(booking.value?.subtotal) || 0,
-      tax_amount: Number(booking.value?.tax_amount) || 0,
       total_amount:
         Number(booking.value?.total_amount) || Number((booking.value as any)?.total) || 0,
       notes: booking.value?.notes || '',
@@ -759,7 +747,6 @@ watch(
 
     // Update overall totals
     bookingForm.value.subtotal = calculations.value.subtotal
-    bookingForm.value.tax_amount = calculations.value.tax_amount
     bookingForm.value.total_amount = calculations.value.total
   },
   { deep: true },

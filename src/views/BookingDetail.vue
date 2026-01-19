@@ -149,6 +149,7 @@
 
           <!-- Edit Button -->
           <button
+            v-if="canUpdate"
             @click="$router.push(`/bookings/edit/${bookingId}`)"
             class="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors"
           >
@@ -687,11 +688,19 @@ import AdminLayout from '../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '../components/common/PageBreadcrumb.vue'
 import { bookingService } from '../services/index.ts'
 import { formatNumber } from '../utils/number-formatter.ts'
+import { usePermissions } from '../composables/usePermissions'
 
 export default {
   components: {
     AdminLayout,
     PageBreadcrumb,
+  },
+  setup() {
+    const permissions = usePermissions()
+
+    return {
+      permissions,
+    }
   },
   data() {
     return {
@@ -736,6 +745,11 @@ export default {
       return this.booking.items.reduce((sum, item) => {
         return sum + (parseFloat(item.discount || '0') || 0)
       }, 0)
+    },
+    canUpdate() {
+      // Hide edit button for sales role users
+      const isSalesRole = this.permissions.permissionContext.userRole === 'sales'
+      return !isSalesRole
     },
   },
   async created() {

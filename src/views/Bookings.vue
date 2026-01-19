@@ -310,7 +310,9 @@ export default {
       return this.permissions.canPerform(SystemModule.BOOKINGS, PermissionAction.CREATE)
     },
     canUpdate() {
-      return this.permissions.canPerform(SystemModule.BOOKINGS, PermissionAction.UPDATE)
+      // Hide edit button for sales role users
+      const isSalesRole = this.permissions.permissionContext.userRole === 'sales'
+      return this.permissions.canPerform(SystemModule.BOOKINGS, PermissionAction.UPDATE) && !isSalesRole
     },
     canDelete() {
       return this.permissions.canPerform(SystemModule.BOOKINGS, PermissionAction.DELETE)

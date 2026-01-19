@@ -244,7 +244,7 @@ export default {
     const statusFilter = ref('')
     const dateFilter = ref('')
     const currentPage = ref(1)
-    const itemsPerPage = ref(10)
+    const itemsPerPage = ref(100)
     const totalItems = ref(0)
     const showDeleteModal = ref(false)
     const selectedInvoiceId = ref(null)

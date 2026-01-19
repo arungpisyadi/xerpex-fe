@@ -337,12 +337,26 @@
               >
             </div>
 
+            <div class="flex justify-between text-sm" v-if="calculations.totalDiscount > 0">
+              <span class="text-[#4b5563] dark:text-gray-400">Total Discount:</span>
+              <span class="font-[500] text-[#ef4444] dark:text-[#f87171]"
+                >- Rp {{ formatPrice(calculations.totalDiscount) }}</span
+              >
+            </div>
+
+            <div class="flex justify-between text-sm">
+              <span class="text-[#4b5563] dark:text-gray-400">Amount Paid:</span>
+              <span class="font-[500] text-black dark:text-white"
+                >Rp {{ formatPrice(bookingForm.amount_paid) }}</span
+              >
+            </div>
+
             <hr class="border-[#d1d5db] dark:border-gray-600" />
 
             <div class="flex justify-between text-lg font-[700]">
-              <span class="text-black dark:text-white">Total:</span>
+              <span class="text-black dark:text-white">Amount Due:</span>
               <span class="text-black dark:text-white"
-                >Rp {{ formatPrice(calculations.total) }}</span
+                >Rp {{ formatPrice(calculations.subtotal - bookingForm.amount_paid) }}</span
               >
             </div>
           </div>
@@ -423,6 +437,7 @@ const bookingForm = ref({
   ],
   subtotal: 0,
   total_amount: 0,
+  amount_paid: 0,
   notes: '',
   customer_notes: '',
 })
@@ -479,6 +494,20 @@ const salespersonOptions = computed(() => {
 const calculations = computed(() => {
   const packagesData = bookingForm.value.packages || []
 
+  // Calculate total discount from all items
+  const totalDiscount = packagesData.reduce((sum, pkg) => {
+    const discount = Number(pkg.discount) || 0
+    return sum + discount
+  }, 0)
+
+  // Calculate subtotal before discount
+  const subtotalBeforeDiscount = packagesData.reduce((sum, pkg) => {
+    const unitPrice = Number(pkg.unit_price) || 0
+    const pax = Number(pkg.pax) || 1
+    return sum + (unitPrice * pax)
+  }, 0)
+
+  // Subtotal is after discount (total of all line_total values)
   const subtotal = packagesData.reduce((sum, pkg) => {
     const lineTotal = Number(pkg.line_total) || 0
     return sum + lineTotal
@@ -490,6 +519,8 @@ const calculations = computed(() => {
   const numNights = calculateNumNights(bookingForm.value.check_in, bookingForm.value.check_out)
 
   return {
+    subtotalBeforeDiscount,
+    totalDiscount,
     subtotal,
     total,
     numNights,
@@ -659,6 +690,7 @@ const loadBookingData = async () => {
       subtotal: Number(booking.value?.subtotal) || 0,
       total_amount:
         Number(booking.value?.total_amount) || Number((booking.value as any)?.total) || 0,
+      amount_paid: Number(booking.value?.amount_paid) || 0,
       notes: booking.value?.notes || '',
       customer_notes: booking.value?.customer_notes || '',
     }

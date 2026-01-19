@@ -29,6 +29,7 @@ export interface Invoice {
   amount_paid?: number
   amount_due?: number
   customer_name?: string
+  customer_email?: string
   billing_address?: string
   items: InvoiceItem[]
   payments: Payment[]

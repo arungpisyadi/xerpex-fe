@@ -221,7 +221,7 @@
 
     <!-- Pagination -->
     <div
-      v-if="showPagination && totalPages > 1"
+      v-if="showPagination && filteredData.length > 0"
       class="flex flex-wrap items-center justify-between gap-4 mt-6 mb-4"
     >
       <div class="flex items-center gap-2">

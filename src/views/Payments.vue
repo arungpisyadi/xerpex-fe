@@ -667,7 +667,7 @@ export default {
       statusFilter: '',
       methodFilter: '',
       currentPage: 1,
-      itemsPerPage: 10,
+      itemsPerPage: 100,
       totalItems: 0,
       showModal: false,
       showCreateModal: false,

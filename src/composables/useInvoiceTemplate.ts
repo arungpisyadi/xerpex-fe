@@ -867,8 +867,8 @@ export function useInvoiceTemplate() {
                 <h3>Bill To:</h3>
                 <p><strong>${customer.name || invoiceData.customer_name || 'N/A'}</strong></p>
                 <p>${customer.address || invoiceData.billing_address || 'Address is not available'}</p>
-                <p>Phone: ${customer.phone_number || customer.phone || 'N/A'}</p>
-                <p>Email: ${customer.email || 'N/A'}</p>
+                <!-- <p>Phone: ${customer.phone_number || customer.phone || 'N/A'}</p> -->
+                <p>Email: ${customer.email || invoiceData.customer_email || 'N/A'}</p>
             </div>
             <div class="villa-details">
                 <h3>Villas:</h3>
@@ -929,7 +929,7 @@ export function useInvoiceTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0)), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.unit_price as any) || 0) * (parseInt(item.pax as any) || 0), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label">Total Discount:</td>

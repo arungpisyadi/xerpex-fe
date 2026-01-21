@@ -577,11 +577,11 @@ watch(
   },
 )
 
-// Watch for date changes to load available villas
+// Watch for date changes to load available villas (allows same-day bookings)
 watch(
   [() => invoiceForm.value.check_in, () => invoiceForm.value.check_out],
   async ([checkIn, checkOut]) => {
-    if (checkIn && checkOut && new Date(checkOut) > new Date(checkIn)) {
+    if (checkIn && checkOut && new Date(checkOut) >= new Date(checkIn)) {
       await loadAvailableVillas(checkIn, checkOut)
     }
   },

@@ -124,7 +124,7 @@
       </div>
 
       <!-- Monthly Revenue Bar Chart -->
-      <div class="col-span-12 xl:col-span-4">
+      <!-- <div class="col-span-12 xl:col-span-4">
         <div
           class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
         >
@@ -143,15 +143,14 @@
 
           <div>
             <div id="monthlyRevenueChart" class="mx-auto flex justify-center">
-              <!-- Chart will be rendered here -->
               <bar-chart-one :data="monthlyRevenueData" />
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- This Month Target Chart -->
-      <div class="col-span-12 xl:col-span-4">
+      <div class="col-span-12 xl:col-span-6">
         <div
           class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
         >
@@ -168,7 +167,7 @@
             </div>
           </div>
 
-          <p class="text-sm text-gray-500 mb-5">Target sales bulan {{ getCurrentMonthName() }}</p>
+          <p class="text-sm text-gray-500 mb-5">Target For {{ getCurrentMonthName() }} {{ new Date().getFullYear() }}</p>
 
           <div>
             <div id="monthlyTargetChart" class="mx-auto flex justify-center">
@@ -186,21 +185,21 @@
             </p>
           </div> -->
 
-          <div class="grid grid-cols-3 gap-2 mt-6">
-            <div class="text-center">
-              <p class="text-xs text-gray-500 mb-1">Target</p>
+          <div class="flex flex-col gap-4 mt-6">
+            <div class="text-left">
+              <p class="text-xs text-gray-500 mb-1">This Month Target</p>
               <p class="text-base font-semibold">
                 {{ formatNumber(currentMonthPerformance?.target_amount || 0) }}
               </p>
             </div>
-            <div class="text-center">
-              <p class="text-xs text-gray-500 mb-1">Revenue</p>
+            <div class="text-left">
+              <p class="text-xs text-gray-500 mb-1">This Month Revenue</p>
               <p class="text-base font-semibold">
                 {{ formatNumber(currentMonthPerformance?.current_revenue || 0) }}
               </p>
             </div>
-            <div class="text-center">
-              <p class="text-xs text-gray-500 mb-1">Today</p>
+            <div class="text-left">
+              <p class="text-xs text-gray-500 mb-1">Today's Revenue</p>
               <p class="text-base font-semibold">
                 {{ formatNumber(currentMonthPerformance?.today_revenue || 0) }}
               </p>
@@ -210,7 +209,7 @@
       </div>
 
       <!-- Yearly Target Chart -->
-      <div class="col-span-12 xl:col-span-4">
+      <div class="col-span-12 xl:col-span-6">
         <div
           class="rounded-sm border border-stroke bg-white px-5 pt-6 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5"
         >
@@ -245,25 +244,26 @@
             </p>
           </div> -->
 
-          <div class="grid grid-cols-2 gap-2 mt-6">
-            <div class="text-center">
+          <div class="flex flex-col gap-4 mt-6">
+            <div class="text-left">
               <p class="text-xs text-gray-500 mb-1">Target</p>
               <p class="text-base font-semibold">
                 {{ formatNumber(currentYearPerformance?.target_amount || 0) }}
               </p>
             </div>
-            <div class="text-center">
+            <div class="text-left">
               <p class="text-xs text-gray-500 mb-1">Revenue</p>
               <p class="text-base font-semibold">
                 {{ formatNumber(currentYearPerformance?.current_revenue || 0) }}
               </p>
             </div>
-            <!-- <div class="text-center">
-              <p class="text-xs text-gray-500 mb-1">Today</p>
+            <div class="text-left">
+              <!-- <p class="text-xs text-gray-500 mb-1">Today</p> -->
               <p class="text-base font-semibold">
-                {{ currentYearPerformance?.today_sales || 0 }}
+                <!-- {{ currentYearPerformance?.today_sales || 0 }} -->
+                  &nbsp;
               </p>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>

@@ -871,18 +871,8 @@ export default {
       } catch (error) {
         console.error('7. ERROR OCCURRED:', error)
 
-        // Extract meaningful error message
-        let errorMessage = 'Failed to save notes. Please try again.'
-
-        if (error.response && error.response.data && error.response.data.detail) {
-          errorMessage = error.response.data.detail
-        } else if (error.data && error.data.detail) {
-          errorMessage = error.data.detail
-        } else if (error.detail) {
-          errorMessage = error.detail
-        } else if (error.message) {
-          errorMessage = error.message
-        }
+        // Extract meaningful error message, prioritizing backend detail
+        const errorMessage = error.response?.data?.detail || 'Failed to save notes';
 
         alert(errorMessage)
       } finally {
@@ -951,18 +941,8 @@ export default {
       } catch (error) {
         console.error('Error sending quote:', error)
 
-        // Extract error message from various possible response structures
-        let errorMessage = 'Failed to send quotation. Please try again.'
-
-        if (error.response && error.response.data && error.response.data.detail) {
-          errorMessage = error.response.data.detail
-        } else if (error.data && error.data.detail) {
-          errorMessage = error.data.detail
-        } else if (error.detail) {
-          errorMessage = error.detail
-        } else if (error.message) {
-          errorMessage = error.message
-        }
+        // Extract error message, prioritizing backend detail
+        const errorMessage = error.response?.data?.detail || 'Failed to send quotation';
 
         alert(errorMessage)
       } finally {

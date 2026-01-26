@@ -398,7 +398,7 @@ export default {
       } catch (error) {
         console.error('Error fetching bookings:', error)
         const errorMessage =
-          error.response?.data?.message || error.message || 'Failed to fetch bookings'
+          error.response?.data?.detail || 'Failed to fetch bookings'
         this.showNotification('error', errorMessage)
       } finally {
         this.loading = false
@@ -445,7 +445,7 @@ export default {
       } catch (error) {
         console.error('Error deleting booking:', error)
         const errorMessage =
-          error.response?.data?.message || error.message || 'Failed to delete booking'
+          error.response?.data?.detail || 'Failed to delete booking'
         this.showNotification('error', errorMessage)
       } finally {
         this.loading = false

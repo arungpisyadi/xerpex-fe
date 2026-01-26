@@ -1030,7 +1030,8 @@ export default {
 
       } catch (error) {
         console.error('Error converting invoice to booking:', error)
-        alert('Failed to convert invoice to booking. Please try again.')
+        // alert('Failed to convert invoice to booking. Please try again.')
+        alert('Error converting invoice to booking: ' + error.response?.data?.detail || error.message)
       } finally {
         this.loading = false
       }
@@ -1124,21 +1125,10 @@ export default {
       } catch (error) {
         console.error('Error sending invoice:', error)
 
-        // Extract error message from backend response
-        let errorMessage = 'Failed to send invoice'
+        // Extract error message from backend response using optional chaining
+        const errorMessage = error.response?.data?.detail || 'Failed to send invoice'
 
-        // Try to get the detail message from various possible error response structures
-        if (error.response && error.response.data && error.response.data.detail) {
-          errorMessage = error.response.data.detail
-        } else if (error.data && error.data.detail) {
-          errorMessage = error.data.detail
-        } else if (error.detail) {
-          errorMessage = error.detail
-        } else if (error.message) {
-          errorMessage = error.message
-        }
-
-        // Show specific error notification
+        // Show error notification with dynamic message from backend
         alert(errorMessage)
       } finally {
         this.loading = false

@@ -809,7 +809,7 @@ export default {
       } catch (error) {
         console.error('Error confirming booking:', error)
         const errorMessage =
-          error.response?.data?.message || error.message || 'Failed to confirm booking'
+          error.response?.data?.detail || 'Failed to confirm booking'
         this.showNotification('error', errorMessage)
       } finally {
         this.actionLoading = false
@@ -840,7 +840,7 @@ export default {
       } catch (error) {
         console.error('Error updating booking status:', error)
         const errorMessage =
-          error.response?.data?.message || error.message || 'Failed to update booking status'
+          error.response?.data?.detail || 'Failed to update booking status'
         this.showNotification('error', errorMessage)
         this.selectedStatus = ''
       } finally {
@@ -872,7 +872,7 @@ export default {
       } catch (error) {
         console.error('Error converting to invoice:', error)
         const errorMessage =
-          error.response?.data?.message || error.message || 'Failed to convert booking to invoice'
+          error.response?.data?.detail || 'Failed to convert booking to invoice'
         this.showNotification('error', errorMessage)
       } finally {
         this.actionLoading = false

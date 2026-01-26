@@ -63,36 +63,12 @@
         </div>
       </div>
 
-      <!-- Non-editable Invoice Warning -->
-      <div
-        v-if="!isEditable"
-        class="mb-[1.5rem] p-[1rem] bg-[#fffbeb] border border-[#fde68a] rounded-[0.5rem] dark:bg-yellow-900/20 dark:border-yellow-800"
-      >
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-[#d97706] dark:text-yellow-400 mr-2"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span class="text-[#92400e] dark:text-yellow-200 font-[500]">
-            This invoice cannot be edited because its status is "{{ invoice?.status }}". Only draft
-            invoices can be modified.
-          </span>
-        </div>
-      </div>
-
       <FormKit
         type="form"
         :actions="false"
         @submit="submitInvoice"
         v-model="invoiceForm"
-        :disabled="loading || !isEditable"
+        :disabled="loading"
       >
         <!-- Customer Selection and Check-in/Check-out Dates -->
         <div class="mb-[1.5rem] grid grid-cols-1 gap-4 sm:grid-cols-4">
@@ -105,7 +81,6 @@
               placeholder="Choose a customer"
               validation="required"
               help="Select the customer for this invoice"
-              :disabled="!isEditable"
             />
           </div>
           <div>
@@ -117,7 +92,6 @@
               placeholder="Select sales person"
               validation="required"
               :options="salesUserOptions"
-              :disabled="!isEditable"
             />
           </div>
           <div>
@@ -127,7 +101,7 @@
               label="Check-In Date"
               validation="required"
               help="Guest check-in date"
-              :disabled="!isEditable"
+
             >
               <template #suffixIcon>
                 <div @click="triggerDatePicker($event)" class="cursor-pointer">
@@ -143,7 +117,7 @@
               label="Check-Out Date"
               validation="required"
               help="Guest check-out date"
-              :disabled="!isEditable"
+
             >
               <template #suffixIcon>
                 <div @click="triggerDatePicker($event)" class="cursor-pointer">
@@ -168,7 +142,7 @@
               :classes="{
                 selectIcon: '!opacity-100 !block',
               }"
-              :disabled="!isEditable"
+
             />
           </div>
           <div>
@@ -178,7 +152,7 @@
               label="Due Date"
               help="When this invoice is due for payment"
               validation="required"
-              :disabled="!isEditable"
+
             />
           </div>
           <div>
@@ -188,7 +162,7 @@
               label="Payment Terms"
               placeholder="e.g., Net 30 days"
               help="Payment terms for this invoice"
-              :disabled="!isEditable"
+
             />
           </div>
         </div>
@@ -209,7 +183,6 @@
             label="Notes"
             placeholder="Add any additional notes for this invoice"
             help="Optional notes that will appear on the invoice"
-            :disabled="!isEditable"
           />
         </div>
 
@@ -226,7 +199,6 @@
             up-label="Move Up"
             down-label="Move Down"
             help="Add items to this invoice. At least one item is required."
-            :disabled="!isEditable"
           >
             <div class="grid grid-cols-1 gap-[1rem] sm:grid-cols-12 items-center">
               <!-- Package Selection -->
@@ -239,7 +211,7 @@
                   placeholder="Select a package"
                   validation="required"
                   @input="onPackageSelect"
-                  :disabled="!isEditable"
+
                   help="Select package"
                 />
               </div>
@@ -256,7 +228,7 @@
                   :min="0"
                   validation="required|min:0"
                   @input="calculateItemAmount"
-                  :disabled="!isEditable"
+
                   help="Price per pax"
                 />
               </div>
@@ -270,7 +242,7 @@
                   placeholder="Enter pax"
                   validation="required|min:1"
                   @input="calculateItemAmount"
-                  :disabled="!isEditable"
+
                   help="Number of pax"
                 />
               </div>
@@ -287,7 +259,7 @@
                   :step="0.01"
                   :min="0"
                   @input="calculateItemAmount"
-                  :disabled="!isEditable"
+
                   help="Discount in IDR"
                 />
               </div>
@@ -336,7 +308,7 @@
         </div>
 
         <!-- Form Actions -->
-        <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-if="isEditable">
+        <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]">
           <FormKit type="button" @click="$router.push('/invoices')" :disabled="loading">
             Cancel
           </FormKit>
@@ -355,15 +327,6 @@
           </FormKit>
         </div>
 
-        <!-- Read-only actions -->
-        <div class="flex justify-end gap-[1rem] mt-[1.5rem] pb-[1.5rem]" v-else>
-          <!-- <FormKit
-            type="button"
-            @click="$router.push('/invoices')"
-          >
-            Back to Invoices!
-          </FormKit> -->
-        </div>
       </FormKit>
     </div>
   </admin-layout>
@@ -513,10 +476,6 @@ const isFormValid = computed(() => {
   )
 })
 
-const isEditable = computed(() => {
-  return invoice.value?.status === 'draft'
-})
-
 // Methods
 const getStatusClass = (status: string | undefined) => {
   switch (status?.toLowerCase()) {
@@ -595,12 +554,20 @@ const loadInvoiceData = async () => {
 
     // Pre-populate form with invoice data
     if (invoice.value) {
+      // Extract villa_ids from villa objects if they contain full objects
+      const villaIds = (invoice.value as any).villas || []
+      const extractedVillaIds = Array.isArray(villaIds)
+        ? villaIds.map((villa: any) =>
+            typeof villa === 'object' && villa.id ? villa.id : villa
+          )
+        : []
+      console.log(extractedVillaIds);
       invoiceForm.value = {
         customer_id: invoice.value.customer_id?.toString() || '',
         sales_person_id: (invoice.value as any).sales_person_id?.toString() || '',
         check_in: (invoice.value as any).check_in || '',
         check_out: (invoice.value as any).check_out || '',
-        villa_ids: (invoice.value as any).villa_ids || [],
+        villa_ids: extractedVillaIds,
         due_date: invoice.value.due_date || '',
         payment_terms: invoice.value.payment_terms || '',
         notes: invoice.value.notes || '',
@@ -645,8 +612,8 @@ const saveDraft = async () => {
 }
 
 const submitInvoice = async (status: 'draft' | 'sent' = 'draft') => {
-  if (!isFormValid.value || !isEditable.value) {
-    console.error('Form is not valid or invoice is not editable')
+  if (!isFormValid.value) {
+    console.error('Form is not valid')
     return
   }
 

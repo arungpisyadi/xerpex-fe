@@ -39,7 +39,11 @@
               class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-2 px-4 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
             >
               <option value="">All Statuses</option>
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
               <option value="paid">Paid</option>
+              <option value="partially_paid">Partially Paid</option>
+              <option value="full">Full</option>
               <option value="pending">Pending</option>
               <option value="overdue">Overdue</option>
               <option value="cancelled">Cancelled</option>
@@ -200,6 +204,7 @@ export default {
     const columns = ref([
       { key: 'invoice_number', label: 'Invoice #', span: 1 },
       { key: 'customer_name', label: 'Customer', span: 2 },
+      { key: 'sales_person', label: 'Sales', span: 1 },
       { key: 'total', label: 'Amount', span: 1, type: 'currency' },
       { key: 'status', label: 'Status', span: 1, type: 'status' },
       { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
@@ -222,6 +227,7 @@ export default {
           (invoice) =>
             invoice.invoice_number?.toLowerCase().includes(query) ||
             invoice.customer_name?.toLowerCase().includes(query) ||
+            invoice.sales_person?.toLowerCase().includes(query) ||
             invoice.total?.toString().includes(query),
         )
       }
@@ -281,8 +287,7 @@ export default {
     const loadData = async () => {
       try {
         await fetchInvoices({
-          skip: (currentPage.value - 1) * itemsPerPage.value,
-          limit: itemsPerPage.value,
+          skip: (currentPage.value - 1) * itemsPerPage.value
         })
 
         // Pre-process data to flatten nested customer names

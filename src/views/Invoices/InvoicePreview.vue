@@ -16,7 +16,7 @@
           >
             🖨️ Print
           </button>
-          <button
+          <!-- <button
             @click="printInvoice"
             :disabled="pdfGenerating"
             class="download-button"
@@ -24,8 +24,8 @@
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
-          </button>
-          <!-- <button
+          </button> -->
+          <button
             @click="downloadPDF"
             :disabled="pdfGenerating"
             class="download-button"
@@ -33,7 +33,7 @@
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
-          </button> -->
+          </button>
         </div>
       </div>
 
@@ -99,7 +99,6 @@
         <iframe
           :src="`/invoices/${route.params.invoiceId}/pdf/view`"
           class="pdf-preview-iframe"
-          ref="previewFrame"
           @load="onIframeLoad"
           title="Invoice Preview"
         >
@@ -110,26 +109,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenLayout from '../../components/layout/FullScreenLayout.vue'
-import invoiceService from '../../services/invoice.service.ts'
-import type { Invoice } from '../../types/invoice.types'
 import { useInvoiceTemplate } from '../../composables/useInvoiceTemplate'
 import { useInvoiceData } from '../../composables/useInvoiceData'
-import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
 import html2pdf from 'html2pdf.js'
 
 const route = useRoute()
 const router = useRouter()
 
 // Centralized services
-const { generatePreviewHTML, generatePrintHTML, validateInvoiceData } = useInvoiceTemplate()
+const { generatePrintHTML } = useInvoiceTemplate()
 const { currentInvoice, loading, error, getInvoice } = useInvoiceData()
-const { getInvoiceDisplaySettings } = useGlobalCompanySettings()
 
 // Local state
-const previewFrame = ref<HTMLIFrameElement | null>(null)
 const iframeLoaded = ref(false)
 
 // Enhanced loading state tracking
@@ -144,11 +138,24 @@ const loadingDetails = ref({
 
 // Enhanced error handling
 const templateError = ref<string>('')
-const debugInfo = ref<any>(null)
+const debugInfo = ref<DebugInfo | null>(null)
 
 // PDF generation state
 const pdfGenerating = ref(false)
 const pdfStatus = ref<string>('')
+
+// Debug info type
+interface DebugInfo {
+  invoiceId?: number | string
+  invoiceNumber?: string
+  itemsCount?: number
+  total?: number
+  status?: string
+  timestamp?: string
+  error?: string
+  stack?: string
+  loadingState?: object
+}
 
 // Computed properties
 const pdfStatusClass = computed(() => {
@@ -230,111 +237,144 @@ const printInvoice = () => {
   }
 }
 
+/**
+ * Generate PDF directly from template data (bypasses iframe scraping issues)
+ */
+const generatePDFFromTemplate = async (): Promise<boolean> => {
+  if (!currentInvoice.value) {
+    throw new Error('Invoice data not available')
+  }
+
+  pdfStatus.value = 'Generating PDF content from template...'
+
+  // Generate print-optimized HTML directly from template
+  const htmlContent = generatePrintHTML(currentInvoice.value)
+
+  pdfStatus.value = 'Preparing PDF generation...'
+
+  // Create a temporary container element with the HTML content
+  const container = document.createElement('div')
+  container.innerHTML = htmlContent
+  container.style.position = 'fixed'
+  container.style.left = '0'
+  container.style.top = '0'
+  container.style.width = '210mm' // A4 width
+  container.style.zIndex = '-9999'
+  container.style.visibility = 'hidden'
+  container.style.overflow = 'visible'
+
+  // Append to body (hidden)
+  document.body.appendChild(container)
+
+  try {
+    // DEBUG: Log the HTML structure to diagnose issues
+    console.log('[PDF Generation] Container innerHTML (first 200 chars):', htmlContent.substring(0, 200))
+    console.log('[PDF Generation] Container children count:', container.children.length)
+    console.log('[PDF Generation] First child tag name:', container.children[0]?.tagName)
+
+    // Get the actual content element - query for .invoice-container class
+    // The body tag is stripped when using innerHTML, so we need to target the actual content
+    const invoiceContainer = container.querySelector('.invoice-container')
+    console.log('[PDF Generation] Found .invoice-container:', !!invoiceContainer)
+
+    // Check if body element exists (it shouldn't when using innerHTML with full HTML doc)
+    const bodyElement = container.querySelector('body')
+    console.log('[PDF Generation] Found body element:', !!bodyElement)
+
+    // Use the invoice-container if found, otherwise use the first child, otherwise fallback to container
+    const contentElement: HTMLElement = (invoiceContainer || container.children[0] || container) as HTMLElement
+    console.log('[PDF Generation] Using content element tag:', contentElement.tagName)
+
+    // Get the actual scrollable height
+    const scrollHeight = contentElement.scrollHeight || contentElement.clientHeight || 1000
+    console.log('[PDF Generation] Content height:', scrollHeight)
+
+    // Configure html2pdf options for full content capture
+    const opt = {
+      margin: [5, 5, 5, 5] as [number, number, number, number],
+      filename: `Invoice_${currentInvoice.value.invoice_number}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: true, // Enable logging for debugging
+        letterRendering: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        scrollX: 0,
+        windowHeight: scrollHeight,
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait' as const,
+      },
+      pagebreak: {
+        mode: ['avoid-all', 'css', 'legacy'],
+      },
+    }
+
+    pdfStatus.value = 'Converting to PDF...'
+
+    // Generate and download PDF
+    await html2pdf().set(opt).from(contentElement).save()
+
+    pdfStatus.value = 'PDF generated successfully!'
+    return true
+  } catch (error) {
+    console.error('PDF generation failed:', error)
+    throw error
+  } finally {
+    // Clean up: remove the temporary container
+    if (container.parentNode) {
+      container.parentNode.removeChild(container)
+    }
+  }
+}
+
 const downloadPDF = async () => {
-  if (!currentInvoice.value || !previewFrame.value) {
+  if (!currentInvoice.value) {
     pdfStatus.value = 'Error: Invoice data not available'
     return
   }
 
   try {
     pdfGenerating.value = true
-    pdfStatus.value = 'Connecting to server...'
+    pdfStatus.value = 'Generating PDF from template...'
 
     // Add delay to show status message
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    // Try backend PDF first
-    await invoiceService.downloadInvoice(currentInvoice.value.id)
-    pdfStatus.value = 'PDF downloaded successfully!'
+    // Use generatePDFFromTemplate directly - this will show console logs
+    console.log('[downloadPDF] Calling generatePDFFromTemplate()...')
+    await generatePDFFromTemplate()
+    console.log('[downloadPDF] ✅ generatePDFFromTemplate() completed successfully')
+    pdfStatus.value = 'PDF generated successfully!'
 
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
   } catch (error) {
-    console.error('Backend PDF download failed, trying client-side generation:', error)
+    console.error('PDF generation failed:', error)
+    console.log('[downloadPDF] ❌ generatePDFFromTemplate() failed')
 
-    // Try client-side PDF generation as fallback
-    try {
-      pdfStatus.value = 'Server unavailable - Generating PDF locally...'
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred'
 
-      await new Promise((resolve) => setTimeout(resolve, 300))
-
-      pdfStatus.value = 'Capturing content from iframe...'
-
-      // Get the iframe's document
-      const iframeDoc =
-        previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
-
-      if (!iframeDoc) {
-        throw new Error('Unable to access iframe content')
-      }
-
-      // Get the content element from the iframe
-      const content = iframeDoc.body
-
-      if (!content) {
-        throw new Error('No content found in iframe')
-      }
-
-      pdfStatus.value = 'Generating PDF locally...'
-
-      // Get the full scrollable height of the content
-      const scrollHeight = content.scrollHeight
-
-      // Configure html2pdf options with full content capture
-      const opt = {
-        margin: [10, 10, 10, 10] as [number, number, number, number],
-        filename: `Invoice_${currentInvoice.value.invoice_number}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          letterRendering: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          scrollY: 0, // Start from top of content
-          scrollX: 0, // Start from left of content
-          windowHeight: scrollHeight, // Capture full scrollable height
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait' as const,
-        },
-        pagebreak: {
-          mode: ['css', 'legacy'], // Use CSS page-break properties
-        },
-      }
-
-      // Generate and download PDF from iframe content
-      await html2pdf().set(opt).from(content).save()
-
-      pdfStatus.value = 'PDF generated successfully using local method!'
-
-      setTimeout(() => {
-        pdfStatus.value = ''
-      }, 3000)
-    } catch (clientError) {
-      console.error('Client-side PDF generation also failed:', clientError)
-
-      const errorMessage =
-        clientError instanceof Error ? clientError.message : 'Unknown error occurred'
-
-      // Provide user feedback based on error type
-      if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
-        pdfStatus.value = 'Error: Failed to render content. Please try printing instead.'
-      } else if (errorMessage.includes('iframe')) {
-        pdfStatus.value = 'Error: Unable to access content. Please try printing instead.'
-      } else {
-        pdfStatus.value =
-          'Error: All PDF generation methods failed. Please try printing as an alternative.'
-      }
-
-      setTimeout(() => {
-        pdfStatus.value = ''
-      }, 5000)
+    // Provide user feedback based on error type
+    if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
+      pdfStatus.value = 'Error: Failed to render content. Please try printing instead.'
+    } else if (errorMessage.includes('invoice') || errorMessage.includes('template')) {
+      pdfStatus.value = 'Error: Unable to generate PDF from template. Please try printing instead.'
+    } else {
+      pdfStatus.value =
+        'Error: PDF generation failed. Please try printing as an alternative.'
     }
+
+    setTimeout(() => {
+      pdfStatus.value = ''
+    }, 5000)
   } finally {
     pdfGenerating.value = false
   }

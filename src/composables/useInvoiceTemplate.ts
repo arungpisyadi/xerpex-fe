@@ -478,10 +478,6 @@ export function useInvoiceTemplate() {
             <p>Thank you for your business!</p>
         </div>
     </div>
-
-    <div class="rules-page">
-        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
-    </div>
 </body>
 </html>
     `
@@ -980,10 +976,6 @@ export function useInvoiceTemplate() {
         <div class="footer">
             <p>Thank you for your business!</p>
         </div>
-    </div>
-
-    <div class="rules-page">
-        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
     </div>
 </body>
 </html>

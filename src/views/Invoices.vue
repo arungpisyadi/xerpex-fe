@@ -247,17 +247,17 @@ export default {
         const startOfYear = new Date(now.getFullYear(), 0, 1)
 
         filtered = filtered.filter((invoice) => {
-          const dueDate = new Date(invoice.due_date)
+          const issueDate = new Date(invoice.issue_date)
 
           switch (dateFilter.value) {
             case 'today':
-              return dueDate >= today && dueDate < new Date(today.getTime() + 86400000)
+              return issueDate >= today && issueDate < new Date(today.getTime() + 86400000)
             case 'week':
-              return dueDate >= startOfWeek
+              return issueDate >= startOfWeek
             case 'month':
-              return dueDate >= startOfMonth
+              return issueDate >= startOfMonth
             case 'year':
-              return dueDate >= startOfYear
+              return issueDate >= startOfYear
             default:
               return true
           }

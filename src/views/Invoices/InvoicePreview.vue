@@ -307,7 +307,7 @@ const generatePDFFromTemplate = async (): Promise<boolean> => {
       },
       jsPDF: {
         unit: 'mm',
-        format: 'a4',
+        format: 'a3',
         orientation: 'portrait' as const,
       },
       pagebreak: {

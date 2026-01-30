@@ -994,7 +994,7 @@ export function useInvoiceTemplate() {
             </p>
         </div>
 
-        <div class="footer" style="text-align: center; margin-top: 20px; margin-bottom: 22.5%; font-size: 12px; color: #666;">
+        <div class="footer" style="text-align: center; margin-top: 20px; margin-bottom: 40px; font-size: 12px; color: #666;">
             <p>Terima kasih atas kepercayaan Anda kepada Kebunsu Bogor.</p>
         </div>
 

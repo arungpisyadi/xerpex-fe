@@ -311,7 +311,7 @@ const generatePDFFromTemplate = async (): Promise<boolean> => {
         orientation: 'portrait' as const,
       },
       pagebreak: {
-        mode: ['avoid-all', 'css', 'legacy'],
+        mode: ['css', 'legacy'],
       },
     }
 

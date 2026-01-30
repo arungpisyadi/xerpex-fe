@@ -16,7 +16,7 @@
           >
             🖨️ Print
           </button>
-          <button
+          <!-- <button
             @click="printQuote"
             :disabled="pdfGenerating"
             class="download-button"
@@ -24,8 +24,8 @@
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
-          </button>
-          <!-- <button
+          </button> -->
+          <button
             @click="downloadPDF"
             :disabled="pdfGenerating"
             class="download-button"
@@ -33,7 +33,7 @@
           >
             <span v-if="pdfGenerating">Generating PDF...</span>
             <span v-else>📄 Download PDF</span>
-          </button> -->
+          </button>
         </div>
       </div>
 
@@ -110,21 +110,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FullScreenLayout from '../../components/layout/FullScreenLayout.vue'
 import quoteService from '../../services/quote.service.ts'
 import type { Quote } from '../../types/quote.types'
 import { useQuoteTemplate } from '../../composables/useQuoteTemplate'
-import { useGlobalCompanySettings } from '../../composables/useCompanySettings'
 import html2pdf from 'html2pdf.js'
 
 const route = useRoute()
 const router = useRouter()
 
 // Centralized services
-const { generatePreviewHTML, generatePrintHTML, validateQuoteData } = useQuoteTemplate()
-const { getInvoiceDisplaySettings } = useGlobalCompanySettings()
+const { generatePrintHTML } = useQuoteTemplate()
 
 // Local state
 const currentQuote = ref<Quote | null>(null)
@@ -145,7 +143,20 @@ const loadingDetails = ref({
 
 // Enhanced error handling
 const templateError = ref<string>('')
-const debugInfo = ref<any>(null)
+const debugInfo = ref<DebugInfo | null>(null)
+
+// Debug info type
+interface DebugInfo {
+  quoteId?: number | string
+  quoteNumber?: string
+  itemsCount?: number
+  total?: number
+  status?: string
+  timestamp?: string
+  error?: string
+  stack?: string
+  loadingState?: object
+}
 
 // PDF generation state
 const pdfGenerating = ref(false)
@@ -231,86 +242,138 @@ const printQuote = () => {
   }
 }
 
+/**
+ * Generate PDF directly from template data (bypasses iframe scraping issues)
+ */
+const generatePDFFromTemplate = async (): Promise<boolean> => {
+  if (!currentQuote.value) {
+    throw new Error('Quotation data not available')
+  }
+
+  pdfStatus.value = 'Generating PDF content from template...'
+
+  // Generate print-optimized HTML directly from template
+  const htmlContent = generatePrintHTML(currentQuote.value)
+
+  pdfStatus.value = 'Preparing PDF generation...'
+
+  // Create a temporary container element with the HTML content
+  const container = document.createElement('div')
+  container.innerHTML = htmlContent
+  container.style.position = 'fixed'
+  container.style.left = '0'
+  container.style.top = '0'
+  container.style.width = '210mm' // A4 width
+  container.style.zIndex = '-9999'
+  container.style.visibility = 'hidden'
+  container.style.overflow = 'visible'
+
+  // Append to body (hidden)
+  document.body.appendChild(container)
+
+  try {
+    // DEBUG: Log the HTML structure to diagnose issues
+    console.log('[PDF Generation] Container innerHTML (first 200 chars):', htmlContent.substring(0, 200))
+    console.log('[PDF Generation] Container children count:', container.children.length)
+    console.log('[PDF Generation] First child tag name:', container.children[0]?.tagName)
+
+    // Get the actual content element - query for .quote-container class
+    const quoteContainer = container.querySelector('.quote-container')
+    console.log('[PDF Generation] Found .quote-container:', !!quoteContainer)
+
+    // Check if body element exists (it shouldn't when using innerHTML with full HTML doc)
+    const bodyElement = container.querySelector('body')
+    console.log('[PDF Generation] Found body element:', !!bodyElement)
+
+    // Use the quote-container if found, otherwise use the first child, otherwise fallback to container
+    const contentElement: HTMLElement = (quoteContainer || container.children[0] || container) as HTMLElement
+    console.log('[PDF Generation] Using content element tag:', contentElement.tagName)
+
+    // Get the actual scrollable height
+    const scrollHeight = contentElement.scrollHeight || contentElement.clientHeight || 1000
+    console.log('[PDF Generation] Content height:', scrollHeight)
+
+    // Configure html2pdf options for full content capture
+    const opt = {
+      margin: [5, 5, 5, 5] as [number, number, number, number],
+      filename: `Quotation_${currentQuote.value.quote_number}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: true, // Enable logging for debugging
+        letterRendering: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        scrollX: 0,
+        windowHeight: scrollHeight,
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a3',
+        orientation: 'portrait' as const,
+      },
+      pagebreak: {
+        mode: ['css', 'legacy'],
+      },
+    }
+
+    pdfStatus.value = 'Converting to PDF...'
+
+    // Generate and download PDF
+    await html2pdf().set(opt).from(contentElement).save()
+
+    pdfStatus.value = 'PDF generated successfully!'
+    return true
+  } catch (error) {
+    console.error('PDF generation failed:', error)
+    throw error
+  } finally {
+    // Clean up: remove the temporary container
+    if (container.parentNode) {
+      container.parentNode.removeChild(container)
+    }
+  }
+}
+
 const downloadPDF = async () => {
-  if (!currentQuote.value || !previewFrame.value) {
+  if (!currentQuote.value) {
     pdfStatus.value = 'Error: Quotation data not available'
     return
   }
 
   try {
     pdfGenerating.value = true
-    pdfStatus.value = 'Preparing PDF content...'
+    pdfStatus.value = 'Generating PDF from template...'
 
     // Add delay to show status message
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
-    pdfStatus.value = 'Capturing content from iframe...'
-
-    // Get the iframe's document
-    const iframeDoc =
-      previewFrame.value.contentDocument || previewFrame.value.contentWindow?.document
-
-    if (!iframeDoc) {
-      throw new Error('Unable to access iframe content')
-    }
-
-    // Get the content element from the iframe
-    const content = iframeDoc.body
-
-    if (!content) {
-      throw new Error('No content found in iframe')
-    }
-
-    pdfStatus.value = 'Generating PDF...'
-
-    // Get the full scrollable height of the content
-    const scrollHeight = content.scrollHeight
-
-    // Configure html2pdf options with full content capture
-    const opt = {
-      margin: [10, 10, 10, 10] as [number, number, number, number],
-      filename: `Quotation_${currentQuote.value.quote_number}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: false,
-        logging: true,
-        letterRendering: false,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        scrollY: 0, // Start from top of content
-        scrollX: 0, // Start from left of content
-        windowHeight: scrollHeight, // Capture full scrollable height
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait' as const,
-      },
-    }
-
-    // Generate and download PDF from iframe content
-    await html2pdf().set(opt).from(content).save()
-
-    pdfStatus.value = 'PDF downloaded successfully!'
+    // Use generatePDFFromTemplate directly - this will show console logs
+    console.log('[downloadPDF] Calling generatePDFFromTemplate()...')
+    await generatePDFFromTemplate()
+    console.log('[downloadPDF] ✅ generatePDFFromTemplate() completed successfully')
+    pdfStatus.value = 'PDF generated successfully!'
 
     setTimeout(() => {
       pdfStatus.value = ''
     }, 3000)
   } catch (error) {
-    console.error('PDF download failed:', error)
+    console.error('PDF generation failed:', error)
+    console.log('[downloadPDF] ❌ generatePDFFromTemplate() failed')
 
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred'
 
     // Provide user feedback based on error type
     if (errorMessage.includes('html2canvas') || errorMessage.includes('canvas')) {
       pdfStatus.value = 'Error: Failed to render content. Please try printing instead.'
-    } else if (errorMessage.includes('timeout') || errorMessage.includes('network')) {
-      pdfStatus.value = 'Error: Connection timeout. Please try again.'
-    } else if (errorMessage.includes('iframe')) {
-      pdfStatus.value = 'Error: Unable to access content. Please try printing instead.'
+    } else if (errorMessage.includes('quote') || errorMessage.includes('template')) {
+      pdfStatus.value = 'Error: Unable to generate PDF from template. Please try printing instead.'
     } else {
-      pdfStatus.value = 'Error: Failed to generate PDF. Please try printing as an alternative.'
+      pdfStatus.value =
+        'Error: PDF generation failed. Please try printing as an alternative.'
     }
 
     setTimeout(() => {

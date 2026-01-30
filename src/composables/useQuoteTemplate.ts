@@ -496,7 +496,7 @@ export function useQuoteTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label" style="background-color: #f8f9fa;">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0)), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label" style="background-color: #f8f9fa;">Total Discount:</td>
@@ -527,10 +527,27 @@ export function useQuoteTemplate() {
         <div class="footer">
             <p>Thank you for considering our services!</p>
         </div>
-    </div>
 
-    <div class="html2pdf__page-break rules-page">
-        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
+        <div class="rules-page" style="background-color: #f8f9fa;padding: 15px;border: 1px solid #ddd;border-left: 3px solid #000;display: block;min-height: fit-content;">
+
+            <h1 style="font-size: 18px;font-weight: bold;margin-bottom: 12px; text-align: center;">RULES & REGULATION AT KEBUNSU BOGOR</h1>
+
+            <p>Apabila sudah melakukan DP / tanda jadi, tamu tidak bisa mengubah tanggal acara dan mengurangi jumlah pax yang sudah disetujui, apabila ada penambahan jumlah pax mash bisa dilakukan selama unit/ kapasitas villa masih mencukupi.</p>
+            <p style="margin-bottom: 12px;">Pelunasan paling lambat H-7. pembayaran melalui transfer ke rekening yang tercantum di invoice.</p>
+            <p style="margin-bottom: 12px;">Waktu Check in Jam 14.00, check out Jam 12.00 (jika ingin early check in / late check out harus request terlebih dahulu).</p>
+            <p style="margin-bottom: 12px;">Dilarang membawa hewan peliharaan.</p>
+            <p style="margin-bottom: 12px;">Kegiatan karaoke dan kebisingan mulai dari jam 07.00-23.00 WIB, jika melebihi batas waktu yang telah ditetapkan, maka akan ditindaklanjuti oleh petugas Kebunsu Bogor.</p>
+            <p style="margin-bottom: 12px;">Menjaga kebersihan lingkungan dan merawat kelengkapan properti milik villa.</p>
+            <p style="margin-bottom: 12px;">Kerusakan atau kehilangan property villa yang diakibatkan oleh tamu akan dikenakan biaya penggantian sesuai dengan nilai property secara tunai.</li>
+            <p style="margin-bottom: 12px;">Penanggung jawab dan pemilik villa tidak bertanggung jawab atas kehilangan property milik penyewa.</p>
+            <p style="margin-bottom: 12px;">Dilarang melakukan hal kriminal (berjudi, obat terlarang, dll).</p>
+            <p style="margin-bottom: 12px;">Kebunsu Bogor tidak bertanggung jawab jika terjadi kecelakaan atau musibah yang di akibatkan oleh pengunjung ataupun karena bencana alam.</p>
+            <p style="margin-bottom: 12px;">Jika sudah DP/melakukan pembayaran, berarti penyewa sudah menyetujui seluruh peraturan/point yang ada di atas dan tanggal pelaksanaan acara tidak dapat diubah. Untuk pembatalan bookingan akan di charge 100% dari total invoice.</p>
+            <p style="margin-bottom: 12px;">Apabila tamu menggunakan vendor musik atau membawa sound system dari luar akan dikenakan minimal charge -+ Rp 1.500.000 sesuai dengan kapasitas sound system.</p>
+            <p style="margin-bottom: 12px;">Untuk Outbound & Paintball wajib dari Kebunsu Bogor.</p>
+            <p style="margin-bottom: 12px;">Tamu dilarang membawa catering atau prasmanan dari luar tapa persetujuan dari Kebunsu Bogor, jika membawa catering dari luar akan dikenakan charge Rp 50.000/pax.</p>
+
+        </div>
     </div>
 </body>
 </html>
@@ -1015,7 +1032,7 @@ export function useQuoteTemplate() {
             <table class="totals-table">
                 <tr>
                     <td class="label">Subtotal:</td>
-                    <td>${formatIDR(items.reduce((sum, item) => sum + ((parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0)), 0))}</td>
+                    <td>${formatIDR(items.reduce((sum, item) => sum + (parseFloat(item.unit_price as any) || 0) * (parseInt((item as any).pax) || 0), 0))}</td>
                 </tr>
                 <tr>
                     <td class="label">Total Discount:</td>
@@ -1043,13 +1060,30 @@ export function useQuoteTemplate() {
             <p>This Quotation can be converted to an invoice once accepted. All pricing and terms will be transferred automatically.</p>
         </div>
 
-        <div class="footer">
+        <div class="footer" style="margin-bottom: 40px;">
             <p>Thank you for considering our services!</p>
         </div>
-    </div>
 
-    <div class="rules-page">
-        <img src="/images/statics/rules.jpg" alt="Rules and Regulations" />
+        <div class="rules-page" style="background-color: #f8f9fa;padding: 15px;border: 1px solid #ddd;border-left: 3px solid #000;display: block;min-height: fit-content;">
+
+            <h1 style="font-size: 18px;font-weight: bold;margin-bottom: 12px; text-align: center;">RULES & REGULATION AT KEBUNSU BOGOR</h1>
+
+            <p>Apabila sudah melakukan DP / tanda jadi, tamu tidak bisa mengubah tanggal acara dan mengurangi jumlah pax yang sudah disetujui, apabila ada penambahan jumlah pax mash bisa dilakukan selama unit/ kapasitas villa masih mencukupi.</p>
+            <p style="margin-bottom: 12px;">Pelunasan paling lambat H-7. pembayaran melalui transfer ke rekening yang tercantum di invoice.</p>
+            <p style="margin-bottom: 12px;">Waktu Check in Jam 14.00, check out Jam 12.00 (jika ingin early check in / late check out harus request terlebih dahulu).</p>
+            <p style="margin-bottom: 12px;">Dilarang membawa hewan peliharaan.</p>
+            <p style="margin-bottom: 12px;">Kegiatan karaoke dan kebisingan mulai dari jam 07.00-23.00 WIB, jika melebihi batas waktu yang telah ditetapkan, maka akan ditindaklanjuti oleh petugas Kebunsu Bogor.</p>
+            <p style="margin-bottom: 12px;">Menjaga kebersihan lingkungan dan merawat kelengkapan properti milik villa.</p>
+            <p style="margin-bottom: 12px;">Kerusakan atau kehilangan property villa yang diakibatkan oleh tamu akan dikenakan biaya penggantian sesuai dengan nilai property secara tunai.</li>
+            <p style="margin-bottom: 12px;">Penanggung jawab dan pemilik villa tidak bertanggung jawab atas kehilangan property milik penyewa.</p>
+            <p style="margin-bottom: 12px;">Dilarang melakukan hal kriminal (berjudi, obat terlarang, dll).</p>
+            <p style="margin-bottom: 12px;">Kebunsu Bogor tidak bertanggung jawab jika terjadi kecelakaan atau musibah yang di akibatkan oleh pengunjung ataupun karena bencana alam.</p>
+            <p style="margin-bottom: 12px;">Jika sudah DP/melakukan pembayaran, berarti penyewa sudah menyetujui seluruh peraturan/point yang ada di atas dan tanggal pelaksanaan acara tidak dapat diubah. Untuk pembatalan bookingan akan di charge 100% dari total invoice.</p>
+            <p style="margin-bottom: 12px;">Apabila tamu menggunakan vendor musik atau membawa sound system dari luar akan dikenakan minimal charge -+ Rp 1.500.000 sesuai dengan kapasitas sound system.</p>
+            <p style="margin-bottom: 12px;">Untuk Outbound & Paintball wajib dari Kebunsu Bogor.</p>
+            <p style="margin-bottom: 12px;">Tamu dilarang membawa catering atau prasmanan dari luar tapa persetujuan dari Kebunsu Bogor, jika membawa catering dari luar akan dikenakan charge Rp 50.000/pax.</p>
+
+        </div>
     </div>
 </body>
 </html>

@@ -32,6 +32,16 @@ export interface CurrentYearPerformance {
   growth: number
 }
 
+export interface MonthlyRevenuePerSales {
+  month: string
+  year: string
+  sales_performance: Array<{
+    sales_person_name: string
+    revenues: number
+    target: number
+  }>
+}
+
 export class KpiService {
   /**
    * Get customers KPI data
@@ -95,6 +105,17 @@ export class KpiService {
    */
   static async getCurrentYearPerformance(): Promise<CurrentYearPerformance> {
     const response = await apiClient.get('/kpi/current_year_performance')
+    return response.data
+  }
+
+  /**
+   * Get monthly revenue per sales data
+   * @param month - Month to fetch data for (1-12)
+   * @param year - Year to fetch data for
+   * @returns Promise<MonthlyRevenuePerSales>
+   */
+  static async getMonthlyRevenuePerSales(month: number, year: number): Promise<MonthlyRevenuePerSales> {
+    const response = await apiClient.get(`/kpi/monthly_revenue_per_sales?month=${month}&year=${year}`)
     return response.data
   }
 }

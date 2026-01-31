@@ -205,6 +205,77 @@
               </p>
             </div>
           </div>
+
+          <div id="revenues_per_sales" class="flex flex-col gap-4 mt-6">
+            <!-- Monthly Revenue Per Sales Table -->
+            <p class="text-base text-center text-gray-700 mb-1">Revenues Per Sales</p>
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+              <div class="max-w-full overflow-x-auto custom-scrollbar">
+                <table class="min-w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                      <th class="px-5 py-3 text-left w-1/3 sm:px-6">
+                        <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Sales Name</p>
+                      </th>
+                      <th class="px-5 py-3 text-right w-1/3 sm:px-6">
+                        <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Revenues</p>
+                      </th>
+                      <th class="px-5 py-3 text-right w-1/3 sm:px-6">
+                        <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Target</p>
+                      </th>
+                      <!-- <th class="px-5 py-3 text-right w-1/4 sm:px-6">
+                        <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Percentage</p>
+                      </th> -->
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr
+                      v-for="(sales, index) in monthlyRevenuePerSalesData?.sales_performance || []"
+                      :key="index"
+                      class="border-t border-gray-100 dark:border-gray-800"
+                    >
+                      <td class="px-5 py-4 sm:px-6">
+                        <p class="text-gray-800 text-[10px] dark:text-white/90 font-medium">
+                          {{ sales.sales_person_name }}<br>
+                          <span :class="[
+                            'text-[9px] font-medium',
+                            getPercentage(sales.revenues, sales.target) >= 100 ? 'text-green-500' : 'text-red-500'
+                          ]">
+                            ({{ getPercentage(sales.revenues, sales.target) }}%)
+                          </span>
+                        </p>
+                      </td>
+                      <td class="px-5 py-4 sm:px-6 text-right">
+                        <p class="text-gray-500 text-[10px] dark:text-gray-400">
+                          {{ formatCurrency(sales.revenues) }}
+                        </p>
+                      </td>
+                      <td class="px-5 py-4 sm:px-6 text-right">
+                        <p class="text-gray-500 text-[10px] dark:text-gray-400">
+                          {{ formatCurrency(sales.target) }}
+                        </p>
+                      </td>
+                      <!-- <td class="px-5 py-4 sm:px-6 text-right">
+                        <p
+                          :class="[
+                            'text-[9px] font-medium',
+                            getPercentage(sales.revenues, sales.target) >= 100 ? 'text-meta-3' : 'text-meta-5'
+                          ]"
+                        >
+                          {{ getPercentage(sales.revenues, sales.target) }}%
+                        </p>
+                      </td> -->
+                    </tr>
+                    <tr v-if="!monthlyRevenuePerSalesData?.sales_performance?.length" class="border-t border-gray-100 dark:border-gray-800">
+                      <td colspan="4" class="px-5 py-4 sm:px-6 text-center text-gray-500">
+                        No sales performance data available
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -322,8 +393,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '../components/layout/AdminLayout.vue'
-import BarChartOne from '../components/charts/BarChart/BarChartOne.vue'
-import LineChartOne from '../components/charts/LineChart/LineChartOne.vue'
+// import BarChartOne from '../components/charts/BarChart/BarChartOne.vue'
+// import LineChartOne from '../components/charts/LineChart/LineChartOne.vue'
 import RadialChartOne from '../components/charts/RadialChart/RadialChartOne.vue'
 import BookingCalendar from '@/components/calendar/BookingCalendar.vue'
 import { TargetsService } from '../services/targets.service'
@@ -354,6 +425,7 @@ const monthlyRevenueData = ref({
 })
 const currentMonthPerformance = ref(null)
 const currentYearPerformance = ref(null)
+const monthlyRevenuePerSalesData = ref(null)
 
 // Indonesian month names mapping
 const indonesianMonths = {
@@ -371,10 +443,20 @@ const indonesianMonths = {
   12: 'Desember',
 }
 
+// Current month and year
+const currentMonth = new Date().getMonth() + 1
+const currentYear = new Date().getFullYear()
+
 // Current month name in Indonesian
 const getCurrentMonthName = () => {
-  const currentMonth = new Date().getMonth() + 1
   return indonesianMonths[currentMonth]
+}
+
+// Calculate percentage of revenue against target
+const getPercentage = (revenue, target) => {
+  if (!target || target === 0) return '0.00'
+  const percentage = (revenue / target) * 100
+  return percentage.toFixed(2)
 }
 
 // Metrics derived from API data
@@ -401,8 +483,6 @@ const handleBookingClick = (bookingId) => {
 // Fetch dashboard data
 onMounted(async () => {
   try {
-    const currentYear = new Date().getFullYear()
-
     // Fetch KPI data using the new KPI service with proper authorization
     const [
       customersData,
@@ -412,6 +492,7 @@ onMounted(async () => {
       monthlyRevenue,
       currentMonthPerf,
       currentYearPerf,
+      monthlyRevenuePerSales,
     ] = await Promise.all([
       KpiService.getCustomersKpi(),
       KpiService.getBookingsKpi(),
@@ -420,11 +501,13 @@ onMounted(async () => {
       KpiService.getMonthlyRevenue(currentYear),
       KpiService.getCurrentMonthPerformance(),
       KpiService.getCurrentYearPerformance(),
+      KpiService.getMonthlyRevenuePerSales(currentMonth, currentYear),
     ])
 
     monthlyRevenueData.value = monthlyRevenue.monthly_data
     currentMonthPerformance.value = currentMonthPerf
     currentYearPerformance.value = currentYearPerf
+    monthlyRevenuePerSalesData.value = monthlyRevenuePerSales
 
     // Update KPI metrics from new endpoints
     // console.log(customersData);

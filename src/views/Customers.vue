@@ -502,7 +502,7 @@ export default {
       try {
         await this.fetchCustomers({
           skip: (this.currentPage - 1) * this.itemsPerPage,
-          limit: this.itemsPerPage,
+          // limit: this.itemsPerPage,
         })
         this.totalItems = this.customers.length
       } catch (error) {

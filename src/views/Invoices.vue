@@ -208,7 +208,7 @@ export default {
       { key: 'total', label: 'Amount', span: 1, type: 'currency' },
       { key: 'status', label: 'Status', span: 1, type: 'status' },
       { key: 'issue_date', label: 'Issue Date', span: 1, type: 'date' },
-      { key: 'due_date', label: 'Due Date', span: 1, type: 'date' },
+      { key: 'check_in', label: 'Check In Date', span: 1, type: 'date' },
     ])
 
     // Computed properties
@@ -247,17 +247,17 @@ export default {
         const startOfYear = new Date(now.getFullYear(), 0, 1)
 
         filtered = filtered.filter((invoice) => {
-          const issueDate = new Date(invoice.issue_date)
+          const checkInDate = new Date(invoice.check_in)
 
           switch (dateFilter.value) {
             case 'today':
-              return issueDate >= today && issueDate < new Date(today.getTime() + 86400000)
+              return checkInDate >= today && checkInDate < new Date(today.getTime() + 86400000)
             case 'week':
-              return issueDate >= startOfWeek
+              return checkInDate >= startOfWeek
             case 'month':
-              return issueDate >= startOfMonth
+              return checkInDate >= startOfMonth
             case 'year':
-              return issueDate >= startOfYear
+              return checkInDate >= startOfYear
             default:
               return true
           }

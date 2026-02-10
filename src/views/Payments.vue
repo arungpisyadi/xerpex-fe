@@ -722,9 +722,7 @@ export default {
         const query = this.searchQuery.toLowerCase()
         filtered = filtered.filter(
           (payment) =>
-            payment.invoice_id?.toString().includes(query) ||
-            payment.reference_number?.toLowerCase().includes(query) ||
-            payment.amount?.toString().includes(query),
+            payment.invoice?.invoice_number?.toString().toLowerCase().includes(query),
         )
       }
 
@@ -893,9 +891,10 @@ export default {
         // Show success notification
         alert(`Payment #${payment.id} (${payment.reference_number || 'N/A'}) has been deleted successfully.`)
         console.log('Payment deleted successfully:', payment.id)
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error deleting payment:', error)
-        const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete payment'
+        const errorObj = error as { response?: { data?: { message?: string } }; message?: string }
+        const errorMessage = errorObj.response?.data?.message || errorObj.message || 'Failed to delete payment'
         alert(`Error: ${errorMessage}`)
         this.handleError(error, 'confirmDelete')
       }

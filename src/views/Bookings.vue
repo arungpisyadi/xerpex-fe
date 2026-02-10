@@ -181,7 +181,7 @@
           :show-add-button="false"
           @view="viewBookingDetails"
           @edit="handleEditEvent"
-          @delete="canDelete ? confirmDeleteBooking : null"
+          @delete="handleDeleteEvent"
           :show-edit-button="canUpdate"
           :show-delete-button="canDelete"
         >
@@ -421,6 +421,9 @@ export default {
       }
       this.$router.push(`/bookings/edit/${booking.id}`)
     },
+    handleDeleteEvent(booking) {
+      this.confirmDeleteBooking(booking)
+    },
     confirmDeleteBooking(booking) {
       if (!this.canDelete) {
         this.showPermissionDeniedAlert('delete bookings')
@@ -444,6 +447,7 @@ export default {
         this.showNotification('success', 'Booking deleted successfully')
       } catch (error) {
         console.error('Error deleting booking:', error)
+        this.showDeleteModal = false
         const errorMessage =
           error.response?.data?.detail || 'Failed to delete booking'
         this.showNotification('error', errorMessage)

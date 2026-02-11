@@ -924,7 +924,7 @@ export function useInvoiceTemplate() {
                           (item: any) => `
                     <tr>
                         <td>${item.package?.name || item.package_name || 'N/A'}</td>
-                        <td>${item.package?.description || 'No description available'}</td>
+                        <td>${(item.description || 'No description available').replace(/\n/g, '<br>')}</td>
                         <td class="align-center">${item.pax || 'N/A'}</td>
                         <td class="align-right">${formatIDR(item.unit_price)}</td>
                         <td class="align-right">${formatIDR(item.discount || 0)}</td>

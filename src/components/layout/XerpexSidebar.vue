@@ -108,6 +108,7 @@ import {
   BarChartIcon,
   UserGroupIcon,
   DollarBillIcon,
+  PieChartIcon,
 } from '../../icons'
 import { useSidebar } from '@/composables/useSidebar'
 import { usePermissions } from '@/composables/usePermissions'
@@ -221,6 +222,29 @@ const menuGroups = computed(() => {
 
     // Add revenue items
     revenueItems.forEach((item) => {
+      flatItems.push(item)
+    })
+  }
+
+  // Reports section - check if any reports items are visible
+  const reportsItems = [
+    {
+      name: 'Sales Report',
+      path: '/reports/sales',
+      module: SystemModule.REPORTS_SALES,
+      icon: PieChartIcon,
+    },
+  ].filter((item) => canPerform(item.module, PermissionAction.VIEW))
+
+  if (reportsItems.length > 0) {
+    // Add section divider
+    flatItems.push({
+      isSectionDivider: true,
+      sectionName: 'Reports',
+    })
+
+    // Add reports items
+    reportsItems.forEach((item) => {
       flatItems.push(item)
     })
   }

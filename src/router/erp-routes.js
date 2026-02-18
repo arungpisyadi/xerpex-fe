@@ -335,6 +335,29 @@ const erpRoutes = [
       requiresAuth: true,
     },
   },
+  // Report routes
+  {
+    path: '/reports',
+    name: 'Reports',
+    component: () => import('../views/Reports/SalesReport.vue'),
+    meta: {
+      title: 'Reports',
+      requiresAuth: true,
+      module: SystemModule.REPORTS,
+      action: PermissionAction.VIEW,
+    },
+  },
+  {
+    path: '/reports/sales',
+    name: 'SalesReport',
+    component: () => import('../views/Reports/SalesReport.vue'),
+    meta: {
+      title: 'Sales Report',
+      requiresAuth: true,
+      module: SystemModule.REPORTS_SALES,
+      action: PermissionAction.VIEW,
+    },
+  },
   // Authentication routes
   {
     path: '/signin',

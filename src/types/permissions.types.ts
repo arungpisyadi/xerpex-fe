@@ -25,6 +25,8 @@ export enum SystemModule {
   PAYMENTS = 'Payments',
   SETTINGS_GENERAL = 'Settings - General',
   SETTINGS_TARGETS = 'Settings - Targets',
+  REPORTS = 'Reports',
+  REPORTS_SALES = 'Reports - Sales',
 }
 
 /**
@@ -89,6 +91,8 @@ export interface RolePermissions {
   [SystemModule.PAYMENTS]: ModulePermissions
   [SystemModule.SETTINGS_GENERAL]: ModulePermissions
   [SystemModule.SETTINGS_TARGETS]: ModulePermissions
+  [SystemModule.REPORTS]: ModulePermissions
+  [SystemModule.REPORTS_SALES]: ModulePermissions
 }
 
 /**

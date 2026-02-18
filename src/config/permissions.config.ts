@@ -80,6 +80,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
       [PermissionAction.UPDATE]: PermissionState.ENABLED,
       [PermissionAction.DELETE]: PermissionState.ENABLED,
     },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.ENABLED,
+      [PermissionAction.UPDATE]: PermissionState.ENABLED,
+      [PermissionAction.DELETE]: PermissionState.ENABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.ENABLED,
+      [PermissionAction.UPDATE]: PermissionState.ENABLED,
+      [PermissionAction.DELETE]: PermissionState.ENABLED,
+    },
   },
 
   [MatrixRole.MANAGER]: {
@@ -145,6 +157,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
     },
     [SystemModule.SETTINGS_TARGETS]: {
       [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
       [PermissionAction.CREATE]: PermissionState.DISABLED,
       [PermissionAction.UPDATE]: PermissionState.DISABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
@@ -218,6 +242,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
       [PermissionAction.UPDATE]: PermissionState.DISABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
   },
 
   [MatrixRole.SALES]: {
@@ -283,6 +319,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
     },
     [SystemModule.SETTINGS_TARGETS]: {
       [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
+      [PermissionAction.VIEW]: PermissionState.ENABLED,
       [PermissionAction.CREATE]: PermissionState.DISABLED,
       [PermissionAction.UPDATE]: PermissionState.DISABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
@@ -356,6 +404,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
       [PermissionAction.UPDATE]: PermissionState.DISABLED,
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
+      [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
   },
 
   [MatrixRole.STAFF]: {
@@ -420,6 +480,18 @@ export const PERMISSION_MATRIX: PermissionMatrix = {
       [PermissionAction.DELETE]: PermissionState.DISABLED,
     },
     [SystemModule.SETTINGS_TARGETS]: {
+      [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS]: {
+      [PermissionAction.VIEW]: PermissionState.DISABLED,
+      [PermissionAction.CREATE]: PermissionState.DISABLED,
+      [PermissionAction.UPDATE]: PermissionState.DISABLED,
+      [PermissionAction.DELETE]: PermissionState.DISABLED,
+    },
+    [SystemModule.REPORTS_SALES]: {
       [PermissionAction.VIEW]: PermissionState.DISABLED,
       [PermissionAction.CREATE]: PermissionState.DISABLED,
       [PermissionAction.UPDATE]: PermissionState.DISABLED,

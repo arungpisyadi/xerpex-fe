@@ -5,7 +5,7 @@
     </div>
 
     <div
-      class="bg-white max-w-full md:max-w-[1085px] px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-4 xl:pb-0"
+      class="bg-white max-w-full md:max-w-[1085px] 2xl:max-w-screen px-2 pt-2 pb-0.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-4 xl:pb-0"
     >
       <!-- Filters Section -->
       <div

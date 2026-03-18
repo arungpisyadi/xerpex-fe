@@ -667,7 +667,7 @@ export default {
       statusFilter: '',
       methodFilter: '',
       currentPage: 1,
-      itemsPerPage: 99999,
+      itemsPerPage: 999999,
       totalItems: 0,
       showModal: false,
       showCreateModal: false,
@@ -690,12 +690,12 @@ export default {
       },
       columns: [
         { key: 'invoice.invoice_number', label: 'INVOICE #', span: 1 },
+        { key: 'customer.name', label: 'CUSTOMER', span: 1 },
         { key: 'amount', label: 'Amount', span: 1, type: 'currency' },
         { key: 'payment_method', label: 'Method', span: 1 },
         { key: 'payment_type', label: 'Type', span: 1 },
         { key: 'status', label: 'Status', span: 1, type: 'status' },
         { key: 'payment_date', label: 'Date', span: 1, type: 'date' },
-        { key: 'reference_number', label: 'Reference', span: 2 },
       ],
     }
   },
@@ -722,7 +722,8 @@ export default {
         const query = this.searchQuery.toLowerCase()
         filtered = filtered.filter(
           (payment) =>
-            payment.invoice?.invoice_number?.toString().toLowerCase().includes(query),
+            payment.invoice?.invoice_number?.toString().toLowerCase().includes(query) ||
+            payment.customer?.name?.toString().toLowerCase().includes(query),
         )
       }
 

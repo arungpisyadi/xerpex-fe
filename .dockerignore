@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+localhost
+.git
+.vscode
+.idea
+.kilo
+.kilocode
+docs
+*.log
+.env
+.env.*
+Dockerfile
+docker-compose.yaml
+.dockerignore
